@@ -9,7 +9,6 @@ import ProtectedRoutes from "./pages/ProtectedRoutes";
 import PasswordReset from "./pages/PasswordReset";
 import CreateUsername from "./pages/CreateUsername";
 import CreateProfilePhoto from "./pages/CreateProfilePhoto";
-import Camera from "./pages/Camera";
 
 export const router = createBrowserRouter([
 	{
@@ -18,48 +17,43 @@ export const router = createBrowserRouter([
 			{
 				path: "/",
 				element: <Home />,
-				errorElement: <Error />
+				errorElement: <Error />,
 			},
 			{
 				path: "/newpost",
 				element: <CreatePost />,
-				errorElement: <Error />
+				errorElement: <Error />,
 			},
 			{
 				path: "/profile",
 				element: <Profile />,
-				errorElement: <Error />
-			}
-		]
+				errorElement: <Error />,
+			},
+		],
 	},
 	{
 		path: "/create-username",
 		element: <CreateUsername />,
-		errorElement: <Error />
-	},
-	{
-		path: "/camera",
-		element: <Camera />,
-		errorElement: <Error />
+		errorElement: <Error />,
 	},
 	{
 		path: "/create-profilephoto",
 		element: <CreateProfilePhoto />,
-		errorElement: <Error />
+		errorElement: <Error />,
 	},
 	{
 		path: "/login",
 		element: <Login />,
-		errorElement: <Error />
+		errorElement: <Error />,
 	},
 	{
 		path: "/signup",
 		element: <Signup />,
-		errorElement: <Error />
+		errorElement: <Error />,
 	},
 	{
 		path: "/forgot-password",
 		element: <PasswordReset />,
-		errorElement: <Error />
-	}
+		errorElement: <Error />,
+	},
 ]);

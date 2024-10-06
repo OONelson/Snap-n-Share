@@ -4,13 +4,13 @@ import "./SmallModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-interface ISmallModalProps {
+interface IBigModalProps {
 	show: boolean;
 	onClose: () => void;
 	children: ReactNode;
 }
 
-const SmallModal: React.FunctionComponent<ISmallModalProps> = ({
+const BigModal: React.FunctionComponent<IBigModalProps> = ({
 	show,
 	onClose,
 	children,
@@ -21,7 +21,7 @@ const SmallModal: React.FunctionComponent<ISmallModalProps> = ({
 		<div className="modal-backdrop" onClick={onClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
 				<FontAwesomeIcon
-					className="modal-close"
+					className="modal-close -mt-2 -mr-1"
 					onClick={onClose}
 					icon={faTimes}
 				/>
@@ -32,4 +32,4 @@ const SmallModal: React.FunctionComponent<ISmallModalProps> = ({
 	);
 };
 
-export default SmallModal;
+export default BigModal;
