@@ -120,7 +120,9 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 					</div>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center items-center space-y-4">
-					<Button className="w-full">Create account</Button>
+					<Link to="/create-username">
+						<Button className="w-full">Create account</Button>
+					</Link>
 					<p className="text-lg font-normal text-slate-600">
 						Already have an account?{" "}
 						<Link

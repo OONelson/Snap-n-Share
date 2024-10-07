@@ -13,7 +13,10 @@ import { NewUserPassword } from "@/types";
 import { Button } from "@/components/ui/button";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "@/components/reuseables/IconCircle.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
 
 const initialValue: NewUserPassword = {
 	email: ""
@@ -49,9 +52,19 @@ const PasswordReset: React.FunctionComponent<IPasswordResetProps> = () => {
 					onSubmit={handleSubmitPasswordReset}
 					className=" flex items-center justify-center flex-col h-4/5"
 				>
-					<CardHeader className="space-y-1 ">
-						<CardTitle>Password reset</CardTitle>
-						<CardDescription>Enter a new password</CardDescription>
+					<CardHeader className="flex justify-center items-center">
+						<CardTitle className="flex justify-center items-center flex-col">
+							<div className="circle-icon-container">
+								<FontAwesomeIcon icon={faLock} size="2x" />
+							</div>
+							<h1 className="text-3xl">Password reset</h1>
+						</CardTitle>
+						<CardDescription className="pb-8">
+							<h3 className="font-semibold text-gray-700 w-80 leading-tight">
+								Having trouble logging in? Enter your email we'll send you a
+								link to get back into your account.
+							</h3>
+						</CardDescription>
 					</CardHeader>
 					<CardContent className="grid gap-4 w-full sm:w-full md:w-1/2 lg:w-1/3">
 						<div className="grid gap-2 w-full">
@@ -66,6 +79,12 @@ const PasswordReset: React.FunctionComponent<IPasswordResetProps> = () => {
 								}
 							/>
 						</div>
+						<Link to="/login">
+							<span className="text-gray-600 hover:text-gray-500 text-md font-semibold flex justify-end items-end">
+								{" "}
+								Back to Login
+							</span>
+						</Link>
 					</CardContent>
 					<CardFooter>
 						<Button className="w-full">Confirm</Button>

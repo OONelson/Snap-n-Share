@@ -1,12 +1,6 @@
 import * as React from "react";
 import { useRef, useState } from "react";
-import {
-	ref,
-	uploadBytesResumable,
-	getDownloadURL,
-	uploadBytes,
-} from "firebase/storage";
-import { ref as dbRef, push } from "firebase/database";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { storage, db } from "@/firebase/firebaseConfig";
 import { Button } from "../components/ui/button";
@@ -16,7 +10,7 @@ import {
 	CardDescription,
 	CardFooter,
 	CardHeader,
-	CardTitle,
+	CardTitle
 } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,11 +20,12 @@ import {
 	faFileAlt,
 	faCameraAlt,
 	faCamera,
-	faTimes,
+	faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import SmallModal from "@/components/reuseables/SmallModal";
-
 import BigModal from "@/components/reuseables/BigModal";
+import "@/components/reuseables/ProgressBar.css";
+import { Link } from "react-router-dom";
 
 interface ICreateProfilePhotoProps {}
 
@@ -57,11 +52,12 @@ const CreateProfilePhoto: React.FunctionComponent<
 		setCapturedImage(null);
 		setSelectedImage(null);
 	};
+
 	const startCamera = async () => {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: true,
-				audio: false,
+				audio: false
 			});
 			if (videoRef.current) {
 				videoRef.current.srcObject = stream;
@@ -135,7 +131,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 		const uploadTask = uploadBytesResumable(storageRef, blob);
 
 		await addDoc(collection(db, "images"), {
-			timestamp: new Date(),
+			timestamp: new Date()
 		});
 
 		uploadTask.on(
@@ -143,6 +139,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 			(snapshot) => {
 				const progress =
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
 				setProgress(progress);
 			},
 			(error) => {
@@ -151,6 +148,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 			() => {
 				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
 					console.log("File available at", downloadURL);
+
 					setProgress(0);
 					setCapturedImage(null);
 					setSelectedImage(null);
@@ -159,47 +157,6 @@ const CreateProfilePhoto: React.FunctionComponent<
 			}
 		);
 	};
-
-	// const uploadToFirebase = () => {
-	// 	if (!selectedImage) {
-	// 		alert("Please select an image first");
-	// 		return;
-	// 	}
-
-	// 	const storageRef = ref(storage, `images/${selectedImage.name}`);
-	// 	uploadBytes(storageRef, selectedImage).then((snapshot) => {
-	// 		getDownloadURL(snapshot.ref).then((url) => {
-	// 			console.log(url);
-	// 		});
-	// 	});
-	// const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-
-	// // Track progress
-	// uploadTask.on(
-	// 	"state_changed",
-	// 	(snapshot) => {
-	// 		const progress = Math.round(
-	// 			(snapshot.bytesTransferred / snapshot.totalBytes) * 100
-	// 		);
-	// 		setProgress(progress);
-	// 	},
-	// 	(error) => {
-	// 		console.error("Upload failed:", error);
-	// 	},
-	// 	async () => {
-	// 		const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-	// 		setCapturedImage(downloadURL);
-
-	// 		const imageMetadata = {
-	// 			name: selectedImage.name,
-	// 			url: downloadURL,
-	// 			createdAt: new Date().toISOString(),
-	// 		};
-	// 		await push(dbRef(db, "profilephoto"), imageMetadata);
-	// 		alert("Upload successful");
-	// 	}
-	// );
-	// };
 
 	return (
 		<>
@@ -245,28 +202,43 @@ const CreateProfilePhoto: React.FunctionComponent<
 										alt="Selected"
 										className="h-auto w-auto my-3"
 									/>
-									<Button
-										className="bg-green-600 hover:bg-green-500"
-										onClick={uploadToFirebase}
-									>
-										Upload image
-									</Button>
+									{!progress ? (
+										<Button
+											className="bg-green-600 hover:bg-green-500"
+											onClick={uploadToFirebase}
+										>
+											Upload image
+										</Button>
+									) : (
+										<Button
+											className="hidden bg-green-600 hover:bg-green-500"
+											onClick={uploadToFirebase}
+										>
+											Upload image
+										</Button>
+									)}
 								</div>
 							</>
 						)}
 
 						{progress > 0 && (
-							<div>
-								<h3>Upload progress: {progress.toFixed(2)}%</h3>
+							<div className="flex flex-col">
+								<progress value={progress} max="100" className="progress" />
+								<span className="font-bold text-md">
+									{" "}
+									{progress.toFixed(0)}%
+								</span>
 							</div>
 						)}
 					</CardContent>
-					<CardFooter className="flex flex-col justify-center items-center space-y-4">
+					<CardFooter className="flex flex-col justify-center items-center space-y-4 mb-10">
 						{progress === 100 ? (
-							<Button className="w-full px-4">
-								<span className="px-2">Next</span>
-								<FontAwesomeIcon icon={faArrowRight} />
-							</Button>
+							<Link to="/">
+								<Button className="w-full px-4">
+									<span className="px-2">Next</span>
+									<FontAwesomeIcon icon={faArrowRight} />
+								</Button>
+							</Link>
 						) : (
 							<Button disabled className="w-full px-4">
 								<span className="px-2">Next</span>
@@ -303,11 +275,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<video
-							ref={videoRef}
-							// onChange={handleImageCapture}
-							className="w-[100] h-auto"
-						/>
+						<video ref={videoRef} className="w-[100] h-auto" />
 					</CardContent>
 					<CardFooter>
 						<div className="px-2">

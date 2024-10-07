@@ -9,7 +9,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	return (
 		<>
 			<UserAuthProvider>
-				<RouterProvider router={router} />;
+				<RouterProvider router={router} />
 			</UserAuthProvider>
 		</>
 	);
