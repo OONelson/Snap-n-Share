@@ -1,6 +1,10 @@
 import * as React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faMessage, faUser } from "@fortawesome/free-solid-svg-icons";
+import HomeIcon from "@/components/assets/home-hover-home.svg";
+import ChatIcon from "@/components/assets/chat-hover-chat.svg";
+import ProfileIcon from "@/components/assets/account-hover-account.svg";
+import SettingIcon from "@/components/assets/settings.svg";
+import AddIcon from "@/components/assets/add.svg";
+
 import { Link, useLocation } from "react-router-dom";
 
 interface ISideBarProps {}
@@ -9,36 +13,64 @@ const navItems = [
 	{
 		name: "Home",
 		link: "/",
-		icon: faHome
+		icon: HomeIcon
 	},
 	{
 		name: "Messages",
 		link: "/messages",
-		icon: faMessage
+		icon: ChatIcon
+	},
+	{
+		name: "Create",
+		link: "/newpost",
+		icon: AddIcon
 	},
 	{
 		name: "Profile",
 		link: "/profile",
-		icon: faUser
+		icon: ProfileIcon
+	},
+	{
+		name: "Settings",
+		link: "/settings",
+		icon: SettingIcon
 	}
 ];
 
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
-	const pathname = useLocation();
+	const location = useLocation();
 	return (
 		<>
-			<nav className="flex justify-center items-start flex-col p-5 bg-white h-full w-[100]">
-				<div>
+			<nav
+				dir="ltl"
+				className="flex justify-between  items-start flex-col p-5 bg-white h-full w-1/5 border-x-2 "
+			>
+				<div className="mb-20">
 					<h1 className="text-3xl font-sans font-bold text-gray-900 italic">
 						Snap n' Share
 					</h1>
 				</div>
-				<div>
+				<div className="w-full">
 					{navItems.map((item) => (
-						<div key={item.name}>
-							<Link to={item.link}>
-								<FontAwesomeIcon icon={item.icon} />
-								<span>{item.name}</span>
+						<div
+							key={item.name}
+							className={
+								location.pathname === item.link
+									? "mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 py-2"
+									: "mb-10  hover:bg-gray-100 px-5 py-2 hover:rounded-md ease-in"
+							}
+						>
+							<Link to={item.link} className="flex justify-start items-center ">
+								<img
+									src={item.icon}
+									alt={item.name}
+									className={
+										location.pathname === item.link
+											? "w-10 h-10 mr-3 invert"
+											: "w-10 h-10 mr-3 invert-0"
+									}
+								/>
+								<span className="text-xl ">{item.name}</span>
 							</Link>
 						</div>
 					))}

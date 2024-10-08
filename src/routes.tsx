@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/HomePage";
 import Error from "./pages/Error";
-import CreatePost from "./pages/CreatePost";
+import CreatePost from "./layout/CreatePost";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
@@ -17,43 +17,47 @@ export const router = createBrowserRouter([
 			{
 				path: "/",
 				element: <Home />,
-				errorElement: <Error />,
+				errorElement: <Error />
 			},
 			{
 				path: "/newpost",
 				element: <CreatePost />,
-				errorElement: <Error />,
+				errorElement: <Error />
 			},
 			{
 				path: "/profile",
 				element: <Profile />,
-				errorElement: <Error />,
-			},
-		],
+				errorElement: <Error />
+			}
+		]
 	},
 	{
 		path: "/create-username",
 		element: <CreateUsername />,
-		errorElement: <Error />,
+		errorElement: <Error />
 	},
 	{
 		path: "/create-profilephoto",
 		element: <CreateProfilePhoto />,
-		errorElement: <Error />,
+		errorElement: <Error />
 	},
 	{
 		path: "/login",
 		element: <Login />,
-		errorElement: <Error />,
+		errorElement: <Error />
 	},
 	{
 		path: "/signup",
 		element: <Signup />,
-		errorElement: <Error />,
+		errorElement: <Error />
 	},
 	{
 		path: "/forgot-password",
 		element: <PasswordReset />,
-		errorElement: <Error />,
+		errorElement: <Error />
 	},
+	{
+		path: "*",
+		element: <Error />
+	}
 ]);

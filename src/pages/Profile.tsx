@@ -11,6 +11,7 @@ import {
 } from "../components/ui/card";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import SideBar from "@/layout/SideBar";
 
 interface IProfileProps {}
 
@@ -33,8 +34,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 		};
 	});
 	return (
-		<main>
-			<Card>
+		<main className="flex h-full">
+			<SideBar />
+			<Card className="w-4/5 border-none">
 				{/* <CardHeader>
 					<CardTitle>
 
