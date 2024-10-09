@@ -4,8 +4,8 @@ import ChatIcon from "@/components/assets/chat-hover-chat.svg";
 import ProfileIcon from "@/components/assets/account-hover-account.svg";
 import SettingIcon from "@/components/assets/settings.svg";
 import AddIcon from "@/components/assets/add.svg";
-
 import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface ISideBarProps {}
 
@@ -39,9 +39,24 @@ const navItems = [
 
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 	const location = useLocation();
+
+	const navVariants = {
+		hidden: { opacity: 0, x: -75 },
+		visible: {
+			opacity: 1,
+			x: 0,
+			transition: {
+				type: "spring",
+				stiffness: 120
+			}
+		}
+	};
 	return (
 		<>
-			<nav
+			<motion.nav
+				variants={navVariants}
+				initial="hidden"
+				animate="visible"
 				dir="ltl"
 				className="flex justify-between  items-start flex-col p-5 bg-white h-full w-1/5 border-x-2 "
 			>
@@ -75,7 +90,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 						</div>
 					))}
 				</div>
-			</nav>
+			</motion.nav>
 		</>
 	);
 };
