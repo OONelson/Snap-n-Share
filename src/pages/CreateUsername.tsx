@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
+import UserIcon from "@/components/assets/account-hover-account.svg";
 
 const initialValue: UserName = {
 	displayName: ""
@@ -78,9 +79,12 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 				onSubmit={handleSubmit}
 				className="flex items-center  justify-center flex-col h-4/5 w-full"
 			>
-				<CardHeader className="space-y-1 flex justify-center items-start  ">
+				<CardHeader className="space-y-0 flex justify-center items-center  ">
+					<div>
+						<img src={UserIcon} alt="userIcon" className="h-20 w-20" />
+					</div>
 					<CardTitle className="text-2xl ">Get yourself a Username</CardTitle>
-					<CardDescription className="pb-10">
+					<CardDescription className="pb-5 font-medium xsm:font-light">
 						maybe something fancy or unique.
 					</CardDescription>
 				</CardHeader>

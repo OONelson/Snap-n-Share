@@ -58,34 +58,37 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 				initial="hidden"
 				animate="visible"
 				dir="ltl"
-				className="flex justify-between  items-start flex-col p-5 bg-white h-full w-1/5 border-x-2 "
+				className="flex justify-between items-start flex-col bg-white h-full border-x-2 w-max lg:pr-5"
 			>
 				<div className="mb-20">
-					<h1 className="text-3xl font-sans font-bold text-gray-900 italic">
+					<h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
 						Snap n' Share
 					</h1>
 				</div>
-				<div className="w-full">
+				<div className="w-max lg:full">
 					{navItems.map((item) => (
 						<div
 							key={item.name}
 							className={
 								location.pathname === item.link
-									? "mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 py-2"
-									: "mb-10  hover:bg-gray-100 px-5 py-2 hover:rounded-md ease-in"
+									? "mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
+									: "mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in"
 							}
 						>
-							<Link to={item.link} className="flex justify-start items-center ">
+							<Link
+								to={item.link}
+								className="flex justify-center items-center lg:justify-start lg:items-center "
+							>
 								<img
 									src={item.icon}
 									alt={item.name}
 									className={
 										location.pathname === item.link
-											? "w-10 h-10 mr-3 invert"
-											: "w-10 h-10 mr-3 invert-0"
+											? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3  invert"
+											: "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 invert-0"
 									}
 								/>
-								<span className="text-xl ">{item.name}</span>
+								<span className="text-xl hidden lg:block  ">{item.name}</span>
 							</Link>
 						</div>
 					))}

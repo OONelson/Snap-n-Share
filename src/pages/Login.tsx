@@ -65,7 +65,7 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 			>
 				<CardHeader className="space-y-1 flex justify-start ">
 					<CardTitle className="text-2xl ">Snap 'n Share</CardTitle>
-					<CardDescription>
+					<CardDescription className="leading-none">
 						Enter your email and password below to login
 					</CardDescription>
 				</CardHeader>

@@ -59,7 +59,7 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 			>
 				<CardHeader className="space-y-1 flex justify-start ">
 					<CardTitle className="text-2xl ">Snap 'n Share</CardTitle>
-					<CardDescription>
+					<CardDescription className="xsm:leading-none ">
 						Enter your email and password below to create your account
 					</CardDescription>
 				</CardHeader>

@@ -19,13 +19,13 @@ import {
 	faPlus,
 	faFileAlt,
 	faCameraAlt,
-	faCamera,
 	faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import SmallModal from "@/components/reuseables/SmallModal";
 import BigModal from "@/components/reuseables/BigModal";
 import "@/components/reuseables/ProgressBar.css";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion, spring } from "framer-motion";
 
 interface ICreateProfilePhotoProps {}
 
@@ -259,7 +259,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 				</div>
 				<div
 					onClick={handleFileButtonClick}
-					className="text-xl py-1 rounded-sm hover:bg-slate-300"
+					className="text-xl py-1 cursor-pointer rounded-sm hover:bg-slate-300"
 				>
 					<span className="px-2">File</span>
 					<FontAwesomeIcon icon={faFileAlt} />
@@ -281,7 +281,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 						<div className="px-2">
 							{!streaming ? (
 								<Button onClick={startCamera}>
-									<FontAwesomeIcon icon={faCamera} />
+									<FontAwesomeIcon icon={faCameraAlt} />
 								</Button>
 							) : (
 								<Button
