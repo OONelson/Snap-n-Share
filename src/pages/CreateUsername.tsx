@@ -13,27 +13,31 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { UserName } from "@/types";
+// import { UserName } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
+import { motion } from "framer-motion";
+import { useUsername } from "@/contexts/UsernameContext";
 
-const initialValue: UserName = {
-	displayName: ""
-};
+// const initialValue: UserName = {
+// 	username: ""
+// };
 
 interface ICreateUsernameProps {}
 
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
+	// DECLARATIONS/ASSIGNMENTS
 	const navigate = useNavigate();
+	const { username, setUsername } = useUsername();
 
-	const [username, setUsername] = React.useState<UserName>(initialValue);
+	// const [username, setUsername] = React.useState<UserName>(initialValue);
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [loading, setLoading] = useState(false);
 
-	const checkUsername = async () => {
+	const UsernameAvailibity = async () => {
 		setLoading(true);
 
 		const usersRef = collection(db, "users");
@@ -42,11 +46,6 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 
 		if (querySnapshot.empty) {
 			setIsAvailable(true);
-
-			addDoc(collection(db, "users"), {
-				// uid: user.uid,
-				username: username
-			});
 		} else {
 			setIsAvailable(false);
 		}
@@ -54,17 +53,13 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 		setLoading(false);
 	};
 
-	const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
+	const handleCheckUsername = () => {
 		try {
 			console.log(username);
-			await checkUsername();
+			UsernameAvailibity();
 
 			if (isAvailable) {
 				console.log("Username is available!");
-
-				navigate("/create-profilephoto");
 			} else {
 				console.log("Username is already taken.");
 			}
@@ -73,12 +68,29 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 		}
 	};
 
+	const handleSubmit = () => {
+		try {
+			console.log(username);
+			// UsernameAvailibity();
+
+			if (isAvailable) {
+				console.log("Username is available!");
+				navigate("/create-profilephoto");
+			} else {
+				console.log("Username is already taken.");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		addDoc(collection(db, "users"), {
+			// uid: user.uid,
+			username: username
+		});
+	};
+
 	return (
 		<Card className="w-full h-screen flex items-center justify-center ">
-			<form
-				onSubmit={handleSubmit}
-				className="flex items-center  justify-center flex-col h-4/5 w-full"
-			>
+			<div className="flex items-center  justify-center flex-col h-4/5 w-full">
 				<CardHeader className="space-y-0 flex justify-center items-center  ">
 					<div>
 						<img src={UserIcon} alt="userIcon" className="h-20 w-20" />
@@ -96,9 +108,9 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 						type="text"
 						placeholder="Enter a username"
 						required
-						value={username.displayName}
+						value={username}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-							setUsername({ ...username, displayName: e.target.value })
+							setUsername(e.target.value)
 						}
 					/>
 
@@ -118,27 +130,26 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 				</CardContent>
 
 				<CardFooter className="flex flex-col justify-center items-center space-y-4">
-					{loading && (
-						<Button disabled className="w-full px-4">
-							<span className="px-2">Next</span>
-							<div>
-								{loading && <SmallSpinner></SmallSpinner>}
-								{!loading && <FontAwesomeIcon icon={faArrowRight} />}
-							</div>
+					{isAvailable && (
+						<Button onClick={handleSubmit} className="w-full px-4">
+							<motion.div
+								whileHover={{ x: -10 }}
+								transition={{ type: "spring", stiffness: 300 }}
+							>
+								<span className="px-2 ">next</span>
+								<FontAwesomeIcon icon={faArrowRight} />
+							</motion.div>
 						</Button>
 					)}
 
-					{!loading && (
-						<Button className="w-full px-4">
-							<span className="px-2">Next</span>
-							<div>
-								{loading && <SmallSpinner></SmallSpinner>}
-								{!loading && <FontAwesomeIcon icon={faArrowRight} />}
-							</div>
+					{!loading && !isAvailable && (
+						<Button onClick={handleCheckUsername} className="w-full px-4">
+							<span className="px-2">check</span>
 						</Button>
 					)}
+					<div>{loading && <SmallSpinner></SmallSpinner>}</div>
 				</CardFooter>
-			</form>
+			</div>
 		</Card>
 	);
 };

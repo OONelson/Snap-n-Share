@@ -5,34 +5,38 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
-	CardHeader,
+	// CardFooter,
+	// CardHeader,
 	CardTitle
 } from "../components/ui/card";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import SideBar from "@/layout/SideBar";
+import { useUsername } from "@/contexts/UsernameContext";
 
 interface IProfileProps {}
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
-	const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
-		null
-	);
+	const { username } = useUsername();
 
-	useEffect(() => {
-		const fetchProfilePicture = async () => {
-			const userImageDocRef = doc(db, "profilephoto", userID);
-			const docSnapshot = await getDoc(userImageDocRef);
+	// const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
+	// null
+	// );
 
-			if (docSnapshot.exists()) {
-				const userData = docSnapshot.data();
-				if (userData) {
-					setProfilePictureUrl(userData);
-				}
-			}
-		};
-	});
+	// useEffect(() => {
+	// 	const fetchProfilePicture = async () => {
+	// 		const userImageDocRef = doc(db, "profilephoto", userID);
+	// 		const docSnapshot = await getDoc(userImageDocRef);
+
+	// 		if (docSnapshot.exists()) {
+	// 			const userData = docSnapshot.data();
+	// 			if (userData) {
+	// 				setProfilePictureUrl(userData);
+	// 			}
+	// 		}
+	// 	};
+	// });
+
 	return (
 		<main className="flex h-full">
 			<SideBar />
@@ -49,7 +53,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 						</picture>
 
 						<div>
-							<CardTitle>Username</CardTitle>
+							<CardTitle>{username}</CardTitle>
 							<p>
 								<span>0</span>
 								Posts

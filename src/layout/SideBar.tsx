@@ -29,12 +29,12 @@ const navItems = [
 		name: "Profile",
 		link: "/profile",
 		icon: ProfileIcon
-	},
-	{
-		name: "Settings",
-		link: "/settings",
-		icon: SettingIcon
 	}
+	// {
+	// 	name: "Settings",
+	// 	link: "/settings",
+	// 	icon: SettingIcon
+	// }
 ];
 
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
@@ -58,14 +58,14 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 				initial="hidden"
 				animate="visible"
 				dir="ltl"
-				className="flex justify-between items-start flex-col bg-white h-full border-x-2 w-max lg:pr-5"
+				className="flex items-start justify-between flex-col bg-white h-screen border-x-2 w-max lg:pr-5"
 			>
-				<div className="mb-20">
+				<div>
 					<h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
 						Snap n' Share
 					</h1>
 				</div>
-				<div className="w-max lg:full">
+				<div className="flex flex-col w-max lg:full">
 					{navItems.map((item) => (
 						<div
 							key={item.name}
@@ -92,6 +92,29 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 							</Link>
 						</div>
 					))}
+				</div>
+				<div
+					className={
+						location.pathname === "/settings"
+							? "mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
+							: "mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in"
+					}
+				>
+					<Link
+						to="/settings"
+						className="flex justify-center items-center lg:justify-start lg:items-center "
+					>
+						<img
+							src={SettingIcon}
+							alt="settings"
+							className={
+								location.pathname === "/settings"
+									? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3 flex justify-center items-center invert"
+									: "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 flex justify-center items-center  invert-0"
+							}
+						/>
+						<span className="text-xl hidden lg:block  ">Settings</span>
+					</Link>
 				</div>
 			</motion.nav>
 		</>

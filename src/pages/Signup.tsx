@@ -15,6 +15,9 @@ import { Label } from "../components/ui/label";
 import { UserSignUp } from "../types";
 import { useUserAuth } from "../contexts/UserAuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const initialValue: UserSignUp = {
 	email: "",
@@ -120,9 +123,15 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 					</div>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center items-center space-y-4">
-					<Link to="/create-username">
-						<Button className="w-full">Create account</Button>
-					</Link>
+					<Button className="w-full">
+						<motion.div
+							whileHover={{ x: -10 }}
+							transition={{ type: "spring", stiffness: 300 }}
+						>
+							<span>next</span>
+							<FontAwesomeIcon icon={faArrowRight} className="pl-1" />
+						</motion.div>
+					</Button>
 					<p className="text-lg font-normal text-slate-600">
 						Already have an account?{" "}
 						<Link

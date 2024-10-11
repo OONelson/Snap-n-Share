@@ -14,5 +14,5 @@ export interface NewUserPassword {
 }
 
 export interface UserName {
-	displayName: string | number;
+	username: string | number;
 }
