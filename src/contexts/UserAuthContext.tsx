@@ -27,7 +27,10 @@ const logIn = (email: string, password: string) => {
 };
 
 const signUp = (email: string, password: string) => {
-	createUserWithEmailAndPassword(auth, email, password);
+	createUserWithEmailAndPassword(auth, email, password).then((currentUser) => {
+		console.log(currentUser);
+		alert(currentUser);
+	});
 };
 
 const logOut = () => {

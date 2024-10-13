@@ -1,3 +1,5 @@
+type StringOrMixedArray = string[] | (string | number)[];
+
 export interface UserLogIn {
 	email: string;
 	password: string;
@@ -14,5 +16,5 @@ export interface NewUserPassword {
 }
 
 export interface UserName {
-	username: string | number;
+	username: StringOrMixedArray;
 }

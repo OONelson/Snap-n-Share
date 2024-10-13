@@ -3,6 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { UserAuthProvider } from "./contexts/UserAuthContext";
 import { UsernameProvider } from "./contexts/UsernameContext";
+import { UserProfilePhotoProvider } from "./contexts/UserProfilePhoto";
 
 interface IAppProps {}
 
@@ -11,7 +12,9 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		<>
 			<UserAuthProvider>
 				<UsernameProvider>
-					<RouterProvider router={router} />
+					<UserProfilePhotoProvider>
+						<RouterProvider router={router} />
+					</UserProfilePhotoProvider>
 				</UsernameProvider>
 			</UserAuthProvider>
 		</>

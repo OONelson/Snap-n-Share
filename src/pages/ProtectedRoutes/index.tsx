@@ -2,6 +2,7 @@ import * as React from "react";
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getAuth } from "firebase/auth";
+import SmallSpinner from "@/components/reuseables/SmallSpinner";
 
 interface IProtectedRoutesProps {}
 
@@ -11,7 +12,11 @@ const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = () => {
 	const location = useLocation();
 
 	if (loading) {
-		return <div>...loading</div>;
+		return (
+			<div className="flex justify-center items-center">
+				<SmallSpinner />
+			</div>
+		);
 	}
 	return user ? (
 		<Outlet />

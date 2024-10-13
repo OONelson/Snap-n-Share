@@ -21,6 +21,7 @@ import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
 import { useUsername } from "@/contexts/UsernameContext";
+import { useUserAuth } from "@/contexts/UserAuthContext";
 
 // const initialValue: UserName = {
 // 	username: ""
@@ -36,6 +37,8 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 	// const [username, setUsername] = React.useState<UserName>(initialValue);
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [loading, setLoading] = useState(false);
+
+	const { currentUser } = useUserAuth();
 
 	const UsernameAvailibity = async () => {
 		setLoading(true);
@@ -83,8 +86,9 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 			console.log(error);
 		}
 		addDoc(collection(db, "users"), {
-			// uid: user.uid,
-			username: username
+			uid: currentUser.uid,
+			username: username,
+			timestamp: new Date()
 		});
 	};
 

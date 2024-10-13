@@ -24,21 +24,27 @@ import {
 import SmallModal from "@/components/reuseables/SmallModal";
 import BigModal from "@/components/reuseables/BigModal";
 import "@/components/reuseables/ProgressBar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, spring } from "framer-motion";
+import { useUserProfilePhoto } from "@/contexts/UserProfilePhoto";
+import { useUserAuth } from "@/contexts/UserAuthContext";
 
 interface ICreateProfilePhotoProps {}
 
 const CreateProfilePhoto: React.FunctionComponent<
 	ICreateProfilePhotoProps
 > = () => {
+	const { capturedImage, setCapturedImage } = useUserProfilePhoto();
+	const { currentUser } = useUserAuth();
+
+	const navigate = useNavigate();
+
 	const [showModal, setShowModal] = useState(false);
 	const [showBigModal, setShowBigModal] = useState(false);
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const [streaming, setStreaming] = useState<boolean>(false);
 
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
-	const [capturedImage, setCapturedImage] = useState<string | null>(null);
 	const [progress, setProgress] = useState<number>(0);
 
 	const toggleModal = () => {
@@ -127,10 +133,10 @@ const CreateProfilePhoto: React.FunctionComponent<
 		if (!capturedImage) return;
 
 		const blob = await fetch(capturedImage).then((res) => res.blob());
-		const storageRef = ref(storage, `profilephoto/${Date.now()}.png`);
+		const storageRef = ref(storage, `profilephoto/${currentUser.uid}.png`);
 		const uploadTask = uploadBytesResumable(storageRef, blob);
 
-		await addDoc(collection(db, "images"), {
+		await addDoc(collection(db, "profilephoto"), {
 			timestamp: new Date()
 		});
 
@@ -150,9 +156,11 @@ const CreateProfilePhoto: React.FunctionComponent<
 					console.log("File available at", downloadURL);
 
 					setProgress(0);
-					setCapturedImage(null);
-					setSelectedImage(null);
+					setCapturedImage(downloadURL);
+					// setSelectedImage(downloadURL);
 					alert("Image uploaded successfully!");
+
+					navigate("/");
 				});
 			}
 		);

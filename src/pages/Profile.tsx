@@ -13,12 +13,15 @@ import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import SideBar from "@/layout/SideBar";
 import { useUsername } from "@/contexts/UsernameContext";
+import { useUserProfilePhoto } from "@/contexts/UserProfilePhoto";
+import { useUserAuth } from "@/contexts/UserAuthContext";
 
 interface IProfileProps {}
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
 	const { username } = useUsername();
-
+	const { capturedImage } = useUserProfilePhoto();
+	const { logOut } = useUserAuth();
 	// const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
 	// null
 	// );
@@ -46,10 +49,11 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 
 					</CardTitle>
 				</CardHeader> */}
+				<Button onClick={logOut}> logout</Button>
 				<CardContent>
 					<section>
 						<picture>
-							<img src="" alt="profilephoto" />
+							<img src={capturedImage} alt="profilephoto" />
 						</picture>
 
 						<div>

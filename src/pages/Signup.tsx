@@ -17,7 +17,7 @@ import { useUserAuth } from "../contexts/UserAuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const initialValue: UserSignUp = {
 	email: "",
@@ -31,6 +31,7 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 	const { googleSignIn, signUp } = useUserAuth();
 	const navigate = useNavigate();
 	const [userInfo, setUserInfo] = React.useState<UserSignUp>(initialValue);
+	const [error, setError] = React.useState<string | null>(null);
 
 	const handleGoogleSignIn = async (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
@@ -38,20 +39,34 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 		try {
 			await googleSignIn();
 			navigate("/create-username");
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error);
+			setError(error.message);
 		}
 	};
+
 	const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		const passwordValidationRegex = /^(?=.*[A-Z]).{6,}$/;
+		if (!passwordValidationRegex.test(userInfo.password)) {
+			setError(
+				"Password must contain an uppercase letter and be at least 6 characters long."
+			);
+			return;
+		}
 
 		try {
 			console.log(userInfo);
 
 			await signUp(userInfo.email, userInfo.password);
 			navigate("/create-username");
-		} catch (error) {
-			console.log(error);
+		} catch (err: any) {
+			if (err.code === "auth/password-does-not-meet-requirements") {
+				setError("Password must contain an uppercase letter.");
+			} else {
+				setError(err.message);
+			}
 		}
 	};
 	return (
@@ -115,12 +130,13 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
 							type="password"
 							placeholder="Confirm password"
 							required
-							value={userInfo.password}
+							value={userInfo.confirmPassword}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 								setUserInfo({ ...userInfo, confirmPassword: e.target.value })
 							}
 						/>
 					</div>
+					{error && <p className="leading-4 text-red-500 ">{error}</p>}
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center items-center space-y-4">
 					<Button className="w-full">
