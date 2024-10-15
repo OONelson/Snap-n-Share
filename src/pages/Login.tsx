@@ -28,15 +28,17 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 	const navigate = useNavigate();
 	const [userLogInInfo, setUserLogInInfo] =
 		React.useState<UserLogIn>(initialValue);
+	const [error, setError] = React.useState<string | null>(null);
 
-	const handleGoogleSignIn = async (e: React.MouseEvent<HTMLElement>) => {
-		e.preventDefault();
+	const handleGoogleSignIn = async () => {
+		// e.preventDefault();
 
 		try {
 			await googleSignIn();
 			navigate("/");
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error);
+			setError(error.message);
 		}
 	};
 
@@ -45,11 +47,19 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 
 		try {
 			console.log(userLogInInfo);
-
-			await logIn(userLogInInfo.email, userLogInInfo.password);
-			navigate("/");
-		} catch (error) {
-			console.log(error);
+			if (!userLogInInfo.email || !userLogInInfo.password) {
+				setError("oops no login info here");
+			} else {
+				await logIn(userLogInInfo.email, userLogInInfo.password);
+				navigate("/");
+			}
+		} catch (err: any) {
+			if (err.code === "auth/invalid-email") {
+				setError("Wrong email");
+			} else {
+				setError(err.message);
+			}
+			console.log(err);
 		}
 	};
 
@@ -107,6 +117,7 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 								setUserLogInInfo({ ...userLogInInfo, password: e.target.value })
 							}
 						/>
+						{error && <p className="leading-4 text-red-500 ">{error}</p>}
 					</div>
 					<p
 						onClick={handlePasswordReset}

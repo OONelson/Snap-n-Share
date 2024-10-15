@@ -43,35 +43,48 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 	return (
 		<main className="flex h-full">
 			<SideBar />
-			<Card className="w-4/5 border-none">
+			<Card className="flex flex-col w-5/6 border-none">
 				{/* <CardHeader>
 					<CardTitle>
 
 					</CardTitle>
 				</CardHeader> */}
-				<Button onClick={logOut}> logout</Button>
-				<CardContent>
-					<section>
-						<picture>
-							<img src={capturedImage} alt="profilephoto" />
+				<div className="flex justify-end items-center pt-2">
+					<Button className=" w-20" onClick={logOut}>
+						{" "}
+						logout
+					</Button>
+				</div>
+				<CardContent className="pt-10">
+					<section className="flex flex-row justify-center items-center w-4/5">
+						<picture className="pr-5">
+							<img
+								src={capturedImage}
+								alt="profilephoto"
+								className="h-32 w-32 rounded-full"
+							/>
 						</picture>
 
 						<div>
-							<CardTitle>{username}</CardTitle>
-							<p>
-								<span>0</span>
-								Posts
-							</p>
-							<Button>Edit profile</Button>
-						</div>
+							<div className="flex items-center justify-between w-80">
+								<CardTitle>{username}</CardTitle>
+								<p className="text-lg font-normal">
+									<span>0</span>
+									Posts
+								</p>
+								<Button>Edit profile</Button>
+							</div>
 
-						<div>
-							<CardDescription>Name</CardDescription>
-							<p>bio</p>
+							<div>
+								<CardDescription>
+									<h2>NAme</h2>
+									<p>bio</p>
+								</CardDescription>
+							</div>
 						</div>
 					</section>
 
-					<section>
+					<section className="flex justify-center items-center mt-20">
 						<div>posts</div>
 					</section>
 				</CardContent>

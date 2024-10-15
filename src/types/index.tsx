@@ -1,3 +1,5 @@
+import { User } from "firebase/auth";
+
 type StringOrMixedArray = string[] | (string | number)[];
 
 export interface UserLogIn {
@@ -17,4 +19,10 @@ export interface NewUserPassword {
 
 export interface UserName {
 	username: StringOrMixedArray;
+}
+
+export interface ProfileInfo {
+	user?: User;
+	displayName: string;
+	profilephoto: string;
 }

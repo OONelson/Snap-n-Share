@@ -11,7 +11,7 @@ const FileUplaoder: React.FunctionComponent<IFileUplaoderProps> = () => {
 				sourceList="local, url, camera"
 				classNameUploader="uc-light uc-white"
 				pubkey="b5195a441b3832d8a02a"
-				className="py-2 px-8 bg-gray-200 rounded-sm"
+				className="py-2 text-center w-40 bg-gray-200 rounded-sm"
 			/>
 		</div>
 	);

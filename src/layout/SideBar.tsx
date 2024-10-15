@@ -58,14 +58,14 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 				initial="hidden"
 				animate="visible"
 				dir="ltl"
-				className="flex items-start justify-between flex-col bg-white h-screen border-x-2 w-max lg:pr-5"
+				className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-between flex-row w-full h-30 fixed bottom-0"
 			>
 				<div>
 					<h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
 						Snap n' Share
 					</h1>
 				</div>
-				<div className="flex flex-col w-max lg:full">
+				<div className="sm:flex sm:flex-col lg:full flex flex-row w-max">
 					{navItems.map((item) => (
 						<div
 							key={item.name}

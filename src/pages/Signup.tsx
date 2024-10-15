@@ -28,8 +28,9 @@ const initialValue: UserSignUp = {
 interface ISignupProps {}
 
 const Signup: React.FunctionComponent<ISignupProps> = () => {
-	const { googleSignIn, signUp } = useUserAuth();
 	const navigate = useNavigate();
+
+	const { googleSignIn, signUp } = useUserAuth();
 	const [userInfo, setUserInfo] = React.useState<UserSignUp>(initialValue);
 	const [error, setError] = React.useState<string | null>(null);
 

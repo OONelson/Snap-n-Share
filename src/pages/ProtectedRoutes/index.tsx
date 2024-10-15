@@ -9,7 +9,7 @@ interface IProtectedRoutesProps {}
 const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = () => {
 	const auth = getAuth();
 	const [user, loading] = useAuthState(auth);
-	const location = useLocation();
+	// const location = useLocation();
 
 	if (loading) {
 		return (
@@ -21,7 +21,10 @@ const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = () => {
 	return user ? (
 		<Outlet />
 	) : (
-		<Navigate to="./login" state={{ from: location }} />
+		<Navigate
+			to="./login"
+			// state={{ from: location }}
+		/>
 	);
 };
 
