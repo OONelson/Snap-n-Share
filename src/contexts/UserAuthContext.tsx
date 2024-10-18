@@ -15,7 +15,7 @@ interface IuserAuthProviderProps {
 }
 
 type AuthContextData = {
-	currentUser: User | null;
+	user: User | null;
 	logIn: typeof logIn;
 	signUp: typeof signUp;
 	logOut: typeof logOut;
@@ -40,7 +40,7 @@ const googleSignIn = () => {
 };
 
 export const UserAuthContext = createContext<AuthContextData>({
-	currentUser: null,
+	user: null,
 	logIn,
 	signUp,
 	logOut,
@@ -50,13 +50,13 @@ export const UserAuthContext = createContext<AuthContextData>({
 export const UserAuthProvider: React.FC<IuserAuthProviderProps> = ({
 	children
 }) => {
-	const [currentUser, setCurrentUser] = useState<User | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
 				console.log(user);
-				setCurrentUser(user);
+				setUser(user);
 			}
 
 			return () => {
@@ -66,7 +66,7 @@ export const UserAuthProvider: React.FC<IuserAuthProviderProps> = ({
 	}, []);
 
 	const value: AuthContextData = {
-		currentUser,
+		user,
 		logIn,
 		signUp,
 		logOut,

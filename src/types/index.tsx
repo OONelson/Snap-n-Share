@@ -1,3 +1,4 @@
+import { OutputFileEntry } from "@uploadcare/react-uploader";
 import { User } from "firebase/auth";
 
 type StringOrMixedArray = string[] | (string | number)[];
@@ -19,6 +20,24 @@ export interface NewUserPassword {
 
 export interface UserName {
 	username: StringOrMixedArray;
+}
+
+export interface FileEntry{
+	files: OutputFileEntry
+}
+
+export interface Post{
+	caption: string;
+	photos: PhotoMeta[];
+	likes: number;
+	userlikes: number;
+	userId: string;
+	date: Date;
+}
+
+export interface PhotoMeta{
+	cdnUrl: string;
+	uuid: string;
 }
 
 export interface ProfileInfo {

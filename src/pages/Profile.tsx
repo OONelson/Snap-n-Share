@@ -43,36 +43,38 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 	return (
 		<main className="flex h-full">
 			<SideBar />
-			<Card className="flex flex-col w-5/6 border-none">
+			<Card className="flex flex-col sm:w-5/6 w-full px-2 border-none md:w-full ">
 				{/* <CardHeader>
 					<CardTitle>
 
 					</CardTitle>
 				</CardHeader> */}
-				<div className="flex justify-end items-center pt-2">
-					<Button className=" w-20" onClick={logOut}>
+				<div className="flex justify-end items-center pt-2 md:pb-10">
+					<Button  className="h-8 w-20 sm:h-12 " onClick={logOut}>
 						{" "}
 						logout
 					</Button>
 				</div>
-				<CardContent className="pt-10">
-					<section className="flex flex-row justify-center items-center w-4/5">
-						<picture className="pr-5">
+				<CardContent className="p-0 pt-10">
+					<section className="flex flex-row justify-center items-center w-full sm:w-4/5">
+
+						<div className="flex flex-col item-center justify-between">
+							<div className="flex items-center justify-center sm:w-80 w-auto">
+						<picture className="">
 							<img
 								src={capturedImage}
 								alt="profilephoto"
-								className="h-32 w-32 rounded-full"
+								className="sm:h-32 sm:w-32 h-34 w-34 rounded-full"
 							/>
 						</picture>
-
-						<div>
-							<div className="flex items-center justify-between w-80">
+						<div className="flex justify-between items-center w-full">
 								<CardTitle>{username}</CardTitle>
 								<p className="text-lg font-normal">
 									<span>0</span>
 									Posts
 								</p>
-								<Button>Edit profile</Button>
+								<Button className="h-8 w-24 sm:h-12 ">Edit profile</Button>
+						</div>
 							</div>
 
 							<div>
@@ -83,7 +85,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 							</div>
 						</div>
 					</section>
-
 					<section className="flex justify-center items-center mt-20">
 						<div>posts</div>
 					</section>

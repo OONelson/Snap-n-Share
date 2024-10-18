@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Navigate, useLocation, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getAuth } from "firebase/auth";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";

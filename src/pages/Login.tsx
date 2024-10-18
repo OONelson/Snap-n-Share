@@ -30,15 +30,15 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 		React.useState<UserLogIn>(initialValue);
 	const [error, setError] = React.useState<string | null>(null);
 
-	const handleGoogleSignIn = async () => {
-		// e.preventDefault();
+	const handleGoogleSignIn = async (e: React.MouseEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
 		try {
 			await googleSignIn();
 			navigate("/");
-		} catch (error: any) {
+		} catch (error) {
 			console.log(error);
-			setError(error.message);
+			// setError(error.message);
 		}
 	};
 
@@ -53,13 +53,21 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 				await logIn(userLogInInfo.email, userLogInInfo.password);
 				navigate("/");
 			}
-		} catch (err: any) {
-			if (err.code === "auth/invalid-email") {
+		} catch (error: any) {
+			
+			if (error.code === "auth/invalid-email") {
 				setError("Wrong email");
 			} else {
-				setError(err.message);
+				console.log(error.message);
 			}
-			console.log(err);
+			console.log(error);
+
+			if(error.code === "auth/invalid-credential"){
+				setError('No user found');
+
+			}else{
+				console.log(error.message)
+			}
 		}
 	};
 
@@ -127,7 +135,7 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
 					</p>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center items-center space-y-4">
-					<Button className="w-full">Login</Button>
+					<Button className="w-full" type="submit">Login</Button>
 					<p className="text-lg font-normal text-slate-600">
 						Don't have an account?{" "}
 						<Link
