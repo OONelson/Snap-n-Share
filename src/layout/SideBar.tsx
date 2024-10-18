@@ -30,11 +30,7 @@ const navItems = [
 		link: "/profile",
 		icon: ProfileIcon
 	}
-	// {
-	// 	name: "Settings",
-	// 	link: "/settings",
-	// 	icon: SettingIcon
-	// }
+	
 ];
 
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
@@ -58,7 +54,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 				initial="hidden"
 				animate="visible"
 				dir="ltl"
-				className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-between flex-row w-full mb-2 sm:mb-0 h-30 fixed bottom-0"
+				className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-30 fixed bottom-0"
 			>
 				<div>
 					<h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
@@ -96,8 +92,8 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
 				<div
 					className={
 						location.pathname === "/settings"
-							? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
-							: "sm:mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in"
+							? "hidden sm:block sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
+							: "hidden sm:block sm:mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in"
 					}
 				>
 					<Link

@@ -23,15 +23,15 @@ export interface UserName {
 }
 
 export interface FileEntry{
-	files: OutputFileEntry
+	files: OutputFileEntry[]
 }
 
 export interface Post{
 	caption: string;
 	photos: PhotoMeta[];
 	likes: number;
-	userlikes: number;
-	userId: string;
+	userlikes: [];
+	userId: string | null;
 	date: Date;
 }
 
@@ -44,4 +44,14 @@ export interface ProfileInfo {
 	user?: User;
 	displayName: string;
 	profilephoto: string;
+}
+
+export interface DocumentResponse {
+  id: string;
+  caption: string;
+  photos: PhotoMeta[];
+  likes: number;
+  userlikes: [];
+  userId: string | null;
+  date: Date;
 }

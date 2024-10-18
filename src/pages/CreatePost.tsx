@@ -12,22 +12,25 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import SideBar from "@/layout/SideBar";
+import { createPost } from "@/repository/post.service";
 import { FileEntry, PhotoMeta, Post } from "@/types";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ICreatePostProps {
 	caption: string;
 	photos: PhotoMeta[];
 	likes: number;
-	userlikes: number;
-	userId: string;
+	userlikes: number | [];
+	userId: string | null;
 	date: Date;
 }
 
 const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
+	const navigate = useNavigate()
 	const {user} = useUserAuth()
 	const [fileEntry, setFileEntry]= React.useState<FileEntry>({
-		file:[]
+		files: [],
 	});
 
 	const [post, setPost]= React.useState<Post>({
@@ -42,8 +45,27 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
 	const handleSubmit= async(e: React.MouseEvent<HTMLFormElement>)=>{
 		e.preventDefault()
 
-		console.log(fileEntry)
+		console.log(fileEntry.files)
 		console.log(post)
+
+		const photoMeta: PhotoMeta[]= fileEntry.files.map((file)=>{
+			return { cdnUrl: file.cdnUrl, uuid: file.uuid};
+
+		});
+
+		if(user!= null){
+			const newPost: Post = {
+				...post,
+				userId: user?.uid || null,
+				photos: photoMeta,
+			} 
+			console.log(newPost)
+
+			await createPost(newPost)
+			navigate('/')
+		} else{
+			navigate('/login')
+		}
 
 	}
 	return (
