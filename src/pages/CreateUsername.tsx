@@ -13,7 +13,6 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-// import { UserName } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
@@ -23,22 +22,18 @@ import { motion } from "framer-motion";
 import { useUsername } from "@/contexts/UsernameContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 
-// const initialValue: UserName = {
-// 	username: ""
-// };
 
 interface ICreateUsernameProps {}
 
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 	// DECLARATIONS/ASSIGNMENTS
 	const navigate = useNavigate();
+	const {user} = useUserAuth()
 	const { username, setUsername } = useUsername();
 
-	// const [username, setUsername] = React.useState<UserName>(initialValue);
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [loading, setLoading] = useState(false);
 
-	const { currentUser } = useUserAuth();
 
 	const UsernameAvailibity = async () => {
 		setLoading(true);
@@ -86,7 +81,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 			console.log(error);
 		}
 		addDoc(collection(db, "users"), {
-			uid: currentUser.uid,
+			uid: user?.uid,
 			username: username,
 			timestamp: new Date()
 		});
@@ -97,7 +92,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 			<div className="flex items-center  justify-center flex-col h-4/5 w-full">
 				<CardHeader className="space-y-0 flex justify-center items-center  ">
 					<div>
-						<img src={UserIcon} alt="userIcon" className="h-20 w-20" />
+						<img src={UserIcon} alt="userIcon" className="h-20 w-20 mb-6" />
 					</div>
 					<CardTitle className="text-2xl ">Get yourself a Username</CardTitle>
 					<CardDescription className="pb-5 font-medium xsm:font-light">
@@ -140,6 +135,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 								whileHover={{ x: -10 }}
 								transition={{ type: "spring", stiffness: 300 }}
 							>
+								{}
 								<span className="px-2 ">next</span>
 								<FontAwesomeIcon icon={faArrowRight} />
 							</motion.div>

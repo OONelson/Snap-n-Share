@@ -1,7 +1,7 @@
 import { OutputFileEntry } from "@uploadcare/react-uploader";
 import { User } from "firebase/auth";
 
-type StringOrMixedArray = string[] | (string | number)[];
+
 
 export interface UserLogIn {
 	email: string;
@@ -19,7 +19,7 @@ export interface NewUserPassword {
 }
 
 export interface UserName {
-	username: StringOrMixedArray;
+	username: string ;
 }
 
 export interface FileEntry{

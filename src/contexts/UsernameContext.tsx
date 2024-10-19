@@ -17,7 +17,7 @@ const UsernameContext = createContext<UsernameContextData | undefined>(
 export const UsernameProvider: React.FC<IusernameProviderProps> = ({
 	children
 }) => {
-	const [username, setUsername] = React.useState<string | number>("");
+	const [username, setUsername] = React.useState<string>('');
 
 	const value: UsernameContextData = {
 		username,

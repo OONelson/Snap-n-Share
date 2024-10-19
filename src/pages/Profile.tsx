@@ -12,10 +12,14 @@ import { useUserProfilePhoto } from "@/contexts/UserProfilePhoto";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { DocumentResponse, Post, PhotoMeta } from "@/types";
 import { getPostByUserId } from "@/repository/post.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faP,
+  faPen,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 
-interface IProfileProps {}
-
-type Tab = "Tab1" | "Tab2" ;
+type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { username } = useUsername();
@@ -28,7 +32,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
   };
-
 
   const getAllPosts = async (id: string) => {
     try {
@@ -60,32 +63,17 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     }
   }, []);
 
-	const renderPosts=()=>{
-		return data.map((item)=>{
-			return(
-				<div key={item.photos[0].uuid}>
-					<img src={`${item.photos[0].cdnUrl}/-/progressive/yes/-scale/300x300/center/`}/>
-				</div>
-			)
-		})
-	}
-  // const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
-  // null
-  // );
-
-  // useEffect(() => {
-  // 	const fetchProfilePicture = async () => {
-  // 		const userImageDocRef = doc(db, "profilephoto", userID);
-  // 		const docSnapshot = await getDoc(userImageDocRef);
-
-  // 		if (docSnapshot.exists()) {
-  // 			const userData = docSnapshot.data();
-  // 			if (userData) {
-  // 				setProfilePictureUrl(userData);
-  // 			}
-  // 		}
-  // 	};
-  // });
+  const renderPosts = () => {
+    return data.map((item) => {
+      return (
+        <div key={item.photos[0].uuid}>
+          <img
+            src={`${item.photos[0].cdnUrl}/-/progressive/yes/-scale/300x300/center/`}
+          />
+        </div>
+      );
+    });
+  };
 
   return (
     <main className="flex h-full">
@@ -97,20 +85,24 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 					</CardTitle>
 				</CardHeader> */}
         <div className="flex justify-end items-center pt-2 md:pb-10">
-          <Button className="h-8 w-20 sm:h-12 " onClick={logOut}>
+          <Button className="h-8 w-20 sm:h-12 md:block hidden" onClick={logOut}>
             {" "}
             logout
           </Button>
+          <FontAwesomeIcon
+            className="block md:hidden h-5 w-5"
+            onClick={logOut}
+            icon={faRightFromBracket}
+          />
         </div>
         <CardContent className="p-0 pt-10">
           <section className="flex flex-row justify-center items-center w-full sm:w-4/5">
-            <div className="flex flex-col item-center justify-between">
-              <div className="flex items-center justify-center sm:w-80 w-auto">
-                <picture className="">
+              <div className="flex items-center justify-between sm:w-80 w-auto">
+                <picture className="pr-2">
                   <img
                     src={capturedImage}
                     alt="profilephoto"
-                    className="sm:h-32 sm:w-32 h-34 w-34 rounded-full"
+                    className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
                   />
                 </picture>
                 <div className="flex justify-between items-center w-full">
@@ -119,17 +111,22 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                     <span>0</span>
                     Posts
                   </p>
-                  <Button className="h-8 w-24 sm:h-12 ">Edit profile</Button>
+                  <Button className="h-8 w-24 sm:h-12 md:block hidden">
+                    Edit profile
+                  </Button>
+                  <FontAwesomeIcon
+                    className="h-5 w-5 block md:hidden"
+                    icon={faPen}
+                  />
+                </div>
+
+                <div className="flex justify-center items-center">
+                  <CardDescription>
+                    <h2>NAme</h2>
+                    <p>bio</p>
+                  </CardDescription>
                 </div>
               </div>
-
-              <div>
-                <CardDescription>
-                  <h2>NAme</h2>
-                  <p>bio</p>
-                </CardDescription>
-              </div>
-            </div>
           </section>
           <section className="flex mt-20">
             <div>
@@ -137,9 +134,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
               <h2 onClick={() => handleChangeTab("Tab2")}>Bookmarks</h2>
             </div>
             <div>
-              {activeTab === "Tab1" && <div>
-								{data ? renderPosts() : <p>No posts yet</p>}
-								</div>}
+              {activeTab === "Tab1" && (
+                <div>{data ? renderPosts() : <p>No posts yet</p>}</div>
+              )}
 
               {activeTab === "Tab1" && <div>Bookmark</div>}
             </div>

@@ -35,7 +35,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 	ICreateProfilePhotoProps
 > = () => {
 	const { capturedImage, setCapturedImage } = useUserProfilePhoto();
-	const { currentUser } = useUserAuth();
+	const { user } = useUserAuth();
 
 	const navigate = useNavigate();
 
@@ -133,7 +133,7 @@ const CreateProfilePhoto: React.FunctionComponent<
 		if (!capturedImage) return;
 
 		const blob = await fetch(capturedImage).then((res) => res.blob());
-		const storageRef = ref(storage, `profilephoto/${currentUser.uid}.png`);
+		const storageRef = ref(storage, `profilephoto/${user?.uid}.png`);
 		const uploadTask = uploadBytesResumable(storageRef, blob);
 
 		await addDoc(collection(db, "profilephoto"), {
