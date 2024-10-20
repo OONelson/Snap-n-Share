@@ -13,11 +13,10 @@ import { useUserAuth } from "@/contexts/UserAuthContext";
 import { DocumentResponse, Post, PhotoMeta } from "@/types";
 import { getPostByUserId } from "@/repository/post.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faP,
-  faPen,
-  faRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPen, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "@/firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 type Tab = "Tab1" | "Tab2";
 
@@ -28,6 +27,22 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 
   const [data, setData] = React.useState<DocumentResponse[]>([]);
   const [activeTab, setActiveTab] = React.useState<Tab>("Tab1");
+  const [profile, setProfile] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setProfile(docSnap.data());
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
@@ -97,36 +112,37 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
         </div>
         <CardContent className="p-0 pt-10">
           <section className="flex flex-row justify-center items-center w-full sm:w-4/5">
-              <div className="flex items-center justify-between sm:w-80 w-auto">
-                <picture className="pr-2">
-                  <img
-                    src={capturedImage}
-                    alt="profilephoto"
-                    className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
-                  />
-                </picture>
-                <div className="flex justify-between items-center w-full">
-                  <CardTitle>{username}</CardTitle>
-                  <p className="text-lg font-normal">
-                    <span>0</span>
-                    Posts
-                  </p>
-                  <Button className="h-8 w-24 sm:h-12 md:block hidden">
-                    Edit profile
-                  </Button>
-                  <FontAwesomeIcon
-                    className="h-5 w-5 block md:hidden"
-                    icon={faPen}
-                  />
-                </div>
-
-                <div className="flex justify-center items-center">
-                  <CardDescription>
-                    <h2>NAme</h2>
-                    <p>bio</p>
-                  </CardDescription>
-                </div>
+            <div className="flex items-center justify-between sm:w-80 w-auto">
+              <picture className="pr-2">
+                <img
+                  src={profile.capturedImage}
+                  alt="profilephoto"
+                  className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
+                />
+              </picture>
+              <div className="flex justify-between items-center w-full">
+                <CardTitle>{profile.username}</CardTitle>
+                <p className="text-lg font-normal">
+                  {profile.email}
+                  <span>0</span>
+                  Posts
+                </p>
+                <Button className="h-8 w-24 sm:h-12 md:block hidden">
+                  Edit profile
+                </Button>
+                <FontAwesomeIcon
+                  className="h-5 w-5 block md:hidden"
+                  icon={faPen}
+                />
               </div>
+
+              <div className="flex justify-center items-center">
+                <CardDescription>
+                  <h2>NAme</h2>
+                  <p>bio</p>
+                </CardDescription>
+              </div>
+            </div>
           </section>
           <section className="flex mt-20">
             <div>

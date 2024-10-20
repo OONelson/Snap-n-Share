@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useRef, useState } from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { storage, db } from "@/firebase/firebaseConfig";
 import { Button } from "../components/ui/button";
 import {
@@ -127,8 +127,8 @@ const CreateProfilePhoto: React.FunctionComponent<
 		setShowModal(false);
 	};
 
-	const uploadToFirebase = async (e: any) => {
-		e.preventDefault();
+	const uploadToFirebase = async (userId:string, capturedImage:string) => {
+		// e.preventDefault();
 
 		if (!capturedImage) return;
 
@@ -136,7 +136,8 @@ const CreateProfilePhoto: React.FunctionComponent<
 		const storageRef = ref(storage, `profilephoto/${user?.uid}.png`);
 		const uploadTask = uploadBytesResumable(storageRef, blob);
 
-		await addDoc(collection(db, "profilephoto"), {
+		await setDoc(doc(db, "profilephoto", userId), {
+			profilePicture: captureImage,
 			timestamp: new Date()
 		});
 

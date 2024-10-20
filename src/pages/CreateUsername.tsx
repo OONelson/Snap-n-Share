@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebaseConfig";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, setDoc, doc } from "firebase/firestore";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
@@ -66,7 +66,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 		}
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async(uid:string, username:string) => {
 		try {
 			console.log(username);
 			// UsernameAvailibity();
@@ -80,7 +80,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 		} catch (error) {
 			console.log(error);
 		}
-		addDoc(collection(db, "users"), {
+		await setDoc(doc(db, "users", uid), {
 			uid: user?.uid,
 			username: username,
 			timestamp: new Date()

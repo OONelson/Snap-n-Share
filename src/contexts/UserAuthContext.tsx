@@ -8,7 +8,8 @@ import {
 	signOut
 } from "firebase/auth";
 import { createContext, useState, useEffect, useContext } from "react";
-import { auth } from "../firebase/firebaseConfig";
+import { auth, db } from "../firebase/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 
 interface IuserAuthProviderProps {
 	children: React.ReactNode;
@@ -26,8 +27,15 @@ const logIn = (email: string, password: string) => {
 	signInWithEmailAndPassword(auth, email, password);
 };
 
-const signUp = (email: string, password: string) => {
+const signUp = async (email: string, password: string) => {
 	createUserWithEmailAndPassword(auth, email, password);
+	const user = auth.currentUser;
+	console.log(user);  
+	if(user){
+		await setDoc(doc(db, "users", user.uid),{
+			email: user.email,
+		})
+	}
 };
 
 const logOut = () => {
