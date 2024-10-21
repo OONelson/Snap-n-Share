@@ -18,9 +18,9 @@ export interface NewUserPassword {
 	email: string;
 }
 
-export interface UserName {
-	username: string ;
-}
+// export interface UserName {
+// 	username: string ;
+// }
 
 export interface FileEntry{
 	files: OutputFileEntry[]
@@ -42,9 +42,29 @@ export interface PhotoMeta{
 
 export interface ProfileInfo {
 	user?: User;
-	displayName: string;
-	profilephoto: string;
+	username?: string;
+	profilephoto?: string;
 }
+
+export interface UserProfileInfo{
+	userId?:string;
+	bio?: string;
+	username?: string;
+	displayName?:string;
+	profilephoto?:string;
+	userEmail?: string;
+}
+
+export interface ProfileResponse{
+	id?:string;
+	bio?: string;
+	username?: string;
+	displayName:string;
+	profilephoto?:string;
+	userEmail?: string;
+
+}
+
 
 export interface DocumentResponse {
   id: string;

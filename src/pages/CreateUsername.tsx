@@ -19,7 +19,7 @@ import { collection, query, where, getDocs, addDoc, setDoc, doc } from "firebase
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
-import { useUsername } from "@/contexts/UsernameContext";
+import { useUsername } from "@/contexts/UserProfileContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 
 

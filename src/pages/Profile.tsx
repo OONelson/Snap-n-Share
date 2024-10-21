@@ -7,42 +7,24 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import SideBar from "@/layout/SideBar";
-import { useUsername } from "@/contexts/UsernameContext";
-import { useUserProfilePhoto } from "@/contexts/UserProfilePhoto";
+import { useUsername, useUserProfile } from "@/contexts/UserProfileContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { DocumentResponse, Post, PhotoMeta } from "@/types";
 import { getPostByUserId } from "@/repository/post.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "@/firebase/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+
 
 type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
-  const { username } = useUsername();
-  const { capturedImage } = useUserProfilePhoto();
-  const { logOut, user } = useUserAuth();
+  const { logOut } = useUserAuth();
+const {user, loading} =useUserProfile();
 
   const [data, setData] = React.useState<DocumentResponse[]>([]);
   const [activeTab, setActiveTab] = React.useState<Tab>("Tab1");
-  const [profile, setProfile] = React.useState<any>(null);
 
-  React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setProfile(docSnap.data());
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  
 
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
@@ -115,15 +97,15 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
             <div className="flex items-center justify-between sm:w-80 w-auto">
               <picture className="pr-2">
                 <img
-                  src={profile.capturedImage}
+                  src={user?.photoURL}
                   alt="profilephoto"
                   className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
                 />
               </picture>
               <div className="flex justify-between items-center w-full">
-                <CardTitle>{profile.username}</CardTitle>
+                <CardTitle>{user?.displayName}</CardTitle>
                 <p className="text-lg font-normal">
-                  {profile.email}
+                  {user?.email}
                   <span>0</span>
                   Posts
                 </p>
