@@ -47,12 +47,12 @@ export interface ProfileInfo {
 }
 
 export interface UserProfileInfo{
-	userId?:string;
+  email: string;
+	uid?:string;
 	bio?: string;
 	username?: string;
 	displayName?:string;
 	profilephoto?:string;
-	userEmail?: string;
 }
 
 export interface ProfileResponse{

@@ -4,30 +4,58 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
+  CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import SideBar from "@/layout/SideBar";
-import { useUsername, useUserProfile } from "@/contexts/UserProfileContext";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { DocumentResponse, Post, PhotoMeta } from "@/types";
 import { getPostByUserId } from "@/repository/post.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-
+import BigModal from "@/components/reuseables/BigModal";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { logOut } = useUserAuth();
-const {user, loading} =useUserProfile();
 
   const [data, setData] = React.useState<DocumentResponse[]>([]);
   const [activeTab, setActiveTab] = React.useState<Tab>("Tab1");
-
-  
+  const { user, updateProfile, uploadProfilePicture } = useUserProfile();
+  const [displayName, setDisplayName] = React.useState(user?.displayName || "");
+  // const [username, setUsername] = React.useState(user?.username || '');
+  const [bio, setBio] = React.useState(user?.bio || "");
+  const [profilePicture, setProfilePicture] = React.useState<File | null>(null);
+  const [edit, setEdit] = React.useState<boolean>(false);
 
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
+  };
+
+  const handleOpenEdit = () => {
+    setEdit((prev) => !prev);
+  };
+
+  const handleUpdateProfile = async (e: React.MouseEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await updateProfile({ displayName, bio });
+
+      if (profilePicture) {
+        await uploadProfilePicture(profilePicture);
+      }
+
+      alert("profile updated");
+    } catch (error) {
+      console.error(error);
+      alert("error");
+    }
   };
 
   const getAllPosts = async (id: string) => {
@@ -56,7 +84,7 @@ const {user, loading} =useUserProfile();
 
   React.useEffect(() => {
     if (user != null) {
-      getAllPosts(user.uid);
+      getAllPosts(user?.uid);
     }
   }, []);
 
@@ -75,72 +103,121 @@ const {user, loading} =useUserProfile();
   return (
     <main className="flex h-full">
       <SideBar />
-      <Card className="flex flex-col sm:w-5/6 w-full px-2 border-none md:w-full">
-        {/* <CardHeader>
+      {user ? (
+        <Card className="flex flex-col sm:w-5/6 w-full px-2 border-none md:w-full">
+          {/* <CardHeader>
 					<CardTitle>
-
+          
 					</CardTitle>
-				</CardHeader> */}
-        <div className="flex justify-end items-center pt-2 md:pb-10">
-          <Button className="h-8 w-20 sm:h-12 md:block hidden" onClick={logOut}>
-            {" "}
-            logout
-          </Button>
-          <FontAwesomeIcon
-            className="block md:hidden h-5 w-5"
-            onClick={logOut}
-            icon={faRightFromBracket}
-          />
-        </div>
-        <CardContent className="p-0 pt-10">
-          <section className="flex flex-row justify-center items-center w-full sm:w-4/5">
-            <div className="flex items-center justify-between sm:w-80 w-auto">
-              <picture className="pr-2">
-                <img
-                  src={user?.photoURL}
-                  alt="profilephoto"
-                  className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
-                />
-              </picture>
-              <div className="flex justify-between items-center w-full">
-                <CardTitle>{user?.displayName}</CardTitle>
-                <p className="text-lg font-normal">
-                  {user?.email}
-                  <span>0</span>
-                  Posts
-                </p>
-                <Button className="h-8 w-24 sm:h-12 md:block hidden">
-                  Edit profile
-                </Button>
-                <FontAwesomeIcon
-                  className="h-5 w-5 block md:hidden"
-                  icon={faPen}
-                />
-              </div>
+          </CardHeader> */}
+          <div className="flex justify-end items-center pt-2 md:pb-10">
+            <Button
+              className="h-8 w-20 sm:h-12 md:block hidden"
+              onClick={logOut}
+            >
+              {" "}
+              logout
+            </Button>
+            <FontAwesomeIcon
+              className="block md:hidden h-5 w-5"
+              onClick={logOut}
+              icon={faRightFromBracket}
+            />
+          </div>
+          <CardContent className="p-0 pt-10">
+            <section className="flex flex-row justify-center items-center w-full sm:w-4/5">
+              <div className="flex items-center justify-between sm:w-80 w-auto">
+                <picture className="pr-2">
+                  <img
+                    src={user?.profilephoto}
+                    alt="profilephoto"
+                    className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
+                  />
+                </picture>
+                <div className="flex justify-between items-center w-full">
+                  <CardTitle>{user?.displayName}</CardTitle>
+                  <p className="text-lg font-normal">
+                    {user?.email}
+                    <span>0</span>
+                    Posts
+                  </p>
+                  <Button onClick={handleOpenEdit} className="h-8 w-24 sm:h-12 md:block hidden">
+                    Edit profile
+                  </Button>
+                  <FontAwesomeIcon
+                  onClick={handleOpenEdit}
+                    className="h-5 w-5 block md:hidden"
+                    icon={faPen}
+                  />
+                </div>
 
-              <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center">
+                  <CardDescription>
+                    <h2>NAme</h2>
+                    <p>bio</p>
+                  </CardDescription>
+                </div>
+              </div>
+            </section>
+            <section className="flex mt-20">
+              <div>
+                <h2 onClick={() => handleChangeTab("Tab1")}>Posts</h2>
+                <h2 onClick={() => handleChangeTab("Tab2")}>Bookmarks</h2>
+              </div>
+              <div>
+                {activeTab === "Tab1" && (
+                  <div>{data ? renderPosts() : <p>No posts yet</p>}</div>
+                )}
+
+                {activeTab === "Tab1" && <div>Bookmark</div>}
+              </div>
+            </section>
+          </CardContent>
+        </Card>
+      ) : (
+        <h1>No user logged in </h1>
+      )}
+
+      {edit && (
+        <BigModal show={handleOpenEdit} onClose={handleOpenEdit}>
+          <Card>
+            <form onSubmit={handleUpdateProfile}>
+              <CardHeader>
+                <CardTitle>Edit Profile</CardTitle>
                 <CardDescription>
-                  <h2>NAme</h2>
-                  <p>bio</p>
+                  change some stuff about your profile
                 </CardDescription>
-              </div>
-            </div>
-          </section>
-          <section className="flex mt-20">
-            <div>
-              <h2 onClick={() => handleChangeTab("Tab1")}>Posts</h2>
-              <h2 onClick={() => handleChangeTab("Tab2")}>Bookmarks</h2>
-            </div>
-            <div>
-              {activeTab === "Tab1" && (
-                <div>{data ? renderPosts() : <p>No posts yet</p>}</div>
-              )}
-
-              {activeTab === "Tab1" && <div>Bookmark</div>}
-            </div>
-          </section>
-        </CardContent>
-      </Card>
+              </CardHeader>
+              <CardContent>
+                <img src={profilePicture} alt="profile" />
+                <Label htmlFor="displayname">Name</Label>
+                <Input
+                  id="displayname"
+                  type="text"
+                  placeholder="Enter a new name"
+                  value={displayName}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setDisplayName(e.target.value)
+                  }
+                />
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  placeholder="Enter a new bio"
+                  value={bio}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setBio(e.target.value)
+                  }
+                />{" "}
+                <Label />
+              </CardContent>
+              <CardFooter>
+                <Button type="submit">Update</Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </BigModal>
+      )}
     </main>
   );
 };

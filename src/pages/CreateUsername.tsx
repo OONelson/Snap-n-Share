@@ -15,12 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebaseConfig";
-import { collection, query, where, getDocs, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
-import { useUsername } from "@/contexts/UserProfileContext";
-import { useUserAuth } from "@/contexts/UserAuthContext";
+import { useUserProfile} from "@/contexts/UserProfileContext";
+// import { useUserAuth } from "@/contexts/UserAuthContext";
 
 
 interface ICreateUsernameProps {}
@@ -28,11 +28,14 @@ interface ICreateUsernameProps {}
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 	// DECLARATIONS/ASSIGNMENTS
 	const navigate = useNavigate();
-	const {user} = useUserAuth()
-	const { username, setUsername } = useUsername();
+	// const {user} = useUserAuth()
+	const { user, setUser } = useUserProfile();
 
 	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 	const [loading, setLoading] = useState(false);
+
+
+
 
 
 	const UsernameAvailibity = async () => {

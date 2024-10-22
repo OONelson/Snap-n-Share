@@ -6,7 +6,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { motion, spring } from "framer-motion";
 
 interface IBigModalProps {
-	show: boolean;
+	show?: ()=> void;
 	onClose: () => void;
 	children: ReactNode;
 }
