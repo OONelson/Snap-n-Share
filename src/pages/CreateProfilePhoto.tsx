@@ -25,7 +25,6 @@ import SmallModal from "@/components/reuseables/SmallModal";
 import BigModal from "@/components/reuseables/BigModal";
 import "@/components/reuseables/ProgressBar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { AnimatePresence, motion, spring } from "framer-motion";
 import { useUserProfilePhoto } from "@/contexts/UserProfilePhoto";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 
@@ -133,10 +132,10 @@ const CreateProfilePhoto: React.FunctionComponent<
 		if (!capturedImage) return;
 
 		const blob = await fetch(capturedImage).then((res) => res.blob());
-		const storageRef = ref(storage, `profilephoto/${user?.uid}.png`);
+		const storageRef = ref(storage, `profilephotos/${user?.uid}.png`);
 		const uploadTask = uploadBytesResumable(storageRef, blob);
 
-		await setDoc(doc(db, "profilephoto", userId), {
+		await setDoc(doc(db, "profilephotos", userId), {
 			profilePicture: captureImage,
 			timestamp: new Date()
 		});

@@ -41,7 +41,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 	const UsernameAvailibity = async () => {
 		setLoading(true);
 
-		const usersRef = collection(db, "users");
+		const usersRef = collection(db, "usernames");
 		const q = query(usersRef, where("username", "==", username));
 		const querySnapshot = await getDocs(q);
 

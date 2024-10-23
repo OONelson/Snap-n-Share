@@ -19,18 +19,27 @@ import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
-  const { logOut } = useUserAuth();
+  const { user, logOut } = useUserAuth();
 
   const [data, setData] = React.useState<DocumentResponse[]>([]);
   const [activeTab, setActiveTab] = React.useState<Tab>("Tab1");
-  const { user, updateProfile, uploadProfilePicture } = useUserProfile();
-  const [displayName, setDisplayName] = React.useState(user?.displayName || "");
-  // const [username, setUsername] = React.useState(user?.username || '');
-  const [bio, setBio] = React.useState(user?.bio || "");
+  const { userProfile,
+    changeDisplayName,
+    updateUsername,
+    updateProfilePhoto,
+    updateBio,
+    loading } = useUserProfile();
+
+    const [newDisplayName, setNewDisplayName] = useState(userProfile?.displayName || '');
+    const [newUsername, setNewUsername] = useState(userProfile?.username || '');
+    const [newBio, setNewBio] = useState(userProfile?.bio || '');
+    const [newPhoto, setNewPhoto] = useState<File | null>(null);
+  
   const [profilePicture, setProfilePicture] = React.useState<File | null>(null);
   const [edit, setEdit] = React.useState<boolean>(false);
 
@@ -45,11 +54,10 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const handleUpdateProfile = async (e: React.MouseEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await updateProfile({ displayName, bio });
-
-      if (profilePicture) {
-        await uploadProfilePicture(profilePicture);
-      }
+      if (newDisplayName) await changeDisplayName(newDisplayName);
+      if (newUsername) await updateUsername(newUsername);
+      if (newBio) await updateBio(newBio);
+      if (newPhoto) await updateProfilePhoto(newPhoto);
 
       alert("profile updated");
     } catch (error) {
@@ -129,15 +137,15 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
               <div className="flex items-center justify-between sm:w-80 w-auto">
                 <picture className="pr-2">
                   <img
-                    src={user?.profilephoto}
+                    src={user.photoURL}
                     alt="profilephoto"
                     className="sm:h-32 sm:w-32 h-24 w-34 rounded-full"
                   />
                 </picture>
                 <div className="flex justify-between items-center w-full">
-                  <CardTitle>{user?.displayName}</CardTitle>
+                  <CardTitle>{user.displayName}</CardTitle>
                   <p className="text-lg font-normal">
-                    {user?.email}
+                    {user.email}
                     <span>0</span>
                     Posts
                   </p>
@@ -189,24 +197,24 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <img src={profilePicture} alt="profile" />
+                <img src={newPhoto} alt="profile" />
                 <Label htmlFor="displayname">Name</Label>
                 <Input
                   id="displayname"
                   type="text"
                   placeholder="Enter a new name"
-                  value={displayName}
+                  value={newDisplayName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setDisplayName(e.target.value)
+                    setNewDisplayName(e.target.value)
                   }
                 />
                 <Label htmlFor="bio">Bio</Label>
                 <Textarea
                   id="bio"
                   placeholder="Enter a new bio"
-                  value={bio}
+                  value={newBio}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setBio(e.target.value)
+                    setNewBio(e.target.value)
                   }
                 />{" "}
                 <Label />

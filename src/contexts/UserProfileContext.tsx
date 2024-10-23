@@ -1,15 +1,16 @@
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { updateProfile } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 
 interface UserProfileData {
-  user: UserProfileInfo | null;
-  updateProfile: (profileData: Partial<UserProfileInfo>) => Promise<void>;
-  uploadProfilePicture: (file: File) => Promise<string>;
+  userProfile: UserProfileInfo | null;
+  changeDisplayName: (name: string) => Promise<void>;
+  updateUsername: (username: string) => Promise<void>;
+  updateProfilePhoto: (file: File) => Promise<void>;
+  updateBio: (bio: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -24,9 +25,10 @@ interface UserProfileProvider {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfileInfo | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // FETCH USER PROFILE
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
@@ -34,35 +36,69 @@ export const UserProfileProvider: React.FunctionComponent<{
         const userSnap = await getDoc(userDoc);
 
         if (userSnap.exists()) {
-          setUser(userSnap.data() as UserProfileInfo);
+          setUserProfile(userSnap.data() as UserProfileInfo);
         }
       }
       setLoading(false);
     });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, []);
 
-
-
-	const uploadProfilePicture = async (file: File): Promise<string> => {
-    if (!user) throw new Error("User not authenticated");
-
-    const fileRef = ref(storage,`profilePictures/${user.uid}`);
-    await uploadBytes(fileRef, file);
-    const profilePhotoURL = await getDownloadURL(fileRef);
-
-    await updateProfile({ profilePhotoURL });
-    return profilePhotoURL;
+  const changeDisplayName = async (name: string) => {
+    const user = auth.currentUser;
+    user
+      ? await setDoc(
+          doc(db, "users", user.uid),
+          { displayName: name },
+          { merge: true }
+        )
+      : setUserProfile((prev) =>
+          prev ? { ...prev, displayName: name } : null
+        );
   };
 
-	
+  const updateUsername = async (username: string) => {
+    const user = auth.currentUser;
+    if (user) {
+      const usernameDoc = await getDoc(doc(db, "usernames", username));
+      if (!usernameDoc.exists()) {
+        await setDoc(doc(db, "users", user.uid), { username }, { merge: true });
+        await setDoc(doc(db, "usernames", username), { uid: user.uid });
+        setUserProfile((prev) => (prev ? { ...prev, username } : null));
+      } else {
+        throw new Error("Username already exists");
+      }
+    }
+  };
+
+  const updateProfilePhoto = async (file: File) => {
+    const user = auth.currentUser;
+    if (user) {
+      const storageRef = ref(storage, `profilephotos/${user.uid}`);
+      await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(storageRef);
+      await setDoc(doc(db, "users", user.uid), { photoURL }, { merge: true });
+      setUserProfile((prev) => (prev ? { ...prev, photoURL } : null));
+    }
+  };
+
+  const updateBio = async (bio: string) => {
+    const user = auth.currentUser;
+    if (user) {
+      await setDoc(doc(db, "users", user.uid), { bio }, { merge: true });
+      setUserProfile((prev) => (prev ? { ...prev, bio } : null));
+    }
+  };
+
   return (
     <UserProfileContext.Provider
       value={{
-        user,
-				updateProfile,
-				uploadProfilePicture,
+        userProfile,
+        changeDisplayName,
+        updateUsername,
+        updateProfilePhoto,
+        updateBio,
         loading,
       }}
     >

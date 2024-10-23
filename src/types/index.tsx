@@ -8,11 +8,11 @@ export interface UserLogIn {
 	password: string;
 }
 
-export interface UserSignUp {
-	email: string;
-	password: string;
-	confirmPassword: string;
-}
+// export interface UserSignUp {
+// 	email: string;
+// 	password: string;
+// 	confirmPassword: string;
+// }
 
 export interface NewUserPassword {
 	email: string;
@@ -43,7 +43,7 @@ export interface PhotoMeta{
 export interface ProfileInfo {
 	user?: User;
 	username?: string;
-	profilephoto?: string;
+	photoURL?: string;
 }
 
 export interface UserProfileInfo{
@@ -52,7 +52,7 @@ export interface UserProfileInfo{
 	bio?: string;
 	username?: string;
 	displayName?:string;
-	profilephoto?:string;
+	photoURL?:string;
 }
 
 export interface ProfileResponse{
@@ -60,7 +60,7 @@ export interface ProfileResponse{
 	bio?: string;
 	username?: string;
 	displayName:string;
-	profilephoto?:string;
+	photoURL?:string;
 	userEmail?: string;
 
 }
