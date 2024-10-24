@@ -68,10 +68,10 @@ export interface ProfileResponse{
 
 export interface DocumentResponse {
   id: string;
-  caption: string;
+  caption?: string;
   photos: PhotoMeta[];
-  likes: number;
+  likes?: number;
   userlikes: [];
-  userId: string | null;
-  date: Date;
+  userId?: string | null;
+  date?: Date;
 }

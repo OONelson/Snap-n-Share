@@ -11,7 +11,7 @@ interface UserProfileData {
   updateUsername: (username: string) => Promise<void>;
   updateProfilePhoto: (file: File) => Promise<void>;
   updateBio: (bio: string) => Promise<void>;
-  loading: boolean;
+  setUsername: (username: string) => Promise<void>;
 }
 
 const UserProfileContext = createContext<UserProfileData | undefined>(
@@ -25,8 +25,8 @@ interface UserProfileProvider {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
+
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // FETCH USER PROFILE
   useEffect(() => {
@@ -39,11 +39,14 @@ export const UserProfileProvider: React.FunctionComponent<{
           setUserProfile(userSnap.data() as UserProfileInfo);
         }
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+
+
+  
 
   const changeDisplayName = async (name: string) => {
     const user = auth.currentUser;
@@ -99,10 +102,9 @@ export const UserProfileProvider: React.FunctionComponent<{
         updateUsername,
         updateProfilePhoto,
         updateBio,
-        loading,
       }}
     >
-      {!loading && children}
+      {children}
     </UserProfileContext.Provider>
   );
 };

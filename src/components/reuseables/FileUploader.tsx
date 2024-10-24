@@ -25,6 +25,7 @@ const FileUplaoder: React.FunctionComponent<IFileUplaoderProps> = ({fileEntry, o
 				pubkey="b5195a441b3832d8a02a"
 				imgOnly={true}
 				multiple={true}
+        // preview={true}
 				className="py-2 text-center w-40 bg-gray-200 rounded-sm"
 			/>
 

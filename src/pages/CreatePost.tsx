@@ -85,7 +85,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
 							value={post.caption}
 							onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=> setPost({ ...post, caption: e.target.value})}
 						/>
-						<FileUplaoder fileEntry={fileEntry} onChange={setFileEntry}/>
+						<FileUplaoder  fileEntry={fileEntry} onChange={setFileEntry}/>
 					</CardContent>
 					<CardFooter className="flex justify-center items-center">
 						<Button className="px-8" type="submit">
