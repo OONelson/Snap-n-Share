@@ -25,7 +25,6 @@ interface UserProfileProvider {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
 
   // FETCH USER PROFILE
@@ -43,10 +42,6 @@ export const UserProfileProvider: React.FunctionComponent<{
 
     return () => unsubscribe();
   }, []);
-
-
-
-  
 
   const changeDisplayName = async (name: string) => {
     const user = auth.currentUser;

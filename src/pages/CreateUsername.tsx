@@ -16,16 +16,44 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
-import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useUsername } from "@/contexts/UsernameContext";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { UserProfileInfo } from "@/types";
 
 interface ICreateUsernameProps {}
 
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
+  const navigate = useNavigate();
   // DECLARATIONS/ASSIGNMENTS
   // const {user} = useUserAuth()
-  const { username,setUsername, loading, isAvailable,  handleCreateUsername, handleCheckUsername } = useUsername()
+  const {
+    username,
+    setUsername,
+    loading,
+    isAvailable,
+    handleCheckUsername,
+    error,
+    setIsAvailable,
+    setError,
+  } = useUsername();
+  const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
 
+  const handleCreateUsername =
+    async (e: React.MouseEvent<HTMLButtonElement>) =>
+    async (uid: string, username: string) => {
+      e.preventDefault();
+      // handleCheckUsername();
+
+      await setDoc(doc(db, "usernames", uid), {
+        uid: userProfile?.uid,
+        username: username,
+        timestamp: new Date(),
+      });
+
+      navigate("/create-profilephoto");
+    };
   return (
     <Card className="w-full h-screen flex items-center justify-center ">
       <div className="flex items-center  justify-center flex-col h-4/5 w-full">
@@ -47,22 +75,28 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
             placeholder="Enter a username"
             required
             value={username}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUsername(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setUsername(e.target.value);
+              setIsAvailable(null);
+              setError(null);
+            }}
           />
 
           <div className="-mt-2">
-            {loading && <p className="text-md">Checking...</p>}
-            {isAvailable  && (
-              <p className="text-lime-500 text-md font-medium">
+            {isAvailable === true && (
+              <p className="text-lime-500 text-base sm:font-medium">
                 Username is available!
               </p>
             )}
-            {!isAvailable && (
-              <p className="text-red-600 text-md font-medium">
+            {isAvailable === false && (
+              <p className="text-red-600 text-base sm:font-medium">
                 Username is already taken.
               </p>
+            )}
+            {error && (
+              <span className="text-red-600 text-base sm:font-medium">
+                {error}
+              </span>
             )}
           </div>
         </CardContent>
@@ -86,7 +120,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
               <span className="px-2">check</span>
             </Button>
           )}
-          <div>{loading && <SmallSpinner></SmallSpinner>}</div>
+          <div>{loading && <SmallSpinner />}</div>
         </CardFooter>
       </div>
     </Card>
