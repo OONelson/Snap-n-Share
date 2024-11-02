@@ -52,7 +52,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 
     setDoc(doc(db, "users", uid), { username }, { merge: true });
 
-    navigate("/create-profilephoto");
+    navigate("/");
   };
 
   return (

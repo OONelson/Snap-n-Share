@@ -11,7 +11,7 @@ import {
 import SideBar from "@/layout/SideBar";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
-import { DocumentResponse, Post } from "@/types";
+import { DocumentResponse, PhotoMeta, Post } from "@/types";
 import { getPostByUserId } from "@/repository/post.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -21,8 +21,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 type Tab = "Tab1" | "Tab2";
+
+interface Post {
+  id: string;
+  caption?: string;
+  photos: PhotoMeta[];
+  likes?: number;
+  userlikes: [];
+  userId?: string | null;
+  date?: Date;
+}
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user, logOut } = useUserAuth();
@@ -35,7 +47,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     initials,
   } = useUserProfile();
 
-  const [data, setData] = useState<DocumentResponse[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("Tab1");
 
   const [newDisplayName, setNewDisplayName] = useState(
@@ -76,61 +88,75 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     }
   };
 
-  const getAllPosts = async (id: string) => {
-    try {
-      const querySnapshot = await getPostByUserId(id);
-      const tempArr: DocumentResponse[] = [];
-      if (querySnapshot.size > 0) {
-        querySnapshot.forEach((doc) => {
-          const posts = doc.data() as Post;
-          const responseObj: DocumentResponse = {
-            id: doc.id,
-            ...posts,
-          };
-          console.log(responseObj);
-          tempArr.push(responseObj);
-        });
+  // const getAllPosts = async (id: string) => {
+  //   try {
+  //     const querySnapshot = await getPostByUserId(id);
+  //     const tempArr: DocumentResponse[] = [];
+  //     if (querySnapshot.size > 0) {
+  //       querySnapshot.forEach((doc) => {
+  //         const posts = doc.data() as Post;
+  //         const responseObj: DocumentResponse = {
+  //           id: doc.id,
+  //           ...posts,
+  //         };
+  //         console.log(responseObj);
+  //         tempArr.push(responseObj);
+  //       });
 
-        setData(tempArr);
-      } else {
-        console.log("no such document");
-      }
+  //       setData(tempArr);
+  //     } else {
+  //       console.log("no such document");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (user != null) {
+  //     getAllPosts(user.uid);
+  //   }
+  // }, []);
+
+  const fetchPosts = async (id: string) => {
+    if (!user) return;
+
+    setLoading(true);
+    try {
+      // const postsRef = collection(db, "posts");
+      // const q = query(postsRef, where("userId", "==", user.uid)); // filter by current user's ID
+      const querySnapshot = await getPostByUserId(id);
+
+      const userPosts: Post[] = querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as Post)
+      );
+
+      setPosts(userPosts);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
   useEffect(() => {
     if (user != null) {
-      getAllPosts(user.uid);
+      fetchPosts(user?.uid);
     }
-  }, []);
+  }, [user]);
 
-  const renderPost = () => {
-    return data.map((item) => {
-      return (
-        <div key={item.id} className="relative">
-          <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
-            <div className="flex flex-col justify-center items-center w-full h-full">
-              {/* <HeartIcon className="hidden group-hover:block fill-white" /> */}
-              <div className="hidden group-hover:block text-white">
-                {item.likes} likes
-              </div>
-            </div>
-          </div>
-          <img src={item?.photos[0]?.cdnUrl} />
-        </div>
-      );
-    });
-  };
+  // const renderPost = () => {
+
+  // };
 
   return (
-    <main className="h-full grid grid-cols-8 gap-0 ">
-      <div className="md:col-span-1 lg:col-span-2 md:block hidden">
-        <SideBar />
-      </div>
+    <main className="h-full flex justify-between items-center">
+      <SideBar />
       {user ? (
-        <Card className="md:col-span-7 col-span-8 sm:w-full w-full px-2 border-none h-screen lg:col-start-2 lg:col-span-7">
+        <Card className=" sm:w-full md:ml-20 md:w-fit lg:ml-56 lg:w-11/12 w-full px-2 border-none h-screen">
           <div className="flex justify-end items-center pt-2 md:pb-10">
             <Button className="h-8 w-20  md:block hidden" onClick={logOut}>
               {" "}
@@ -143,7 +169,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
             />
           </div>
           <CardContent className="p-0 pt-10">
-            <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full sm:w-4/5">
+            <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full sm:w-4/5 md:pl-3">
               <CardTitle className="col-start-2 col-span-3 row-start-1 row-end-2 ">
                 <span>{userProfile?.username}</span>
               </CardTitle>
@@ -197,7 +223,27 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
             </div>
             <article className="flex justify-center items-center mt-10">
               {activeTab === "Tab1" && (
-                <div> {data ? renderPost() : <p>no paosts</p>}</div>
+                <div>
+                  {posts.length > 0 ? (
+                    posts.map((item) => {
+                      return (
+                        <div key={item.id} className="relative">
+                          <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
+                            <div className="flex flex-col justify-center items-center w-full h-full">
+                              {/* <HeartIcon className="hidden group-hover:block fill-white" /> */}
+                              <div className="hidden group-hover:block text-white">
+                                {item.likes} likes
+                              </div>
+                            </div>
+                          </div>
+                          <img src={item?.photos[0]?.cdnUrl} />
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p>no paosts</p>
+                  )}
+                </div>
               )}
 
               {activeTab === "Tab2" && <div>Bookmark</div>}
@@ -220,13 +266,13 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
               </CardHeader>
               <CardContent>
                 <img src={initials} alt="profile" />
-                {/* <UploadcareUploader
-                  onFileSelect={(file) => {
-                    if (file) {
-                      file.done(({ cdnUrl }) => {
+                {/* <Uploadle.done(({ cdnUrl }) => {
                         updateProfilePhoto(cdnUrl);
                       });
-                    }
+                    }careUploader
+                  onFileSelect={(file) => {
+                    if (file) {
+                      fi
                   }}
                 /> */}
                 <Label htmlFor="displayname">Name</Label>
