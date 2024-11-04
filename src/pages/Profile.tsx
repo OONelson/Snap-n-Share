@@ -11,30 +11,17 @@ import {
 import SideBar from "@/layout/SideBar";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useUserAuth } from "@/contexts/UserAuthContext";
-import { DocumentResponse, PhotoMeta, Post } from "@/types";
-import { getPostByUserId } from "@/repository/post.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+import { usePosts } from "@/hooks/useUserPost";
 
 type Tab = "Tab1" | "Tab2";
-
-interface Post {
-  id: string;
-  caption?: string;
-  photos: PhotoMeta[];
-  likes?: number;
-  userlikes: [];
-  userId?: string | null;
-  date?: Date;
-}
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user, logOut } = useUserAuth();
@@ -47,7 +34,8 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     initials,
   } = useUserProfile();
 
-  const [posts, setPosts] = useState<Post[]>([]);
+  const { posts, loading, error } = usePosts();
+
   const [activeTab, setActiveTab] = useState<Tab>("Tab1");
 
   const [newDisplayName, setNewDisplayName] = useState(
@@ -56,7 +44,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const [newUsername, setNewUsername] = useState(userProfile?.username || "");
   const [newBio, setNewBio] = useState(userProfile?.bio || "");
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [edit, setEdit] = useState<boolean>(false);
 
@@ -72,14 +60,14 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     e.preventDefault();
 
     try {
-      setLoading(true);
+      setIsLoading(true);
       setTimeout(() => {
         newDisplayName ? changeDisplayName : newDisplayName;
         newUsername ? updateUsername : newUsername;
         newBio ? updateBio : newBio;
         newPhoto ? updateProfilePhoto : newPhoto;
         alert("profile updated");
-        setLoading(false);
+        setIsLoading(false);
         setEdit(false);
       }, 4000);
     } catch (error) {
@@ -88,69 +76,33 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     }
   };
 
-  // const getAllPosts = async (id: string) => {
-  //   try {
-  //     const querySnapshot = await getPostByUserId(id);
-  //     const tempArr: DocumentResponse[] = [];
-  //     if (querySnapshot.size > 0) {
-  //       querySnapshot.forEach((doc) => {
-  //         const posts = doc.data() as Post;
-  //         const responseObj: DocumentResponse = {
-  //           id: doc.id,
-  //           ...posts,
-  //         };
-  //         console.log(responseObj);
-  //         tempArr.push(responseObj);
-  //       });
-
-  //       setData(tempArr);
-  //     } else {
-  //       console.log("no such document");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (user != null) {
-  //     getAllPosts(user.uid);
-  //   }
-  // }, []);
-
-  const fetchPosts = async (id: string) => {
-    if (!user) return;
-
-    setLoading(true);
-    try {
-      // const postsRef = collection(db, "posts");
-      // const q = query(postsRef, where("userId", "==", user.uid)); // filter by current user's ID
-      const querySnapshot = await getPostByUserId(id);
-
-      const userPosts: Post[] = querySnapshot.docs.map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-          } as Post)
-      );
-
-      setPosts(userPosts);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false);
-    }
+  const renderPost = () => {
+    return (
+      <div>
+        {posts.length > 0 ? (
+          posts.map((item) => {
+            return (
+              <div key={item.id} className="relative">
+                <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
+                  <div className="flex flex-col justify-center items-center w-full h-full">
+                    {/* <HeartIcon className="hidden group-hover:block fill-white" /> */}
+                    <div className="hidden group-hover:block text-white">
+                      {item.likes} likes
+                    </div>
+                    <div>{item.caption}</div>
+                    <div>{item?.date}</div>
+                  </div>
+                </div>
+                <img src={item.photos[0]?.cdnUrl} />
+              </div>
+            );
+          })
+        ) : (
+          <p>{error}</p>
+        )}
+      </div>
+    );
   };
-  useEffect(() => {
-    if (user != null) {
-      fetchPosts(user?.uid);
-    }
-  }, [user]);
-
-  // const renderPost = () => {
-
-  // };
 
   return (
     <main className="h-full flex justify-between items-center">
@@ -174,6 +126,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 <span>{userProfile?.username}</span>
               </CardTitle>
 
+              <div>{initials}</div>
               <picture className="pr-2 col-start-1 col-end-2 sm:w-96 row-start-2 row-end-3 w-auto">
                 {/* {!userProfile?.photoURL ? ( */}
                 <img
@@ -208,14 +161,11 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   icon={faPen}
                 />
               </div>
-              {/* </div> */}
 
-              {/* <CardDescription className="  w-20 flex flex-row"> */}
               <h2 className="col-start-1 col-end-2 row-start-3 row-end-3">
                 displayName
               </h2>
               <p className="col-start-1 col-end-2 row-start-4 row-end-4">bio</p>
-              {/* </CardDescription> */}
             </section>
             <div className="w-full flex justify-evenly mt-20 border-b-2">
               <h2 onClick={() => handleChangeTab("Tab1")}>Posts</h2>
@@ -223,27 +173,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
             </div>
             <article className="flex justify-center items-center mt-10">
               {activeTab === "Tab1" && (
-                <div>
-                  {posts.length > 0 ? (
-                    posts.map((item) => {
-                      return (
-                        <div key={item.id} className="relative">
-                          <div className="absolute group transition-all duration-200 bg-transparent hover:bg-slate-950 hover:bg-opacity-75 top-0 bottom-0 left-0 right-0 w-full h-full">
-                            <div className="flex flex-col justify-center items-center w-full h-full">
-                              {/* <HeartIcon className="hidden group-hover:block fill-white" /> */}
-                              <div className="hidden group-hover:block text-white">
-                                {item.likes} likes
-                              </div>
-                            </div>
-                          </div>
-                          <img src={item?.photos[0]?.cdnUrl} />
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p>no paosts</p>
-                  )}
-                </div>
+                <div>{posts ? renderPost() : isLoading}</div>
               )}
 
               {activeTab === "Tab2" && <div>Bookmark</div>}

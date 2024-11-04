@@ -1,6 +1,5 @@
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useEffect } from "react";
@@ -39,7 +38,6 @@ export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
-  const [profileImg, setProfileImg] = useState<UserProfileInfo | null>(null);
 
   const initials = getInitials(userProfile?.username);
 
@@ -146,4 +144,3 @@ export const useUserProfile = (): UserProfileData => {
   }
   return context;
 };
-
