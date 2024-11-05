@@ -11,6 +11,8 @@ export const usePosts = () => {
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
   const [error, setError] = useState<string | null>(null);
 
   const getAllPost = async (id: string) => {
@@ -23,14 +25,16 @@ export const usePosts = () => {
           const responseObj: DocumentResponse = {
             id: doc.id,
             ...data,
+            userbookmarks: [],
+            userlikes: [],
           };
           console.log("The response object is : ", responseObj);
           tempArr.push(responseObj);
         });
         setPosts(tempArr);
+        setIsLiked(tempArr.userlikes?.includes(user?.uid ?? ""));
+        setIsBookmarked(tempArr.userbookmark?.includes(user?.uid ?? ""));
         setLoading(false);
-
-        setIsLiked(tempArr?.userlikes?.includes(user?.uid ?? ""));
       } else {
         console.log("No such document");
       }
@@ -40,11 +44,27 @@ export const usePosts = () => {
     }
   };
 
+  const toggleLike = () => {
+    setIsLiked((prev) => !prev);
+  };
+
+  const toggleBookmark = () => {
+    setIsBookmarked((prev) => !prev);
+  };
+
   useEffect(() => {
     if (user != null) {
       getAllPost(user.uid);
     }
   }, []);
 
-  return { posts, loading, error };
+  return {
+    posts,
+    loading,
+    error,
+    isLiked,
+    isBookmarked,
+    toggleBookmark,
+    toggleLike,
+  };
 };

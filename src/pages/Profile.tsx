@@ -15,8 +15,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPen,
   faRightFromBracket,
-  faHeart,
+  faHeart as solidHeart,
+  faBookmark as regularBookmark,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart as regularHeart,
+  faBookmark as solidBookmark,
+} from "@fortawesome/free-regular-svg-icons";
+
 import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -33,59 +39,40 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     userProfile,
     changeDisplayName,
     // updateUsername,
-    updateProfilePhoto,
+    // updateProfilePhoto,
+    handleUpdateProfile,
     updateBio,
+    edit,
+    handleOpenEdit,
+    handleCloseEdit,
     initials,
   } = useUserProfile();
 
-  const { posts, loading, error } = usePosts();
+  const {
+    posts,
+    loading,
+    error,
+    isLiked,
+    isBookmarked,
+    toggleBookmark,
+    toggleLike,
+  } = usePosts();
 
   const [activeTab, setActiveTab] = useState<Tab>("Tab1");
 
   // const [newUsername, setNewUsername] = useState(userProfile?.username || "");
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [edit, setEdit] = useState<boolean>(false);
-
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
   };
 
-  const handleOpenEdit = () => {
-    setEdit(true);
-  };
-
-  const handleCloseEdit = () => {
-    setEdit(false);
-  };
-
-  const handleUpdateProfile = () => {
-    // e.preventDefault();
-    // try {
-    //   setIsLoading(true);
-    //   setTimeout(() => {
-    //     newDisplayName ? changeDisplayName : newDisplayName;
-    //     // newUsername ? updateUsername : newUsername;
-    //     newBio ? updateBio : newBio;
-    //     newPhoto ? updateProfilePhoto : newPhoto;
-    //     alert("profile updated");
-    //     setIsLoading(false);
-    //     setEdit(false);
-    //   }, 4000);
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("error");
-    // }
-  };
-
   const renderPost = () => {
     return (
-      <div>
+      <div className="w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
         {posts.length > 0 ? (
           posts.map((item) => {
             return (
-              <Card key={item.id} className=" flex flex-col">
+              <Card key={item.id} className=" flex flex-col  mb-3 w-3/6">
                 <CardHeader>
                   <p>{item.caption}</p>
                 </CardHeader>
@@ -95,12 +82,21 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                     alt={item.caption}
                   />
                 </CardContent>
-                <CardFooter>
-                  <FontAwesomeIcon icon={faHeart} />
+                <CardFooter className="flex justify-between items-center">
+                  <FontAwesomeIcon
+                    className="cursor-pointer"
+                    onClick={toggleLike}
+                    icon={isLiked ? solidHeart : regularHeart}
+                  />
 
                   <div className="hidden group-hover:block text-white">
                     {item.likes} likes
                   </div>
+                  <FontAwesomeIcon
+                    className="cursor-pointer"
+                    onClick={toggleBookmark}
+                    icon={isBookmarked ? regularBookmark : solidBookmark}
+                  />
                 </CardFooter>
               </Card>
             );
@@ -116,14 +112,17 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     <main className="h-full flex justify-between items-center w-full">
       <SideBar />
       {user ? (
-        <Card className=" sm:w-full md:ml-20 lg:ml-56 lg:w-11/12 w-full px-2 border-none h-screen md:w-full">
+        <Card className=" sm:w-full md:ml-20 lg:ml-56 lg:w-11/12 w-full px-2 border-none h-full md:w-full">
           <div className="flex justify-end items-center pt-2 md:pb-10">
-            <Button className="h-8 w-20  md:block hidden" onClick={logOut}>
+            <Button
+              className="h-8 w-20  md:block hidden bg-red-600 hover:bg-red-500 active:bg-red-400"
+              onClick={logOut}
+            >
               {" "}
               logout
             </Button>
             <FontAwesomeIcon
-              className="block md:hidden h-5 w-5"
+              className="block md:hidden h-5 w-5 pr-3"
               onClick={logOut}
               icon={faRightFromBracket}
             />
@@ -194,9 +193,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 Bookmarks
               </h2>
             </div>
-            <article className="flex justify-center items-center mt-10">
+            <article className="flex justify-center items-center  mt-10">
               {activeTab === "Tab1" && (
-                <div>{posts ? renderPost() : isLoading}</div>
+                <div>{posts ? renderPost() : loading}</div>
               )}
 
               {activeTab === "Tab2" && <div>Bookmark</div>}
@@ -241,29 +240,19 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 id="displayname"
                 type="text"
                 placeholder="Enter a new name"
-                value={newDisplayName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setNewDisplayName(e.target.value)
-                }
-              />
-              <Label htmlFor="username">username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Enter a new username"
-                value={newUsername}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setNewUsername(e.target.value)
-                }
+                // value={newDisplayName}
+                // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                //   // setNewDisplayName(e.target.value)
+                // }
               />
               <Label htmlFor="bio">Bio</Label>
               <Textarea
                 id="bio"
                 placeholder="Enter a new bio"
-                value={newBio}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setNewBio(e.target.value)
-                }
+                // value={newBio}
+                // onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                // setNewBio(e.target.value)
+                // }
               />{" "}
               <Label />
             </CardContent>

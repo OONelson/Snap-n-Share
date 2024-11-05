@@ -69,6 +69,7 @@ export interface DocumentResponse {
   photos: PhotoMeta[];
   likes?: number;
   userlikes: [];
+  userbookmarks: [];
   userId?: string | null;
   date?: Date;
 }

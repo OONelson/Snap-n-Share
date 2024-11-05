@@ -2,7 +2,7 @@ import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import React, { useEffect } from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 
 interface UserProfileData {
@@ -13,7 +13,12 @@ interface UserProfileData {
   updateUsername: (username: string) => Promise<void>;
   updateProfilePhoto: (file: File) => Promise<void>;
   updateBio: (bio: string) => Promise<void>;
-  setUsername: (username: string) => Promise<void>;
+  handleUpdateProfile: () => void;
+  edit: boolean;
+  // setEdit: (edit: boolean) => void;
+  handleOpenEdit: () => MouseEventHandler<HTMLButtonElement>;
+  handleCloseEdit: () => MouseEventHandler<HTMLButtonElement>;
+  isLoading: boolean;
   initials: string;
 }
 
@@ -38,6 +43,8 @@ export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [newDisplayName, setNewDisplayName] = useState(
     userProfile?.displayName || ""
@@ -47,6 +54,14 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
 
   const initials = getInitials(userProfile?.username);
+
+  const handleOpenEdit = () => {
+    setEdit(true);
+  };
+
+  const handleCloseEdit = () => {
+    setEdit(false);
+  };
 
   // FETCH USER PROFILE
   useEffect(() => {
@@ -131,6 +146,24 @@ export const UserProfileProvider: React.FunctionComponent<{
     fetchBio();
   }, []);
 
+  const handleUpdateProfile = () => {
+    try {
+      setIsLoading(true);
+      setTimeout(() => {
+        newDisplayName ? changeDisplayName : newDisplayName;
+        // newUsername ? updateUsername : newUsername;
+        newBio ? updateBio : newBio;
+        newPhoto ? updateProfilePhoto : newPhoto;
+        alert("profile updated");
+        setIsLoading(false);
+        setEdit(false);
+      }, 4000);
+    } catch (error) {
+      console.error(error);
+      alert("error");
+    }
+  };
+
   return (
     <UserProfileContext.Provider
       value={{
@@ -139,7 +172,12 @@ export const UserProfileProvider: React.FunctionComponent<{
         // updateUsername,
         updateProfilePhoto,
         updateBio,
+        handleUpdateProfile,
+        edit,
+        handleOpenEdit,
+        handleCloseEdit,
         initials,
+        isLoading,
       }}
     >
       {children}
