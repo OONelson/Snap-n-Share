@@ -39,6 +39,13 @@ export const UserProfileProvider: React.FunctionComponent<{
 }> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
 
+  const [newDisplayName, setNewDisplayName] = useState(
+    userProfile?.displayName || ""
+  );
+  const [bio, setBio] = useState<string>(userProfile?.bio || "");
+  const [newBio, setNewBio] = useState(userProfile?.bio || "");
+  const [newPhoto, setNewPhoto] = useState<File | null>(null);
+
   const initials = getInitials(userProfile?.username);
 
   // FETCH USER PROFILE
@@ -57,45 +64,31 @@ export const UserProfileProvider: React.FunctionComponent<{
     return () => unsubscribe();
   }, []);
 
-  const changeDisplayName = async (name: string) => {
+  const changeDisplayName = async (displayName: string) => {
     const user = auth.currentUser;
     user
       ? await setDoc(
           doc(db, "users", user.uid),
-          { displayName: name },
+          { displayName: displayName },
           { merge: true }
         )
       : setUserProfile((prev) =>
-          prev ? { ...prev, displayName: name } : null
+          prev ? { ...prev, displayName: displayName } : null
         );
   };
 
-  const updateUsername = async (username: string) => {
-    const user = auth.currentUser;
-    if (user) {
-      const usernameDoc = await getDoc(doc(db, "usernames", username));
-      if (!usernameDoc.exists()) {
-        await setDoc(doc(db, "users", user.uid), { username }, { merge: true });
-        await setDoc(doc(db, "usernames", username), { uid: user.uid });
-        setUserProfile((prev) => (prev ? { ...prev, username } : null));
-      } else {
-        throw new Error("Username already exists");
-      }
-    }
-  };
-
-  // HANDLE UPLOADCARE
-  // const handleUpload = () => {
-  //   const widget = uploadcare.openDialog(null, {
-  //     publicKey: "your_uploadcare_public_key", // replace with your Uploadcare public key
-  //     imagesOnly: true,
-  //   });
-
-  //   widget.done((fileInfo) => {
-  //     const fileUrl = fileInfo.cdnUrl;
-  //     setProfileImg(fileUrl);
-  //     updateProfilePhoto(fileUrl);
-  //   });
+  // const updateUsername = async (username: string) => {
+  //   const user = auth.currentUser;
+  //   if (user) {
+  //     const usernameDoc = await getDoc(doc(db, "usernames", username));
+  //     if (!usernameDoc.exists()) {
+  //       await setDoc(doc(db, "users", user.uid), { username }, { merge: true });
+  //       await setDoc(doc(db, "usernames", username), { uid: user.uid });
+  //       setUserProfile((prev) => (prev ? { ...prev, username } : null));
+  //     } else {
+  //       throw new Error("Username already exists");
+  //     }
+  //   }
   // };
 
   const updateProfilePhoto = async (url: any) => {
@@ -117,16 +110,33 @@ export const UserProfileProvider: React.FunctionComponent<{
     const user = auth.currentUser;
     if (user) {
       await setDoc(doc(db, "users", user.uid), { bio }, { merge: true });
-      setUserProfile((prev) => (prev ? { ...prev, bio } : null));
+      setBio(bio);
     }
   };
+
+  useEffect(() => {
+    const fetchBio = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userDoc = doc(db, "users", user?.uid);
+        const userSnapshot = await getDoc(userDoc);
+
+        if (userSnapshot.exists()) {
+          const userProfile = userSnapshot.data();
+          setBio(userProfile.bio || "");
+        }
+      }
+    };
+
+    fetchBio();
+  }, []);
 
   return (
     <UserProfileContext.Provider
       value={{
         userProfile,
         changeDisplayName,
-        updateUsername,
+        // updateUsername,
         updateProfilePhoto,
         updateBio,
         initials,

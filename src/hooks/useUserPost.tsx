@@ -10,6 +10,7 @@ export const usePosts = () => {
 
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const getAllPost = async (id: string) => {
@@ -28,6 +29,8 @@ export const usePosts = () => {
         });
         setPosts(tempArr);
         setLoading(false);
+
+        setIsLiked(tempArr?.userlikes?.includes(user?.uid ?? ""));
       } else {
         console.log("No such document");
       }
