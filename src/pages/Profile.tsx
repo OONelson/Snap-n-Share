@@ -14,7 +14,6 @@ import { useUserAuth } from "@/contexts/UserAuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPen,
-  faRightFromBracket,
   faHeart as solidHeart,
   faBookmark as regularBookmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -30,11 +29,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import { usePosts } from "@/hooks/useUserPost";
+import LogoutModal from "@/components/reuseables/LogoutModal";
+import Dropdown from "@/components/reuseables/Dropdown";
+import { useNavigate } from "react-router-dom";
 
 type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
-  const { user, logOut } = useUserAuth();
+  const { user } = useUserAuth();
   const {
     userProfile,
     changeDisplayName,
@@ -58,29 +60,48 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     toggleLike,
   } = usePosts();
 
-  const [activeTab, setActiveTab] = useState<Tab>("Tab1");
+  const navigate = useNavigate();
 
+  const [activeTab, setActiveTab] = useState<Tab>("Tab1");
   // const [newUsername, setNewUsername] = useState(userProfile?.username || "");
 
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
   };
 
+  const [openLogout, setOpenLogout] = useState<boolean>(false);
+
+  const handleOpenLogoutModal = () => {
+    setOpenLogout(true);
+  };
+  const handleCloseLogoutModal = () => {
+    setOpenLogout(false);
+  };
+
+  const handleSelect = (option: option) => {
+    console.log(`Selected option: ${option.name}`);
+    if (option.name === "Settings") {
+      navigate("/settings");
+    }
+    if (option.name === "Logout") {
+      setOpenLogout(true);
+    }
+  };
   const renderPost = () => {
     return (
-      <div className="w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
+      <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
         {posts.length > 0 ? (
           posts.map((item) => {
             return (
-              <Card key={item.id} className=" flex flex-col  mb-3 w-3/6">
+              <Card
+                key={item.id}
+                className=" flex flex-col  mb-3 sm:w-3/6 w-full"
+              >
                 <CardHeader>
                   <p>{item.caption}</p>
                 </CardHeader>
                 <CardContent className="w-full h-full">
-                  <img
-                    src={`${item?.photos[0]?.cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-                    alt={item.caption}
-                  />
+                  <img src={item.photos[0]?.cdnUrl} alt={item.caption} />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                   <FontAwesomeIcon
@@ -114,18 +135,27 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
       {user ? (
         <Card className=" sm:w-full md:ml-20 lg:ml-56 lg:w-11/12 w-full px-2 border-none h-full md:w-full">
           <div className="flex justify-end items-center pt-2 md:pb-10">
-            <Button
+            {/* <Button
               className="h-8 w-20  md:block hidden bg-red-600 hover:bg-red-500 active:bg-red-400"
-              onClick={logOut}
+              onClick={handleOpenLogoutModal}
             >
               {" "}
               logout
             </Button>
             <FontAwesomeIcon
               className="block md:hidden h-5 w-5 pr-3"
-              onClick={logOut}
+              onClick={handleOpenLogoutModal}
               icon={faRightFromBracket}
-            />
+            /> */}
+
+            <Dropdown onSelect={handleSelect} />
+            {/* LOGOUT MODAL */}
+            {openLogout && (
+              <LogoutModal
+                show={handleOpenLogoutModal}
+                onClose={handleCloseLogoutModal}
+              />
+            )}
           </div>
           <CardContent className="p-0 pt-10">
             <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full sm:w-4/5 md:pl-3">
@@ -193,9 +223,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 Bookmarks
               </h2>
             </div>
-            <article className="flex justify-center items-center  mt-10">
+            <article className="flex justify-center items-center mt-10">
               {activeTab === "Tab1" && (
-                <div>{posts ? renderPost() : loading}</div>
+                <div>{posts ? renderPost() : <SmallSpinner />}</div>
               )}
 
               {activeTab === "Tab2" && <div>Bookmark</div>}

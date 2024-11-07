@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import ProtectedRoutes from "./pages/ProtectedRoutes";
 import PasswordReset from "./pages/PasswordReset";
 import CreateUsername from "./pages/CreateUsername";
+import Settings from "./pages/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,11 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
         errorElement: <Error />,
       },
     ],

@@ -1,18 +1,26 @@
 {
-	"files": [],
-	"references": [
-		{
-			"path": "./tsconfig.app.json"
-		},
-		{
-			"path": "./tsconfig.node.json"
-		}
-	],
-	"compilerOptions": {
-    "types": ["@uploadcare/file-uploader/types/jsx"],
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./src/*"]
-		}
-	}
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "types": ["@uploadcare/file-uploader/types/tsx"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+  //   "images":{
+  // 	"remotePatterns":[
+  // 		{
+  // 			"protocol": "https",
+  // 			"hostname" : "u"
+  // 		}
+  // 	]
+  //   }
 }

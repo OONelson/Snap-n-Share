@@ -2,25 +2,25 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { FileEntry } from "@/types";
 import { FileUploaderRegular } from "@uploadcare/react-uploader";
 
-
 interface IFileUploaderProps {
   fileEntry: FileEntry;
   onChange: (fileEntry: FileEntry) => void;
   preview: boolean;
 }
 
-const FileUploader: React.FunctionComponent<IFileUploaderProps> = ({
-  // fileEntry,
-  // onChange,
-  // preview,
-}) => {
-  
+const FileUploader: React.FunctionComponent<IFileUploaderProps> = (
+  {
+    // fileEntry,
+    // onChange,
+    // preview,
+  }
+) => {
   return (
     <div>
       <FileUploaderRegular
-         sourceList="local, url, camera"
-         classNameUploader="uc-light uc-gray"
-         pubkey="554f4def3f926b71fb61"
+        sourceList="local, url, camera"
+        classNameUploader="uc-light uc-gray"
+        pubkey="554f4def3f926b71fb61"
       />
       {/* {preview ? (
         <div className="grid grid-cols-2 gap-4 mt-8">
