@@ -18,10 +18,17 @@ const LogoutModal: React.FunctionComponent<ILogoutModalProps> = ({
 
   if (!show) return null;
   return (
-    <main className="modal-backdrop">
-      <article className="modal-content flex flex-col">
+    <main className="modal-backdrop" onClick={onClose}>
+      <article
+        className="modal-content flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-end justify-end pb-8">
-          <FontAwesomeIcon onClick={onClose} icon={faTimes} />
+          <FontAwesomeIcon
+            onClick={onClose}
+            icon={faTimes}
+            className="cursor-pointer"
+          />
         </div>
         <div>
           <h2 className="text-slate-500 font-medium">Sure you wanna logout?</h2>

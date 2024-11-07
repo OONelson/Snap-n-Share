@@ -26,7 +26,7 @@ import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import { usePosts } from "@/hooks/useUserPost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
@@ -39,12 +39,17 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user } = useUserAuth();
   const {
     userProfile,
-    changeDisplayName,
-    // updateUsername,
-    // updateProfilePhoto,
+    // changeDisplayName,
     handleUpdateProfile,
-    updateBio,
+    // updateBio,
+    // fetchBio,
     edit,
+    isLoading,
+    setIsLoading,
+    bio,
+    setBio,
+    displayName,
+    setDisplayName,
     handleOpenEdit,
     handleCloseEdit,
     initials,
@@ -63,7 +68,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<Tab>("Tab1");
-  // const [newUsername, setNewUsername] = useState(userProfile?.username || "");
 
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
@@ -87,6 +91,22 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
       setOpenLogout(true);
     }
   };
+
+  // useEffect(() => {
+  //   // Fetch bio from Firebase on component mount
+  //   const loadBio = async () => {
+  //     const userBio = await fetchBio();
+  //     setBio(userBio);
+  //     setIsLoading(false);
+  //   };
+  //   loadBio();
+  // }, []);
+
+  // const handleBioUpdate = async () => {
+  //   await updateBio(bio);
+  //   alert("Bio updated successfully!");
+  // };
+
   const renderPost = () => {
     return (
       <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
@@ -150,12 +170,15 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 
             <Dropdown onSelect={handleSelect} />
             {/* LOGOUT MODAL */}
+
             {openLogout && (
               <LogoutModal
                 show={handleOpenLogoutModal}
                 onClose={handleCloseLogoutModal}
               />
             )}
+
+            {/* LOGOUT MODAL END */}
           </div>
           <CardContent className="p-0 pt-10">
             <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full sm:w-4/5 md:pl-3">
@@ -177,12 +200,12 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 </picture>
               )}
               {/* </div> */}
-              <p className="text-lg font-normal col-start-2 col-end-3 row-start-2 row-end-3">
+              <p className="text-lg font-normal col-start-2 col-end-3 row-start-2 row-end-3 mt-6">
                 {/* {user.email} */}
                 <span className="font-bold pr-2">{posts.length}</span>
                 Posts
               </p>
-              <div className="col-start-3 col-end-4 row-start-2 row-end-3">
+              <div className="col-start-3 col-end-4 row-start-2 row-end-3 mt-6">
                 <Button
                   onClick={handleOpenEdit}
                   className=" h-8 w-24 md:block hidden"
@@ -195,14 +218,11 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   icon={faPen}
                 />
               </div>
-
               <h2 className="col-start-1 col-end-2 row-start-3 row-end-3 font-semibold text-3xl">
-                {/* {newDisplayName} */}
-                {userProfile?.bio}
+                {displayName}
               </h2>
-              <p className="col-start-1 col-end-2 row-start-4 row-end-4 text-slate-600 font-medium">
-                {/* {newBio}
-                {bio} */}
+              <p className="-mt-2 col-start-1 col-end-2 row-start-4 row-end-4 text-slate-600 font-medium">
+                {bio}
               </p>
             </section>
             <div className="w-full flex justify-evenly mt-20 border-b-2">
@@ -270,26 +290,26 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 id="displayname"
                 type="text"
                 placeholder="Enter a new name"
-                // value={newDisplayName}
-                // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                //   // setNewDisplayName(e.target.value)
-                // }
+                value={displayName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDisplayName(e.target.value)
+                }
               />
               <Label htmlFor="bio">Bio</Label>
               <Textarea
                 id="bio"
                 placeholder="Enter a new bio"
-                // value={newBio}
-                // onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                // setNewBio(e.target.value)
-                // }
+                value={bio}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setBio(e.target.value)
+                }
               />{" "}
               <Label />
             </CardContent>
             <CardFooter>
               <Button onClick={handleUpdateProfile}>
                 <span>Update</span>
-                {loading && <SmallSpinner />}
+                {isLoading && <SmallSpinner />}
               </Button>
             </CardFooter>
           </Card>

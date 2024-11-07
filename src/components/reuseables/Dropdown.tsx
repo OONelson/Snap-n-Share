@@ -36,17 +36,17 @@ const Dropdown: React.FC<DropdownProps> = ({ onSelect }) => {
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div className=" cursor-pointer relative inline-block text-left">
       {!isOpen ? (
         <FontAwesomeIcon
           onClick={toggleDropdown}
-          className="px-4 py-2 text-sm font-medium text-black "
+          className="px-4 py-2 text-md font-medium text-black "
           icon={faBars}
         />
       ) : (
         <FontAwesomeIcon
           onClick={toggleDropdown}
-          className="px-4 py-2 text-sm font-medium text-black "
+          className="px-4 py-2 text-md font-medium text-black "
           icon={faTimes}
         />
       )}

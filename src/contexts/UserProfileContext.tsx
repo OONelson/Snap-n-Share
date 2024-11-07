@@ -1,6 +1,6 @@
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { MouseEventHandler, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
@@ -15,11 +15,16 @@ interface UserProfileData {
   updateBio: (bio: string) => Promise<void>;
   handleUpdateProfile: () => void;
   edit: boolean;
-  // setEdit: (edit: boolean) => void;
+  bio: string;
+  setBio: (bio: string) => void;
   handleOpenEdit: () => MouseEventHandler<HTMLButtonElement>;
   handleCloseEdit: () => MouseEventHandler<HTMLButtonElement>;
   isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   initials: string;
+  fetchBio: (bio: string) => Promise<string>;
+  displayName: string;
+  setDisplayName: (displayName: string) => void;
 }
 
 const UserProfileContext = createContext<UserProfileData | undefined>(
@@ -46,12 +51,10 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [edit, setEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [newDisplayName, setNewDisplayName] = useState(
+  const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""
   );
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
-  const [newBio, setNewBio] = useState(userProfile?.bio || "");
-  const [newPhoto, setNewPhoto] = useState<File | null>(null);
 
   const initials = getInitials(userProfile?.username);
 
@@ -79,32 +82,24 @@ export const UserProfileProvider: React.FunctionComponent<{
     return () => unsubscribe();
   }, []);
 
+  // CHANGE DISPLAY NAME
   const changeDisplayName = async (displayName: string) => {
     const user = auth.currentUser;
-    user
-      ? await setDoc(
-          doc(db, "users", user.uid),
-          { displayName: displayName },
-          { merge: true }
-        )
-      : setUserProfile((prev) =>
-          prev ? { ...prev, displayName: displayName } : null
-        );
+    if (user) {
+      await setDoc(doc(db, "displayNames", user.uid), {
+        displayName: displayName,
+        createdAt: serverTimestamp(),
+      });
+      await setDoc(
+        doc(db, "users", user.uid),
+        { displayName: displayName },
+        { merge: true }
+      );
+      setUserProfile((prev) =>
+        prev ? { ...prev, displayName: displayName } : null
+      );
+    }
   };
-
-  // const updateUsername = async (username: string) => {
-  //   const user = auth.currentUser;
-  //   if (user) {
-  //     const usernameDoc = await getDoc(doc(db, "usernames", username));
-  //     if (!usernameDoc.exists()) {
-  //       await setDoc(doc(db, "users", user.uid), { username }, { merge: true });
-  //       await setDoc(doc(db, "usernames", username), { uid: user.uid });
-  //       setUserProfile((prev) => (prev ? { ...prev, username } : null));
-  //     } else {
-  //       throw new Error("Username already exists");
-  //     }
-  //   }
-  // };
 
   const updateProfilePhoto = async (url: any) => {
     const user = auth.currentUser;
@@ -121,42 +116,30 @@ export const UserProfileProvider: React.FunctionComponent<{
     }
   };
 
+  //CHANGE BIO
   const updateBio = async (bio: string) => {
     const user = auth.currentUser;
     if (user) {
+      await setDoc(doc(db, "bios", user.uid), {
+        bio: bio,
+        createdAt: serverTimestamp(),
+      });
       await setDoc(doc(db, "users", user.uid), { bio }, { merge: true });
-      setBio(bio);
+      setUserProfile((prev) => (prev ? { ...prev, bio } : null));
     }
   };
 
-  useEffect(() => {
-    const fetchBio = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const userDoc = doc(db, "users", user?.uid);
-        const userSnapshot = await getDoc(userDoc);
-
-        if (userSnapshot.exists()) {
-          const userProfile = userSnapshot.data();
-          setBio(userProfile.bio || "");
-        }
-      }
-    };
-
-    fetchBio();
-  }, []);
-
   const handleUpdateProfile = () => {
     try {
-      setIsLoading(true);
+      setIsLoading(false);
       setTimeout(() => {
-        newDisplayName ? changeDisplayName : newDisplayName;
-        // newUsername ? updateUsername : newUsername;
-        newBio ? updateBio : newBio;
-        newPhoto ? updateProfilePhoto : newPhoto;
+        displayName ? changeDisplayName : displayName;
+        bio ? updateBio : bio;
+        // newPhoto ? updateProfilePhoto : newPhoto;
         alert("profile updated");
-        setIsLoading(false);
+        setIsLoading(true);
         setEdit(false);
+        // console.log();
       }, 4000);
     } catch (error) {
       console.error(error);
@@ -164,20 +147,64 @@ export const UserProfileProvider: React.FunctionComponent<{
     }
   };
 
+  useEffect(() => {
+    const fetchBio = async (): Promise<string> => {
+      const user = auth.currentUser;
+      if (user) {
+        setDoc(doc(db, "bios", user.uid), {
+          bio: bio,
+          createdAt: serverTimestamp(),
+        });
+        const userDoc = doc(db, "bios", user?.uid);
+        const userSnapshot = await getDoc(userDoc);
+
+        if (userSnapshot.exists()) {
+          setBio(userSnapshot.data().bio || "");
+          // return bio;
+        } else {
+          return "";
+        }
+      }
+    };
+
+    fetchBio();
+  }, []);
+
+  useEffect(() => {
+    const fetchDisplayName = async (): Promise<string> => {
+      const user = auth.currentUser;
+      if (user) {
+        const userDoc = doc(db, "users", user?.uid);
+        const userSnapshot = await getDoc(userDoc);
+
+        if (userSnapshot.exists()) {
+          return userSnapshot.data().displayName || "";
+        } else {
+          return "";
+        }
+      }
+    };
+
+    fetchDisplayName();
+  }, []);
+
   return (
     <UserProfileContext.Provider
       value={{
         userProfile,
-        changeDisplayName,
-        // updateUsername,
-        updateProfilePhoto,
-        updateBio,
+
         handleUpdateProfile,
         edit,
         handleOpenEdit,
         handleCloseEdit,
+        bio,
+        setBio,
         initials,
         isLoading,
+        setIsLoading,
+        // fetchBio,
+        displayName,
+        setDisplayName,
       }}
     >
       {children}
