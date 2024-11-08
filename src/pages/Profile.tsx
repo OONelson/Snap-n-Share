@@ -41,11 +41,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     userProfile,
     // changeDisplayName,
     handleUpdateProfile,
-    // updateBio,
-    // fetchBio,
     edit,
-    isLoading,
-    setIsLoading,
     bio,
     setBio,
     displayName,
@@ -92,26 +88,12 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // Fetch bio from Firebase on component mount
-  //   const loadBio = async () => {
-  //     const userBio = await fetchBio();
-  //     setBio(userBio);
-  //     setIsLoading(false);
-  //   };
-  //   loadBio();
-  // }, []);
-
-  // const handleBioUpdate = async () => {
-  //   await updateBio(bio);
-  //   alert("Bio updated successfully!");
-  // };
-
   const renderPost = () => {
     return (
       <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
         {posts.length > 0 ? (
           posts.map((item) => {
+            const cdnUrl = item.photos[0]?.cdnUrl ?? "non";
             return (
               <Card
                 key={item.id}
@@ -121,7 +103,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   <p>{item.caption}</p>
                 </CardHeader>
                 <CardContent className="w-full h-full">
-                  <img src={item.photos[0]?.cdnUrl} alt={item.caption} />
+                  <img src={cdnUrl} alt={item.caption} />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                   <FontAwesomeIcon
@@ -155,19 +137,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
       {user ? (
         <Card className=" sm:w-full md:ml-20 lg:ml-56 lg:w-11/12 w-full px-2 border-none h-full md:w-full">
           <div className="flex justify-end items-center pt-2 md:pb-10">
-            {/* <Button
-              className="h-8 w-20  md:block hidden bg-red-600 hover:bg-red-500 active:bg-red-400"
-              onClick={handleOpenLogoutModal}
-            >
-              {" "}
-              logout
-            </Button>
-            <FontAwesomeIcon
-              className="block md:hidden h-5 w-5 pr-3"
-              onClick={handleOpenLogoutModal}
-              icon={faRightFromBracket}
-            /> */}
-
             <Dropdown onSelect={handleSelect} />
             {/* LOGOUT MODAL */}
 
@@ -309,7 +278,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
             <CardFooter>
               <Button onClick={handleUpdateProfile}>
                 <span>Update</span>
-                {isLoading && <SmallSpinner />}
               </Button>
             </CardFooter>
           </Card>

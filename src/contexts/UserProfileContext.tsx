@@ -86,7 +86,7 @@ export const UserProfileProvider: React.FunctionComponent<{
   const changeDisplayName = async (displayName: string) => {
     const user = auth.currentUser;
     if (user) {
-      await setDoc(doc(db, "displayNames", user.uid), {
+      await setDoc(doc(db, "displaynames", user.uid), {
         displayName: displayName,
         createdAt: serverTimestamp(),
       });
@@ -131,16 +131,12 @@ export const UserProfileProvider: React.FunctionComponent<{
 
   const handleUpdateProfile = () => {
     try {
-      setIsLoading(false);
-      setTimeout(() => {
-        displayName ? changeDisplayName : displayName;
-        bio ? updateBio : bio;
-        // newPhoto ? updateProfilePhoto : newPhoto;
-        alert("profile updated");
-        setIsLoading(true);
-        setEdit(false);
-        // console.log();
-      }, 4000);
+      displayName ? changeDisplayName : displayName;
+      bio ? updateBio : bio;
+      // newPhoto ? updateProfilePhoto : newPhoto;
+      alert("profile updated");
+      setEdit(false);
+      // console.log();
     } catch (error) {
       console.error(error);
       alert("error");
@@ -150,20 +146,19 @@ export const UserProfileProvider: React.FunctionComponent<{
   useEffect(() => {
     const fetchBio = async (): Promise<string> => {
       const user = auth.currentUser;
-      if (user) {
-        setDoc(doc(db, "bios", user.uid), {
-          bio: bio,
-          createdAt: serverTimestamp(),
-        });
-        const userDoc = doc(db, "bios", user?.uid);
-        const userSnapshot = await getDoc(userDoc);
+      // if (user) {
+      //   setDoc(doc(db, "bios", user.uid), {
+      //     bio: bio,
+      //     createdAt: serverTimestamp(),
+      //   }
+      const userDoc = doc(db, "bios", user?.uid);
+      const userSnapshot = await getDoc(userDoc);
 
-        if (userSnapshot.exists()) {
-          setBio(userSnapshot.data().bio || "");
-          // return bio;
-        } else {
-          return "";
-        }
+      if (userSnapshot.exists()) {
+        setBio(userSnapshot.data().bio || "");
+        // return bio;
+      } else {
+        return "";
       }
     };
 
@@ -173,17 +168,17 @@ export const UserProfileProvider: React.FunctionComponent<{
   useEffect(() => {
     const fetchDisplayName = async (): Promise<string> => {
       const user = auth.currentUser;
-      if (user) {
-        const userDoc = doc(db, "users", user?.uid);
-        const userSnapshot = await getDoc(userDoc);
+      // if (user) {
+      const userDoc = doc(db, "displaynames", user?.uid);
+      const userSnapshot = await getDoc(userDoc);
 
-        if (userSnapshot.exists()) {
-          return userSnapshot.data().displayName || "";
-        } else {
-          return "";
-        }
+      if (userSnapshot.exists()) {
+        return userSnapshot.data().displayName || "";
+      } else {
+        return "";
       }
     };
+    // };
 
     fetchDisplayName();
   }, []);
@@ -200,9 +195,6 @@ export const UserProfileProvider: React.FunctionComponent<{
         bio,
         setBio,
         initials,
-        isLoading,
-        setIsLoading,
-        // fetchBio,
         displayName,
         setDisplayName,
       }}
