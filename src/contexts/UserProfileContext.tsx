@@ -83,111 +83,138 @@ export const UserProfileProvider: React.FunctionComponent<{
   }, []);
 
   // CHANGE DISPLAY NAME
-  const changeDisplayName = async (displayName: string) => {
-    const user = auth.currentUser;
-    if (user) {
-      await setDoc(doc(db, "displaynames", user.uid), {
-        displayName: displayName,
-        createdAt: serverTimestamp(),
-      });
-      await setDoc(
-        doc(db, "users", user.uid),
-        { displayName: displayName },
-        { merge: true }
-      );
-      setUserProfile((prev) =>
-        prev ? { ...prev, displayName: displayName } : null
-      );
-    }
-  };
 
-  const updateProfilePhoto = async (url: any) => {
-    const user = auth.currentUser;
-    if (user) {
-      const storageRef = ref(storage, `profilephotos/${user.uid}`);
-      await uploadBytes(storageRef, url);
-      const photoURL = await getDownloadURL(storageRef);
-      await setDoc(
-        doc(db, "users", user.uid),
-        { photoURL: url },
-        { merge: true }
-      );
-      setUserProfile((prev) => (prev ? { ...prev, photoURL } : null));
+  const changeDisplayName = async (displayName: string) => {
+    try {
+      const user = auth.currentUser;
+      const displayNameRef = doc(db, "users", user?.uid);
+      await setDoc(displayNameRef, { displayName }, { merge: true });
+      await setDoc(doc(db, "displaynames", user?.uid), { bio });
+
+      console.log("display name saved ", displayName);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   //CHANGE BIO
   const updateBio = async (bio: string) => {
-    const user = auth.currentUser;
-    if (user) {
-      await setDoc(doc(db, "bios", user.uid), {
-        bio: bio,
-        createdAt: serverTimestamp(),
-      });
-      await setDoc(doc(db, "users", user.uid), { bio }, { merge: true });
-      setUserProfile((prev) => (prev ? { ...prev, bio } : null));
-    }
-  };
-
-  const handleUpdateProfile = () => {
     try {
-      displayName ? changeDisplayName : displayName;
-      bio ? updateBio : bio;
-      // newPhoto ? updateProfilePhoto : newPhoto;
-      alert("profile updated");
-      setEdit(false);
-      // console.log();
+      const user = auth.currentUser;
+      const bioRef = doc(db, "users", user?.uid);
+      await setDoc(bioRef, { bio }, { merge: true });
+      await setDoc(doc(db, "bios", user?.uid), { bio });
+
+      console.log("bio saved ", bio);
     } catch (error) {
       console.error(error);
-      alert("error");
+    }
+  };
+
+  // const updateProfilePhoto = async (url: any) => {
+  //   const user = auth.currentUser;
+  //   if (user) {
+  //     const storageRef = ref(storage, `profilephotos/${user.uid}`);
+  //     await uploadBytes(storageRef, url);
+  //     const photoURL = await getDownloadURL(storageRef);
+  //     await setDoc(
+  //       doc(db, "users", user.uid),
+  //       { photoURL: url },
+  //       { merge: true }
+  //     );
+  //     setUserProfile((prev) => (prev ? { ...prev, photoURL } : null));
+  //   }
+  // };
+
+  const handleUpdateProfile = async () => {
+    // displayName ? changeDisplayName : displayName;
+    // bio ? updateBio : bio;
+    // newPhoto ? updateProfilePhoto : newPhoto;
+    // if () {
+    await changeDisplayName(displayName);
+    await updateBio(bio);
+    alert("profile updated");
+    console.log("updated");
+    console.log(displayName);
+
+    setEdit(false);
+    // }
+    // console.log();
+  };
+
+  const fetchDisplayName = async (userId: string): Promise<string> => {
+    try {
+      const displayNameRef = doc(db, "users", userId);
+
+      const docSnap = await getDoc(displayNameRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data().displayName;
+        console.log(displayName);
+      } else {
+        console.log("no such doc");
+        return "";
+      }
+    } catch (error) {
+      console.log(error);
+      return "";
     }
   };
 
   useEffect(() => {
-    const fetchBio = async (): Promise<string> => {
+    const loadDisplayName = async () => {
       const user = auth.currentUser;
-      // if (user) {
-      //   setDoc(doc(db, "bios", user.uid), {
-      //     bio: bio,
-      //     createdAt: serverTimestamp(),
-      //   }
-      const userDoc = doc(db, "bios", user?.uid);
-      const userSnapshot = await getDoc(userDoc);
-
-      if (userSnapshot.exists()) {
-        setBio(userSnapshot.data().bio || "");
-        // return bio;
-      } else {
-        return "";
+      if (user) {
+        const uid = user.uid;
+        setDisplayName(uid);
+        const changeDisplayName = await fetchDisplayName(uid);
+        // setUserProfile(changeDisplayName || "");
+        setDisplayName(changeDisplayName || "");
       }
     };
-
-    fetchBio();
+    loadDisplayName();
   }, []);
 
-  useEffect(() => {
-    const fetchDisplayName = async (): Promise<string> => {
-      const user = auth.currentUser;
-      // if (user) {
-      const userDoc = doc(db, "displaynames", user?.uid);
-      const userSnapshot = await getDoc(userDoc);
+  // FETCH BIO
 
-      if (userSnapshot.exists()) {
-        return userSnapshot.data().displayName || "";
+  const fetchBio = async (userId: string): Promise<string> => {
+    try {
+      const bioRef = doc(db, "users", userId);
+
+      const docSnap = await getDoc(bioRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data().bio;
+        console.log(bio);
       } else {
+        console.log("no such doc");
         return "";
       }
-    };
-    // };
+    } catch (error) {
+      console.log(error);
+      return "";
+    }
+  };
 
-    fetchDisplayName();
+  useEffect(() => {
+    const loadBio = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        setBio(uid);
+        const updateBio = await fetchBio(uid);
+        // setUserProfile(changeDisplayName || "");
+        setBio(updateBio || "");
+      }
+    };
+
+    loadBio();
   }, []);
 
   return (
     <UserProfileContext.Provider
       value={{
         userProfile,
-
         handleUpdateProfile,
         edit,
         handleOpenEdit,

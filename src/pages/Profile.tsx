@@ -26,7 +26,7 @@ import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import { usePosts } from "@/hooks/useUserPost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
@@ -188,10 +188,12 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 />
               </div>
               <h2 className="col-start-1 col-end-2 row-start-3 row-end-3 font-semibold text-3xl">
-                {displayName}
+                {/* {displayName} */}
+                {userProfile?.displayName}
               </h2>
               <p className="-mt-2 col-start-1 col-end-2 row-start-4 row-end-4 text-slate-600 font-medium">
-                {bio}
+                {/* {bio} */}
+                {userProfile?.bio}
               </p>
             </section>
             <div className="w-full flex justify-evenly mt-20 border-b-2">
