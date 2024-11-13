@@ -11,16 +11,10 @@
   align-items: center;
   /* z-index: -10; */
 }
-
+/* 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: max-content;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-}
+ 
+} */
 
 .modal-close {
   position: absolute;
