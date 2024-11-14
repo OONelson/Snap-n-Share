@@ -73,3 +73,8 @@ export interface DocumentResponse {
   userId?: string | null;
   date?: Date;
 }
+
+export interface Bookmark {
+  postId: string;
+  userId: string;
+}

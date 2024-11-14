@@ -24,7 +24,11 @@ export const getPosts = () => {
 };
 
 export const getPostByUserId = (id: string) => {
-  const q = query(collection(db, COLLECTION_NAME), where("userId", "==", id));
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    orderBy("date", "desc"),
+    where("userId", "==", id)
+  );
   return getDocs(q);
 };
 

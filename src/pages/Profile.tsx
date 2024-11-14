@@ -56,9 +56,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     loading,
     error,
     isLiked,
-    isBookmarked,
+    bookmarked,
     toggleBookmark,
-    toggleLike,
+    // toggleLike,
   } = usePosts();
 
   const navigate = useNavigate();
@@ -88,37 +88,50 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     }
   };
 
+  const bookmarkedPosts = posts.filter((post) => bookmarked.includes(post.id));
+
   const renderPost = () => {
     return (
       <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
         {posts.length > 0 ? (
-          posts.map((item) => {
-            const cdnUrl = item.photos[0]?.cdnUrl ?? "non";
+          posts.map((post) => {
+            const cdnUrl = post.photos[0]?.cdnUrl;
             return (
               <Card
-                key={item.id}
+                key={post.id}
                 className=" flex flex-col  mb-3 sm:w-3/6 w-full"
               >
                 <CardHeader>
-                  <p>{item.caption}</p>
+                  <p>{post.caption}</p>
                 </CardHeader>
                 <CardContent className="w-full h-full">
-                  <img src={cdnUrl} alt={item.caption} />
+                  {/* {post.photos.length > 0 ? ( */}
+                  <img
+                    src={`${cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                    alt={post.caption}
+                  />
+                  {/* ) : ( */}
+                  {/* <p>no pcitures</p> */}
+                  {/* )} */}
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                   <FontAwesomeIcon
                     className="cursor-pointer"
-                    onClick={toggleLike}
+                    // onClick={toggleLike}/
                     icon={isLiked ? solidHeart : regularHeart}
                   />
 
                   <div className="hidden group-hover:block text-white">
-                    {item.likes} likes
+                    {post.likes} likes
                   </div>
                   <FontAwesomeIcon
                     className="cursor-pointer"
-                    onClick={toggleBookmark}
-                    icon={isBookmarked ? regularBookmark : solidBookmark}
+                    onClick={() => toggleBookmark(post.id)}
+                    icon={
+                      bookmarked.includes(post.id)
+                        ? regularBookmark
+                        : solidBookmark
+                    }
                   />
                 </CardFooter>
               </Card>
@@ -219,7 +232,56 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 <div>{posts ? renderPost() : <SmallSpinner />}</div>
               )}
 
-              {activeTab === "Tab2" && <div>Bookmark</div>}
+              {activeTab === "Tab2" && (
+                <div className="w-screen sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
+                  {bookmarked.length === 0 ? (
+                    <p>No bookmarked posts found.</p>
+                  ) : (
+                    <ul>
+                      {bookmarkedPosts.map((post) => (
+                        <Card
+                          key={post.id}
+                          className=" flex flex-col  mb-3 sm:w-3/6 w-[90vw]"
+                        >
+                          <CardHeader>
+                            <p>{post.caption}</p>
+                          </CardHeader>
+                          <CardContent className="w-full h-full">
+                            {/* {post.photos.length > 0 ? ( */}
+                            <img
+                              src={`${post.photos[0]?.cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                              alt={post.caption}
+                            />
+                            {/* ) : ( */}
+                            {/* <p>no pcitures</p> */}
+                            {/* )} */}
+                          </CardContent>
+                          <CardFooter className="flex justify-between items-center">
+                            <FontAwesomeIcon
+                              className="cursor-pointer"
+                              // onClick={toggleLike}/
+                              icon={isLiked ? solidHeart : regularHeart}
+                            />
+
+                            <div className="hidden group-hover:block text-white">
+                              {post.likes} likes
+                            </div>
+                            <FontAwesomeIcon
+                              className="cursor-pointer"
+                              onClick={() => toggleBookmark(post.id)}
+                              icon={
+                                bookmarked.includes(post.id)
+                                  ? regularBookmark
+                                  : solidBookmark
+                              }
+                            />
+                          </CardFooter>
+                        </Card>
+                      ))}
+                    </ul>
+                  )}{" "}
+                </div>
+              )}
             </article>
           </CardContent>
         </Card>
