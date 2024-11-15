@@ -55,10 +55,10 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     posts,
     loading,
     error,
-    isLiked,
+    liked,
     bookmarked,
     toggleBookmark,
-    // toggleLike,
+    toggleLike,
   } = usePosts();
 
   const navigate = useNavigate();
@@ -105,25 +105,19 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   <p>{post.caption}</p>
                 </CardHeader>
                 <CardContent className="w-full h-full">
-                  {/* {post.photos.length > 0 ? ( */}
                   <img
                     src={`${cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
                     alt={post.caption}
                   />
-                  {/* ) : ( */}
-                  {/* <p>no pcitures</p> */}
-                  {/* )} */}
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                   <FontAwesomeIcon
                     className="cursor-pointer"
-                    // onClick={toggleLike}/
-                    icon={isLiked ? solidHeart : regularHeart}
+                    onClick={toggleLike(post.id)}
+                    icon={liked.includes(post.id) ? solidHeart : regularHeart}
                   />
 
-                  <div className="hidden group-hover:block text-white">
-                    {post.likes} likes
-                  </div>
+                  {/* <div className="">{post.likes} likes</div> */}
                   <FontAwesomeIcon
                     className="cursor-pointer"
                     onClick={() => toggleBookmark(post.id)}
@@ -247,25 +241,27 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                             <p>{post.caption}</p>
                           </CardHeader>
                           <CardContent className="w-full h-full">
-                            {/* {post.photos.length > 0 ? ( */}
-                            <img
-                              src={`${post.photos[0]?.cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
-                              alt={post.caption}
-                            />
-                            {/* ) : ( */}
-                            {/* <p>no pcitures</p> */}
-                            {/* )} */}
+                            {post.photos &&
+                            post.photos.length > 0 &&
+                            post.photos[0].cdnUrl ? (
+                              <img
+                                src={`${post.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                                alt={post.caption}
+                              />
+                            ) : (
+                              <p>no pcitures</p>
+                            )}
                           </CardContent>
                           <CardFooter className="flex justify-between items-center">
                             <FontAwesomeIcon
                               className="cursor-pointer"
-                              // onClick={toggleLike}/
-                              icon={isLiked ? solidHeart : regularHeart}
+                              onClick={toggleLike}
+                              icon={liked ? solidHeart : regularHeart}
                             />
 
-                            <div className="hidden group-hover:block text-white">
+                            {/* <div className="hidden group-hover:block text-white">
                               {post.likes} likes
-                            </div>
+                            </div> */}
                             <FontAwesomeIcon
                               className="cursor-pointer"
                               onClick={() => toggleBookmark(post.id)}

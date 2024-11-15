@@ -34,7 +34,7 @@ export interface Post {
 }
 
 export interface PhotoMeta {
-  cdnUrl: string;
+  cdnUrl?: string;
   uuid: string;
 }
 
@@ -67,7 +67,8 @@ export interface DocumentResponse {
   id: string;
   caption?: string;
   photos: PhotoMeta[];
-  likes?: number;
+  likesNumber: number;
+  likes: string[];
   userlikes: [];
   userbookmarks: [];
   userId?: string | null;
