@@ -1,20 +1,35 @@
 import { useEffect, useState } from "react";
 import { DocumentResponse, Post } from "../types/index";
-import { getPostByUserId } from "@/repository/post.service";
+import { getPostByUserId, getPosts } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  where,
+  query,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
-export const usePosts = () => {
+interface UsePostsProps {
+  postId?: string; // Make postId optional
+}
+
+export const usePosts = ({ postId }: UsePostsProps = {}) => {
   const { user } = useUserAuth();
 
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState<string[]>([]);
+  const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
+  const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [bookmarked, setBookmarked] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
-  const getAllPost = async (id: string) => {
+  const getUserPosts = async (id: string) => {
     try {
       const querySnapshot = await getPostByUserId(id);
       const tempArr: DocumentResponse[] = [];
@@ -42,6 +57,13 @@ export const usePosts = () => {
     }
   };
 
+  const getAllPosts = async () => {
+    const response: DocumentResponse[] = (await getPosts()) || [];
+    console.log(response);
+
+    setPosts(response);
+  };
+
   const loadBookmarks = async () => {
     if (user) {
       const userDocRef = doc(db, "users", user.uid);
@@ -49,7 +71,6 @@ export const usePosts = () => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setBookmarked(data.bookmarks || []);
-        // setLiked(data.liked || []);
       } else {
         console.log("No bookmarks found for this user.");
       }
@@ -69,31 +90,81 @@ export const usePosts = () => {
   };
 
   const toggleLike = async (postId: string) => {
-    const isLiked = liked.includes(postId);
-    const newLikedPosts = isLiked
-      ? liked.filter((id) => id !== postId)
-      : [...liked, postId];
+    const newLikedState = !likedPosts[postId];
 
-    setLiked(newLikedPosts);
+    setLikedPosts((prev) => ({ ...prev, [postId]: newLikedState }));
+    const newLikeCount = newLikedState
+      ? (likeCount[postId] || 0) + 1
+      : (likeCount[postId] || 0) - 1;
 
-    const userDocRef = doc(db, "users", user?.uid);
-    await setDoc(userDocRef, { liked: newLikedPosts }, { merge: true });
+    // Update Firestore
+    const postDocRef = doc(db, "posts", postId);
+    await setDoc(postDocRef, { likes: newLikeCount }, { merge: true });
+
+    // Update local state
+    setLikeCount((prev) => ({ ...prev, [postId]: newLikeCount }));
   };
 
   useEffect(() => {
+    const fetchLikeCount = async (postId: string): Promise<void> => {
+      if (!postId) return; // Ensure postId is defined
+      const postDocRef = doc(db, "posts", postId);
+      const postDoc = await getDoc(postDocRef);
+      if (postDoc.exists()) {
+        setLikeCount((prev) => ({
+          ...prev,
+          [postId]: postDoc.data()?.likes || 0,
+        }));
+      }
+    };
+
+    if (postId) {
+      fetchLikeCount(postId);
+    }
+  }, [postId]);
+
+  useEffect(() => {
     if (user) {
-      getAllPost(user?.uid);
+      getUserPosts(user?.uid);
+      getAllPosts;
       loadBookmarks();
     }
   }, [user]);
 
+  useEffect(() => {
+    const fetchFilteredPosts = async () => {
+      const postsCollection = collection(db, "posts");
+      const q = query(
+        postsCollection,
+        where("caption", ">=", searchTerm),
+        where("caption", "<=", searchTerm + "\uf8ff")
+      );
+      const postSnapshot = await getDocs(q);
+      const postsData: DocumentResponse[] = postSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as DocumentResponse[];
+      setFilteredPosts(postsData);
+    };
+
+    if (searchTerm) {
+      fetchFilteredPosts();
+    } else {
+      setFilteredPosts([]);
+    }
+  }, [searchTerm]);
+
   return {
-    liked,
+    liked: likedPosts,
     posts,
     loading,
     error,
     bookmarked,
     toggleBookmark,
     toggleLike,
+    likeCount,
+    searchTerm,
+    setSearchTerm,
+    filteredPosts,
   };
 };

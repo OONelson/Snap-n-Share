@@ -17,6 +17,7 @@ import AccountSettings from "@/layout/settings/AccountSetting";
 import AppearanceSettings from "@/layout/settings/AppearanceSettings";
 import NotificationSettings from "@/layout/settings/NotificationSettings";
 import "../components/reuseables/tabs.css";
+import SideFooter from "@/layout/SideFooter";
 // import { Input } from "@/components/ui/input";
 
 interface ISettingsProps {}
@@ -81,8 +82,8 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
   };
 
   return (
-    <main className="md:flex">
-      <nav className="md:w-64 sm:w-40 w-full p-4 bg-slate-100 border-r-2 h-screen">
+    <main className="md:flex items-start w-fit">
+      <nav className="md:w-64 sm:w-40 w-screen p-4 bg-stone-50 border-r-2 h-screen ">
         <header className="w-24 flex justify-between items-center">
           <FontAwesomeIcon
             icon={faArrowLeft}
@@ -97,11 +98,16 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
               onClick={() => handleChangeTab(tab.id)}
               key={tab.id}
               className={`${
-                activeTab === tab.id ? "md:bg-slate-300" : "md:bg-slate-100"
-              }  sm:w-48 h-12 flex justify-between items-center cursor-pointer text-slate-600 bg-slate-100 hover:bg-slate-200 px-4 rounded-md mb-2 `}
+                activeTab === tab.id
+                  ? "md:bg-slate-300 md:hover:bg-slate-300"
+                  : "md:bg-slate-50"
+              }  sm:w-48 h-12 flex justify-between items-center cursor-pointer text-slate-600 bg-slate-100 hover:bg-slate-100 px-4 rounded-md mb-2 `}
             >
               <div>
-                <FontAwesomeIcon icon={tab.icon} className=" pr-4" />
+                <FontAwesomeIcon
+                  icon={tab.icon}
+                  className=" pr-4 text-slate-600"
+                />
                 <span>{tab.name}</span>
               </div>
               <FontAwesomeIcon
@@ -111,13 +117,13 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
             </div>
           ))}
         </ul>
-        <div className="px-4">
+        <div className="px-4 cursor-pointer">
           <FontAwesomeIcon
             icon={faRightFromBracket}
             className="text-slate-600 pr-4 "
           />
           <span
-            className="text-red-600 font-semibold cursor-pointer"
+            className="text-red-600 font-semibold "
             onClick={handleOpenLogoutModal}
           >
             logout
@@ -137,6 +143,10 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
               <article key={tab.id}>{tab.content}</article>
             )
         )}
+      </section>
+
+      <section>
+        <SideFooter />
       </section>
 
       {isPopupVisible && (

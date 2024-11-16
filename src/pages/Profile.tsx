@@ -39,7 +39,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user } = useUserAuth();
   const {
     userProfile,
-    // changeDisplayName,
     handleUpdateProfile,
     edit,
     bio,
@@ -117,7 +116,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                     icon={liked.includes(post.id) ? solidHeart : regularHeart}
                   />
 
-                  {/* <div className="">{post.likes} likes</div> */}
+                  <div className="">{post.likes} likes</div>
                   <FontAwesomeIcon
                     className="cursor-pointer"
                     onClick={() => toggleBookmark(post.id)}
@@ -241,9 +240,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                             <p>{post.caption}</p>
                           </CardHeader>
                           <CardContent className="w-full h-full">
-                            {post.photos &&
-                            post.photos.length > 0 &&
-                            post.photos[0].cdnUrl ? (
+                            {post.photos.length > 0 ? (
                               <img
                                 src={`${post.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
                                 alt={post.caption}
@@ -259,9 +256,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                               icon={liked ? solidHeart : regularHeart}
                             />
 
-                            {/* <div className="hidden group-hover:block text-white">
-                              {post.likes} likes
-                            </div> */}
+                            <div>{post.likes} likes</div>
                             <FontAwesomeIcon
                               className="cursor-pointer"
                               onClick={() => toggleBookmark(post.id)}
