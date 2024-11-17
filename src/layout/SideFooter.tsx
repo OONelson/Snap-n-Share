@@ -8,16 +8,19 @@ import {
 
 const SideFooter: React.FC = () => {
   return (
-    <nav className="bg-orange-800 w-[30vw] h-screen flex flex-col">
-      <div className=" flex justify-between items-center">
-        <div className="text-lg font-bold">Follow Us</div>
-        <div className="flex space-x-4">
+    <nav className="bg-white w-[30vw] flex flex-col justify-start items-center md:sticky md:top-0 md:h-screen border">
+      <div className="h-screen flex  items-center flex-col">
+        <div className="flex justify-center h-[20vh] space-x-4 mt-10">
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
+            className="text-slate-700 hover:text-slate-800"
           >
-            <FontAwesomeIcon icon={faFacebook} />
+            <FontAwesomeIcon
+              icon={faFacebook}
+              className="text-slate-700 hover:text-slate-800 text-2xl"
+            />
           </a>
 
           <a
@@ -25,16 +28,31 @@ const SideFooter: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faInstagram} />
+            <FontAwesomeIcon
+              icon={faInstagram}
+              className="text-slate-700 hover:text-slate-800 text-2xl"
+            />
           </a>
           <a
             href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faGithub} />
+            <FontAwesomeIcon
+              icon={faGithub}
+              className="text-slate-700 hover:text-slate-800 text-2xl"
+            />
           </a>
         </div>
+
+        <div className="flex justify-center items-center w-[25vw]">
+          <p className="text-slate-700 font-sans italic ">
+            Our mission is to empower connections, foster authentic relationship
+            by creating a digital platform where individuals and communities can
+            express themselves, share meaningful moments
+          </p>
+        </div>
+        <h1 className="font-semibold italic text-xl pt-5">Snap n' Share</h1>
       </div>
     </nav>
   );

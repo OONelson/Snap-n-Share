@@ -28,7 +28,15 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
 
+  const toggleDeleteModal = () => {
+    setOpenDelete((prev) => !prev);
+  };
+
+  const closeDeleteModal = () => {
+    setOpenDelete(false);
+  };
   const getUserPosts = async (id: string) => {
     try {
       const querySnapshot = await getPostByUserId(id);
@@ -166,5 +174,8 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
     searchTerm,
     setSearchTerm,
     filteredPosts,
+    openDelete,
+    toggleDeleteModal,
+    closeDeleteModal,
   };
 };
