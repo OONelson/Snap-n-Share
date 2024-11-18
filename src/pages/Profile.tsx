@@ -16,6 +16,7 @@ import {
   faPen,
   faHeart as solidHeart,
   faBookmark as regularBookmark,
+  faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faHeart as regularHeart,
@@ -26,17 +27,30 @@ import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import { usePosts } from "@/hooks/useUserPost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import DeleteModal from "@/components/reuseables/DeleteModal";
 
 type Tab = "Tab1" | "Tab2";
 
 const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user } = useUserAuth();
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const {
     userProfile,
     handleUpdateProfile,
@@ -58,6 +72,8 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     bookmarked,
     toggleBookmark,
     toggleLike,
+    openDelete,
+    toggleDeleteModal,
   } = usePosts();
 
   const navigate = useNavigate();
@@ -91,17 +107,39 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
 
   const renderPost = () => {
     return (
-      <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
+      <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
         {posts.length > 0 ? (
           posts.map((post) => {
             const cdnUrl = post.photos[0]?.cdnUrl;
             return (
               <Card
                 key={post.id}
-                className=" flex flex-col  mb-3 sm:w-3/6 w-full"
+                className="flex flex-col  mb-3 sm:w-3/6 w-full"
               >
                 <CardHeader>
-                  <p>{post.caption}</p>
+                  <div className="flex justify-between items-center w-60 md:w-[36.5vw]">
+                    <Link to="/profile">
+                      <div className="flex justify-between items-center w-28">
+                        {userProfile?.photoURL ? (
+                          <img src={userProfile.photoURL} alt={displayName} />
+                        ) : (
+                          <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                            {initials}
+                          </div>
+                        )}
+                        <span>{userProfile?.username}</span>
+                      </div>
+                    </Link>
+                    <FontAwesomeIcon
+                      icon={faEllipsisV}
+                      className="text-gray-700 cursor-pointer"
+                      onClick={toggleDeleteModal}
+                    />
+                  </div>
+                  {openDelete && <DeleteModal />}
+                  <CardDescription>
+                    <p>{post.caption}</p>
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="w-full h-full">
                   <img
@@ -110,11 +148,11 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     className="cursor-pointer"
                     onClick={toggleLike(post.id)}
                     icon={liked.includes(post.id) ? solidHeart : regularHeart}
-                  />
+                  /> */}
 
                   <div className="">{post.likes} likes</div>
                   <FontAwesomeIcon
@@ -138,10 +176,10 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   };
 
   return (
-    <main className="h-full flex justify-between items-center w-full">
+    <main className="h-full flex w-full">
       <SideBar />
       {user ? (
-        <Card className=" sm:w-full md:ml-20 lg:ml-56 lg:w-11/12 w-full px-2 border-none h-full md:w-full">
+        <Card className="sm:w-full  lg:w-11/12 w-full px-2 border-none h-full md:w-full">
           <div className="flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />
             {/* LOGOUT MODAL */}
@@ -202,11 +240,17 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 {userProfile?.bio}
               </p>
             </section>
-            <div className="w-full flex justify-evenly mt-20 border-b-2">
+            <div
+              className={`sticky top-0 transition-all w-full flex justify-evenly mt-20 border-b-2 ${
+                isScrolled
+                  ? "backdrop-blur-md bg-white/70 shadow-md h-14 "
+                  : "bg-white/100 shadow-none"
+              }`}
+            >
               <h2
                 className={` cursor-pointer ${
                   activeTab === "Tab1" ? "font-extrabold" : "font-normal"
-                }`}
+                } ${isScrolled ? "pt-4" : "pt-0"}`}
                 onClick={() => handleChangeTab("Tab1")}
               >
                 Posts
@@ -214,7 +258,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
               <h2
                 className={` cursor-pointer ${
                   activeTab === "Tab2" ? "font-extrabold" : "font-normal"
-                }`}
+                } ${isScrolled ? "pt-4" : "pt-0"}`}
                 onClick={() => handleChangeTab("Tab2")}
               >
                 Bookmarks
@@ -226,18 +270,43 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
               )}
 
               {activeTab === "Tab2" && (
-                <div className="w-screen sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden">
+                <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
                   {bookmarked.length === 0 ? (
                     <p>No bookmarked posts found.</p>
                   ) : (
-                    <ul>
+                    <>
                       {bookmarkedPosts.map((post) => (
                         <Card
                           key={post.id}
-                          className=" flex flex-col  mb-3 sm:w-3/6 w-[90vw]"
+                          className="flex flex-col  mb-3 sm:w-3/6 w-full"
                         >
                           <CardHeader>
-                            <p>{post.caption}</p>
+                            <div className="flex justify-between items-center w-60 md:w-[36.5vw]">
+                              <Link to="/profile">
+                                <div className="flex justify-between items-center w-28">
+                                  {userProfile?.photoURL ? (
+                                    <img
+                                      src={userProfile.photoURL}
+                                      alt={displayName}
+                                    />
+                                  ) : (
+                                    <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                                      {initials}
+                                    </div>
+                                  )}
+                                  <span>{userProfile?.username}</span>
+                                </div>
+                              </Link>
+                              <FontAwesomeIcon
+                                icon={faEllipsisV}
+                                className="text-gray-700 cursor-pointer"
+                                onClick={toggleDeleteModal}
+                              />
+                            </div>
+                            {openDelete && <DeleteModal />}
+                            <CardDescription>
+                              <p>{post.caption}</p>
+                            </CardDescription>
                           </CardHeader>
                           <CardContent className="w-full h-full">
                             {post.photos.length > 0 ? (
@@ -250,11 +319,11 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                             )}
                           </CardContent>
                           <CardFooter className="flex justify-between items-center">
-                            <FontAwesomeIcon
+                            {/* <FontAwesomeIcon
                               className="cursor-pointer"
                               onClick={toggleLike}
                               icon={liked ? solidHeart : regularHeart}
-                            />
+                            /> */}
 
                             <div>{post.likes} likes</div>
                             <FontAwesomeIcon
@@ -269,7 +338,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                           </CardFooter>
                         </Card>
                       ))}
-                    </ul>
+                    </>
                   )}{" "}
                 </div>
               )}

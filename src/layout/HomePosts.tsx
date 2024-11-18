@@ -45,9 +45,11 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
     searchTerm,
     setSearchTerm,
     filteredPosts,
-    openDelete,
+    openDeleteModal,
     toggleDeleteModal,
+    selectedPost,
   } = usePosts();
+
   return (
     <main className="md:w-[60vw]">
       <section>
@@ -106,10 +108,10 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                       <FontAwesomeIcon
                         icon={faEllipsisV}
                         className="text-gray-700"
-                        onClick={toggleDeleteModal}
+                        onClick={() => toggleDeleteModal(post.caption)}
                       />
                     </div>
-                    {openDelete && <DeleteModal />}
+                    {openDeleteModal && selectedPost && <DeleteModal />}
                     <CardDescription>
                       <p>{post.caption}</p>
                     </CardDescription>
@@ -163,15 +165,13 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                       <span>{userProfile?.username}</span>
                     </div>
                   </Link>
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faEllipsisV}
-                      className="text-gray-700 cursor-pointer hover:text-gray-950"
-                      onClick={toggleDeleteModal}
-                    />
-                    {openDelete && <DeleteModal />}
-                  </div>
+                  <FontAwesomeIcon
+                    icon={faEllipsisV}
+                    className="text-gray-700 cursor-pointer hover:text-gray-950"
+                    onClick={toggleDeleteModal}
+                  />
                 </div>
+                {openDeleteModal && selectedPost && <DeleteModal />}
                 <CardDescription>
                   <p>{post.caption}</p>
                 </CardDescription>

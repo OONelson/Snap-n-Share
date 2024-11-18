@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { DocumentResponse, Post } from "../types/index";
-import { getPostByUserId, getPosts } from "@/repository/post.service";
+import {
+  deletePost,
+  getPostByUserId,
+  getPosts,
+} from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
   doc,
@@ -10,6 +14,7 @@ import {
   query,
   collection,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
@@ -28,15 +33,21 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
 
-  const toggleDeleteModal = () => {
-    setOpenDelete((prev) => !prev);
+  const toggleDeleteModal = (postId: string) => {
+    setSelectedPost(postId);
+    if (postId) {
+      setOpenDeleteModal((prev) => !prev);
+    }
   };
 
   const closeDeleteModal = () => {
-    setOpenDelete(false);
+    setSelectedPost(null);
+    setOpenDeleteModal(false);
   };
+
   const getUserPosts = async (id: string) => {
     try {
       const querySnapshot = await getPostByUserId(id);
@@ -70,6 +81,12 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
     console.log(response);
 
     setPosts(response);
+  };
+
+  const deletePost = async (postId: string) => {
+    selectedPost && (await deleteDoc(doc(db, "posts", postId)));
+    setPosts(posts.filter((post) => post.id !== postId));
+    closeDeleteModal();
   };
 
   const loadBookmarks = async () => {
@@ -174,8 +191,10 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
     searchTerm,
     setSearchTerm,
     filteredPosts,
-    openDelete,
+    openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
+    deletePost,
+    selectedPost,
   };
 };

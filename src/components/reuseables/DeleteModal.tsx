@@ -7,11 +7,14 @@ import { usePosts } from "@/hooks/useUserPost";
 interface IDeleteModalProps {}
 
 const DeleteModal: React.FunctionComponent<IDeleteModalProps> = () => {
-  const { closeDeleteModal } = usePosts();
+  const { closeDeleteModal, deletePost } = usePosts();
   return (
     <article onClick={closeDeleteModal}>
       <div className="relative ">
-        <Button className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200">
+        <Button
+          onClick={deletePost}
+          className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200"
+        >
           <span>Delete</span>
           <FontAwesomeIcon icon={faTrash} />
         </Button>
