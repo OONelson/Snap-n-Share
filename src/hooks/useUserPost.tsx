@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { DocumentResponse, Post } from "../types/index";
-import {
-  deletePost,
-  getPostByUserId,
-  getPosts,
-} from "@/repository/post.service";
+import { getPostByUserId, getPosts } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
   doc,
@@ -15,21 +11,32 @@ import {
   collection,
   getDocs,
   deleteDoc,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
+  increment,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
 interface UsePostsProps {
-  postId?: string; // Make postId optional
+  postId?: string;
+  post: DocumentResponse;
+  currentUserId: string;
 }
 
-export const usePosts = ({ postId }: UsePostsProps = {}) => {
+export const usePosts = ({
+  // postId,
+  post,
+  currentUserId,
+}: UsePostsProps = {}) => {
   const { user } = useUserAuth();
 
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [likedPosts, setLikedPosts] = useState<{ [key: string]: boolean }>({});
-  const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
+  // const [isLiked, setIsLiked] = useState<boolean>(false);
+  // const [likesCount, setLikesCount] = useState(post.likesCount);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
+  const [liked, setLiked] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
@@ -60,7 +67,7 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
             ...data,
             userbookmarks: [],
             userlikes: [],
-            likesNumber: 0,
+            likesCount: 0,
           };
           tempArr.push(responseObj);
         });
@@ -115,38 +122,49 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
   };
 
   const toggleLike = async (postId: string) => {
-    const newLikedState = !likedPosts[postId];
+    console.log("first clicked");
+    const isLiked = liked.includes(postId);
+    const newLikes = isLiked
+      ? liked.filter((id) => id !== postId)
+      : [...liked, postId];
 
-    setLikedPosts((prev) => ({ ...prev, [postId]: newLikedState }));
-    const newLikeCount = newLikedState
-      ? (likeCount[postId] || 0) + 1
-      : (likeCount[postId] || 0) - 1;
+    setLiked(newLikes);
 
-    // Update Firestore
-    const postDocRef = doc(db, "posts", postId);
-    await setDoc(postDocRef, { likes: newLikeCount }, { merge: true });
+    const userDocRef = doc(db, "users", user?.uid);
+    await setDoc(userDocRef, { likes: newLikes }, { merge: true });
 
-    // Update local state
-    setLikeCount((prev) => ({ ...prev, [postId]: newLikeCount }));
+    const postRef = doc(db, "posts", postId);
+
+    await updateDoc(postRef, {
+      likes: increment(isLiked ? -1 : 1),
+    });
+    console.log("second clicked");
   };
 
-  useEffect(() => {
-    const fetchLikeCount = async (postId: string): Promise<void> => {
-      if (!postId) return; // Ensure postId is defined
-      const postDocRef = doc(db, "posts", postId);
-      const postDoc = await getDoc(postDocRef);
-      if (postDoc.exists()) {
-        setLikeCount((prev) => ({
-          ...prev,
-          [postId]: postDoc.data()?.likes || 0,
-        }));
-      }
-    };
+  // useEffect(() => {
+  //   setIsLiked(post?.likes.includes(currentUserId));
+  // }, [post?.likes, currentUserId]);
 
-    if (postId) {
-      fetchLikeCount(postId);
-    }
-  }, [postId]);
+  // const toggleLike = async (postId: string) => {
+
+  //   const postRef = doc(db, "posts", postId);
+  //   if (isLiked) {
+  //     await updateDoc(postRef, {
+  //       likes: arrayRemove(currentUserId),
+  //       likesCount: post.likesCount - 1,
+  //     });
+  //     // setLikesCount(likesCount - 1);
+  //   } else {
+  //     await updateDoc(postRef, {
+  //       likes: arrayUnion(currentUserId),
+  //       likesCount: post.likesCount + 1,
+  //     });
+  //     // setLikesCount(likesCount + 1);
+  //   }
+  //   setIsLiked(!isLiked);
+
+  //   console.log("second clicked");
+  // };
 
   useEffect(() => {
     if (user) {
@@ -180,14 +198,13 @@ export const usePosts = ({ postId }: UsePostsProps = {}) => {
   }, [searchTerm]);
 
   return {
-    liked: likedPosts,
+    liked,
     posts,
     loading,
     error,
     bookmarked,
     toggleBookmark,
     toggleLike,
-    likeCount,
     searchTerm,
     setSearchTerm,
     filteredPosts,

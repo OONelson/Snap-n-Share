@@ -48,6 +48,8 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
     openDeleteModal,
     toggleDeleteModal,
     selectedPost,
+    liked,
+    toggleLike,
   } = usePosts();
 
   return (
@@ -117,16 +119,21 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                     </CardDescription>
 
                     <CardContent>
-                      <img src={post.photos[0]?.cdnUrl} alt={post.caption} />
+                      <img src={post?.photos[0]?.cdnUrl} alt={post.caption} />
                     </CardContent>
                     <CardFooter className="flex justify-between items-center">
-                      {/* <FontAwesomeIcon
-                className="cursor-pointer"
-                onClick={toggleLike(post.id)}
-                icon={liked.includes(post.id) ? solidHeart : regularHeart}
-              /> */}
-
-                      {/* <div className="">{post.likes} likes</div> */}
+                      <div>
+                        <FontAwesomeIcon
+                          className="cursor-pointer"
+                          onClick={() => toggleLike(post.id)}
+                          icon={
+                            liked.includes(post.id) ? solidHeart : regularHeart
+                          }
+                        />
+                        <span>
+                          {post.likes} {post.likes === 1 ? "like" : "likes"}
+                        </span>
+                      </div>
                       <FontAwesomeIcon
                         className="cursor-pointer"
                         onClick={() => toggleBookmark(post.id)}
@@ -145,61 +152,70 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
         </header>
 
         <article className="flex flex-col justify-center items-center">
-          {posts.map((post) => (
-            <Card
-              key={post.id}
-              className="flex justify-start items-center mb-4 w-[90vw] md:w-[50vw]"
-            >
-              <CardHeader>
-                <div className="flex justify-between items-center w-60 md:w-[45vw]">
-                  <Link to="/profile">
-                    <div className="flex items-center justify-between w-28">
-                      {userProfile?.photoURL ? (
-                        <img src={userProfile.photoURL} alt={displayName} />
-                      ) : (
-                        <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
-                          {initials}
-                        </div>
-                      )}
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <Card
+                key={post.id}
+                className="flex justify-start items-center mb-4 w-[90vw] md:w-[50vw]"
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-center w-60 md:w-[45vw]">
+                    <Link to="/profile">
+                      <div className="flex items-center justify-between w-28">
+                        {userProfile?.photoURL ? (
+                          <img src={userProfile.photoURL} alt={displayName} />
+                        ) : (
+                          <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                            {initials}
+                          </div>
+                        )}
 
-                      <span>{userProfile?.username}</span>
+                        <span>{userProfile?.username}</span>
+                      </div>
+                    </Link>
+                    <FontAwesomeIcon
+                      icon={faEllipsisV}
+                      className="text-gray-700 cursor-pointer hover:text-gray-950"
+                      onClick={toggleDeleteModal}
+                    />
+                  </div>
+                  {openDeleteModal && selectedPost && <DeleteModal />}
+                  <CardDescription className="ml-14">
+                    <p>{post.caption}</p>
+                  </CardDescription>
+
+                  <CardContent className="ml-10">
+                    <img src={post.photos?.cdnUrl} alt={post.caption} />
+                  </CardContent>
+                  <CardFooter className="flex justify-between items-center">
+                    <div className="">
+                      <FontAwesomeIcon
+                        className="cursor-pointer"
+                        onClick={() => toggleLike(post.id)}
+                        icon={
+                          liked.includes(post.id) ? solidHeart : regularHeart
+                        }
+                      />
+                      <span>
+                        {post.likes} {post.likes === 1 ? "like" : "likes"}
+                      </span>
                     </div>
-                  </Link>
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="text-gray-700 cursor-pointer hover:text-gray-950"
-                    onClick={toggleDeleteModal}
-                  />
-                </div>
-                {openDeleteModal && selectedPost && <DeleteModal />}
-                <CardDescription>
-                  <p>{post.caption}</p>
-                </CardDescription>
-
-                <CardContent>
-                  <img src={post.photos[0]?.cdnUrl} alt={post.caption} />
-                </CardContent>
-                <CardFooter className="flex justify-between items-center">
-                  {/* <FontAwesomeIcon
-                className="cursor-pointer"
-                onClick={toggleLike(post.id)}
-                icon={liked.includes(post.id) ? solidHeart : regularHeart}
-              /> */}
-
-                  {/* <div className="">{post.likes} likes</div> */}
-                  <FontAwesomeIcon
-                    className="cursor-pointer"
-                    onClick={() => toggleBookmark(post.id)}
-                    icon={
-                      bookmarked.includes(post.id)
-                        ? regularBookmark
-                        : solidBookmark
-                    }
-                  />
-                </CardFooter>
-              </CardHeader>
-            </Card>
-          ))}
+                    <FontAwesomeIcon
+                      className="cursor-pointer"
+                      onClick={() => toggleBookmark(post.id)}
+                      icon={
+                        bookmarked.includes(post.id)
+                          ? regularBookmark
+                          : solidBookmark
+                      }
+                    />
+                  </CardFooter>
+                </CardHeader>
+              </Card>
+            ))
+          ) : (
+            <span>no posts</span>
+          )}
         </article>
       </section>
     </main>

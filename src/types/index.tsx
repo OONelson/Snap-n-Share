@@ -24,17 +24,17 @@ export interface FileEntry {
   files: OutputFileEntry[];
 }
 
-export interface Post {
-  caption: string;
-  photos: PhotoMeta[];
-  likes: number;
-  userlikes: [];
-  userId: string | null;
-  date: Date;
-}
+// export interface Post {
+//   caption: string;
+//   photos?: PhotoMeta[];
+//   likes: number;
+//   userlikes: [];
+//   userId: string | null;
+//   date: Date;
+// }
 
 export interface PhotoMeta {
-  cdnUrl?: string;
+  cdnUrl: string;
   uuid: string;
 }
 
@@ -67,8 +67,8 @@ export interface DocumentResponse {
   id: string;
   caption?: string;
   photos: PhotoMeta[];
-  likesNumber: number;
-  likes: string[];
+  likesCount: number;
+  likes: number;
   userlikes: [];
   userbookmarks: [];
   userId?: string | null;

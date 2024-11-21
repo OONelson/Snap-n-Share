@@ -67,8 +67,8 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const {
     posts,
     loading,
-    error,
     liked,
+    error,
     bookmarked,
     toggleBookmark,
     toggleLike,
@@ -148,13 +148,15 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  {/* <FontAwesomeIcon
-                    className="cursor-pointer"
-                    onClick={toggleLike(post.id)}
-                    icon={liked.includes(post.id) ? solidHeart : regularHeart}
-                  /> */}
+                  <div>
+                    <FontAwesomeIcon
+                      className="cursor-pointer"
+                      onClick={() => toggleLike(post.id)}
+                      icon={liked.includes(post.id) ? solidHeart : regularHeart}
+                    />
+                    <span>{post.likesCount}</span>
+                  </div>
 
-                  <div className="">{post.likes} likes</div>
                   <FontAwesomeIcon
                     className="cursor-pointer"
                     onClick={() => toggleBookmark(post.id)}
