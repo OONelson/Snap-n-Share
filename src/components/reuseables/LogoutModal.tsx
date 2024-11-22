@@ -20,7 +20,7 @@ const LogoutModal: React.FunctionComponent<ILogoutModalProps> = ({
   return (
     <main className="modal-backdrop" onClick={onClose}>
       <article
-        className="bg-white p-5 rounded-2xl md:max-w-96 max-w-60 w-full"
+        className="bg-white p-5 rounded-2xl md:max-w-96 max-w-60 w-full "
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-end justify-end pb-8 ">

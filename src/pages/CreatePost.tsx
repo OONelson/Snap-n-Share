@@ -14,6 +14,8 @@ import { useUserAuth } from "@/contexts/UserAuthContext";
 import SideBar from "@/layout/SideBar";
 import { createPost } from "@/repository/post.service";
 import { FileEntry, PhotoMeta, Post } from "@/types";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -67,11 +69,13 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
     }
   };
   return (
-    <div>
-      <SideBar />
+    <>
+      <div className="md:pb-40">
+        <FontAwesomeIcon icon={faArrowLeft} className="cursor-pointer p-4" />
+      </div>
       <form
         onSubmit={handleSubmit}
-        className=" h-screen w-full border-none flex justify-center items-center flex-col"
+        className="flex justify-center items-center w-full "
       >
         <Card className="sm:w-2/5 w-4/5 lg:ml-40 md:ml-20 md:w-2/5">
           <CardHeader>
@@ -97,7 +101,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
           </CardFooter>
         </Card>
       </form>
-    </div>
+    </>
   );
 };
 

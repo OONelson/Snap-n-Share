@@ -185,10 +185,10 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                   </CardDescription>
 
                   <CardContent className="ml-10">
-                    <img src={post.photos?.cdnUrl} alt={post.caption} />
+                    <img src={post.photos[0]?.cdnUrl} alt={post.caption} />
                   </CardContent>
                   <CardFooter className="flex justify-between items-center">
-                    <div className="">
+                    <div className="w-[8vw] flex justify-between items-center">
                       <FontAwesomeIcon
                         className="cursor-pointer"
                         onClick={() => toggleLike(post.id)}
@@ -196,10 +196,13 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                           liked.includes(post.id) ? solidHeart : regularHeart
                         }
                       />
-                      <span>
-                        {post.likes} {post.likes === 1 ? "like" : "likes"}
-                      </span>
+                      {post.likes > 0 && (
+                        <span>
+                          {post.likes} {post.likes === 1 ? "likes" : "like"}
+                        </span>
+                      )}
                     </div>
+
                     <FontAwesomeIcon
                       className="cursor-pointer"
                       onClick={() => toggleBookmark(post.id)}

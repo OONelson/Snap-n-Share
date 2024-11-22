@@ -141,31 +141,6 @@ export const usePosts = ({
     console.log("second clicked");
   };
 
-  // useEffect(() => {
-  //   setIsLiked(post?.likes.includes(currentUserId));
-  // }, [post?.likes, currentUserId]);
-
-  // const toggleLike = async (postId: string) => {
-
-  //   const postRef = doc(db, "posts", postId);
-  //   if (isLiked) {
-  //     await updateDoc(postRef, {
-  //       likes: arrayRemove(currentUserId),
-  //       likesCount: post.likesCount - 1,
-  //     });
-  //     // setLikesCount(likesCount - 1);
-  //   } else {
-  //     await updateDoc(postRef, {
-  //       likes: arrayUnion(currentUserId),
-  //       likesCount: post.likesCount + 1,
-  //     });
-  //     // setLikesCount(likesCount + 1);
-  //   }
-  //   setIsLiked(!isLiked);
-
-  //   console.log("second clicked");
-  // };
-
   useEffect(() => {
     if (user) {
       getUserPosts(user?.uid);

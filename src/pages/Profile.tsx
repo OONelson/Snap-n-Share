@@ -110,7 +110,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
       <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
         {posts.length > 0 ? (
           posts.map((post) => {
-            const cdnUrl = post.photos[0]?.cdnUrl;
             return (
               <Card
                 key={post.id}
@@ -143,18 +142,22 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 </CardHeader>
                 <CardContent className="w-full h-full">
                   <img
-                    src={`${cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                    src={`${post.photos.cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
                     alt={post.caption}
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  <div>
+                  <div className="w-[8vw] flex justify-between items-center">
                     <FontAwesomeIcon
                       className="cursor-pointer"
                       onClick={() => toggleLike(post.id)}
                       icon={liked.includes(post.id) ? solidHeart : regularHeart}
                     />
-                    <span>{post.likesCount}</span>
+                    {post.likes > 0 && (
+                      <span>
+                        {post.likes} {post.likes === 1 ? "like" : "likes"}
+                      </span>
+                    )}
                   </div>
 
                   <FontAwesomeIcon
@@ -321,13 +324,24 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                             )}
                           </CardContent>
                           <CardFooter className="flex justify-between items-center">
-                            {/* <FontAwesomeIcon
-                              className="cursor-pointer"
-                              onClick={toggleLike}
-                              icon={liked ? solidHeart : regularHeart}
-                            /> */}
+                            <div className="w-[8vw] flex justify-between items-center">
+                              <FontAwesomeIcon
+                                className="cursor-pointer"
+                                onClick={() => toggleLike(post.id)}
+                                icon={
+                                  liked.includes(post.id)
+                                    ? solidHeart
+                                    : regularHeart
+                                }
+                              />
+                              {post.likes > 0 && (
+                                <span>
+                                  {post.likes}{" "}
+                                  {post.likes === 1 ? "like" : "likes"}
+                                </span>
+                              )}
+                            </div>
 
-                            <div>{post.likes} likes</div>
                             <FontAwesomeIcon
                               className="cursor-pointer"
                               onClick={() => toggleBookmark(post.id)}
