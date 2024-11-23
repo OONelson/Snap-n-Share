@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DocumentResponse, Post } from "../types/index";
+import { DocumentResponse, FileEntry, PhotoMeta, Post } from "../types/index";
 import { getPostByUserId, getPosts } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
@@ -12,29 +12,28 @@ import {
   getDocs,
   deleteDoc,
   updateDoc,
-  arrayRemove,
-  arrayUnion,
   increment,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import { createPost } from "@/repository/post.service";
+import { useNavigate } from "react-router-dom";
 
-interface UsePostsProps {
-  postId?: string;
-  post: DocumentResponse;
-  currentUserId: string;
-}
-
-export const usePosts = ({
-  // postId,
-  post,
-  currentUserId,
-}: UsePostsProps = {}) => {
+export const usePosts = () => {
   const { user } = useUserAuth();
 
+  const [fileEntry, setFileEntry] = useState<FileEntry>({
+    files: [],
+  });
+  const [post, setPost] = useState<Post>({
+    caption: "",
+    photos: [],
+    likes: 0,
+    userlikes: [],
+    userId: "",
+    date: new Date(),
+  });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [isLiked, setIsLiked] = useState<boolean>(false);
-  // const [likesCount, setLikesCount] = useState(post.likesCount);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
   const [liked, setLiked] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +41,8 @@ export const usePosts = ({
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const toggleDeleteModal = (postId: string) => {
     setSelectedPost(postId);
@@ -53,6 +54,32 @@ export const usePosts = ({
   const closeDeleteModal = () => {
     setSelectedPost(null);
     setOpenDeleteModal(false);
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log(fileEntry.files);
+
+    console.log(post);
+
+    const photoMeta: PhotoMeta[] = fileEntry.files.map((file) => {
+      return { cdnUrl: file.cdnUrl!, uuid: file.uuid! };
+    });
+
+    if (user != null) {
+      const newPost: Post = {
+        ...post,
+        userId: user?.uid || null,
+        photos: photoMeta,
+      };
+      console.log(newPost);
+
+      await createPost(newPost);
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
   };
 
   const getUserPosts = async (id: string) => {
@@ -67,7 +94,6 @@ export const usePosts = ({
             ...data,
             userbookmarks: [],
             userlikes: [],
-            likesCount: 0,
           };
           tempArr.push(responseObj);
         });
@@ -178,15 +204,20 @@ export const usePosts = ({
     loading,
     error,
     bookmarked,
+    post,
+    setPost,
     toggleBookmark,
     toggleLike,
     searchTerm,
     setSearchTerm,
     filteredPosts,
     openDeleteModal,
+    setFileEntry,
+    fileEntry,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
     selectedPost,
+    handleSubmit,
   };
 };

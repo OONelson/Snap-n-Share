@@ -23,6 +23,8 @@ const FileUploader: React.FunctionComponent<IFileUploaderProps> = () => {
         sourceList="local, url, camera"
         classNameUploader="uc-light uc-gray"
         pubkey="554f4def3f926b71fb61"
+        imgOnly
+        multiple={false}
         onFileUploadSuccess={handleFileUploadSuccess}
       />
 

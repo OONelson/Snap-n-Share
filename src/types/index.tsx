@@ -25,13 +25,14 @@ export interface FileEntry {
 }
 
 export interface Post {
+  id: string;
   caption: string;
-  photos?: PhotoMeta[];
+  photos: PhotoMeta[];
   likes: number;
   userlikes: string[];
-  userId?: string;
-  username: string;
-  date: Date;
+  username?: string;
+  userId?: string | null;
+  date?: Date;
 }
 
 export interface PhotoMeta {
@@ -66,7 +67,7 @@ export interface ProfileResponse {
 
 export interface DocumentResponse {
   id: string;
-  caption?: string;
+  caption: string;
   photos: PhotoMeta[];
   likes: number;
   userlikes: string[];
