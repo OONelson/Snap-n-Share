@@ -1,10 +1,8 @@
-import FileUplaoder from "@/components/reuseables/FileUploader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
-  // CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -14,13 +12,22 @@ import { usePosts } from "@/hooks/useUserPost";
 
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 
 interface ICreatePostProps {}
 
 const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
-  const { handleSubmit, fileEntry, setFileEntry, post, setPost } = usePosts();
+  const { handleSubmit, handleFileChange, post, setPost } = usePosts();
 
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPreviewImage(URL.createObjectURL(file));
+      handleFileChange(e);
+    }
+  };
   return (
     <>
       <div className="md:pb-40">
@@ -45,11 +52,27 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
                 setPost({ ...post, caption: e.target.value })
               }
             />
-            <FileUplaoder
-              fileEntry={fileEntry}
-              onChange={setFileEntry}
-              preview={true}
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImagePreview}
+              className="mb-4 block"
             />
+
+            {previewImage && (
+              <div className="image-preview">
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center items-center">
             <Button className="px-8" type="submit">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DocumentResponse, FileEntry, PhotoMeta, Post } from "../types/index";
+import { DocumentResponse, Post } from "../types/index";
 import { getPostByUserId, getPosts } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
@@ -13,20 +13,20 @@ import {
   deleteDoc,
   updateDoc,
   increment,
+  addDoc,
 } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
-import { createPost } from "@/repository/post.service";
+import { db, storage } from "@/firebase/firebaseConfig";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
 export const usePosts = () => {
   const { user } = useUserAuth();
 
-  const [fileEntry, setFileEntry] = useState<FileEntry>({
-    files: [],
-  });
+  const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
+    id: "",
     caption: "",
-    photos: [],
+    photos: "",
     likes: 0,
     userlikes: [],
     userId: "",
@@ -56,29 +56,75 @@ export const usePosts = () => {
     setOpenDeleteModal(false);
   };
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(fileEntry.files);
-
-    console.log(post);
-
-    const photoMeta: PhotoMeta[] = fileEntry.files.map((file) => {
-      return { cdnUrl: file.cdnUrl!, uuid: file.uuid! };
-    });
-
-    if (user != null) {
-      const newPost: Post = {
-        ...post,
-        userId: user?.uid || null,
-        photos: photoMeta,
-      };
-      console.log(newPost);
-
-      await createPost(newPost);
-      navigate("/");
-    } else {
+    if (!user) {
       navigate("/login");
+      return;
+    }
+
+    if (!file || !post.caption) {
+      alert("Please select a file and provide a caption.");
+      return;
+    }
+
+    try {
+      // Upload image to Firebase Storage
+      const storageRef = ref(storage, `posts/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Error during file upload:", error);
+        },
+        async () => {
+          const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("File available at:", photoURL);
+
+          const newPost: Post = {
+            id: user.uid,
+            caption: post.caption,
+            photos: photoURL,
+            likes: 0,
+            userlikes: [],
+            userId: user.uid,
+            date: new Date(),
+          };
+
+          console.log(newPost);
+
+          await addDoc(collection(db, "posts"), newPost);
+
+          // Reset form state
+          setFile(null);
+          setPost({
+            id: "",
+            caption: "",
+            photos: "",
+            likes: 0,
+            userlikes: [],
+            userId: "",
+            date: new Date(),
+          });
+          alert("Post created successfully!");
+          navigate("/");
+        }
+      );
+    } catch (error) {
+      console.error("Error creating post:", error);
     }
   };
 
@@ -110,10 +156,19 @@ export const usePosts = () => {
   };
 
   const getAllPosts = async () => {
-    const response: DocumentResponse[] = (await getPosts()) || [];
-    console.log(response);
+    try {
+      const querySnapshot = await getPosts();
+      const response: DocumentResponse[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as DocumentResponse[];
 
-    setPosts(response);
+      console.log(response);
+      setPosts(response);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      // setError(error.message);
+    }
   };
 
   const deletePost = async (postId: string) => {
@@ -148,7 +203,6 @@ export const usePosts = () => {
   };
 
   const toggleLike = async (postId: string) => {
-    console.log("first clicked");
     const isLiked = liked.includes(postId);
     const newLikes = isLiked
       ? liked.filter((id) => id !== postId)
@@ -164,13 +218,12 @@ export const usePosts = () => {
     await updateDoc(postRef, {
       likes: increment(isLiked ? -1 : 1),
     });
-    console.log("second clicked");
   };
 
   useEffect(() => {
     if (user) {
       getUserPosts(user?.uid);
-      getAllPosts;
+      getAllPosts();
       loadBookmarks();
     }
   }, [user]);
@@ -212,8 +265,7 @@ export const usePosts = () => {
     setSearchTerm,
     filteredPosts,
     openDeleteModal,
-    setFileEntry,
-    fileEntry,
+    handleFileChange,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,

@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { FileEntry } from "@/types";
 import {
   FileUploaderRegular,
   OutputFileEntry,
 } from "@uploadcare/react-uploader";
-import { useState } from "react";
+import { uploadImage } from "../../firebase/firebaseStorage";
 
 interface IFileUploaderProps {
   fileEntry: FileEntry;

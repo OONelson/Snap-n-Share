@@ -119,7 +119,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                     </CardDescription>
 
                     <CardContent>
-                      <img src={post?.photos[0]?.cdnUrl} alt={post.caption} />
+                      <img src={post?.photos} alt={post.caption} />
                     </CardContent>
                     <CardFooter className="flex justify-between items-center">
                       <div>
@@ -152,7 +152,9 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
         </header>
 
         <article className="flex flex-col justify-center items-center">
-          {posts.length > 0 ? (
+          {posts.length === 0 ? (
+            <p>No post available</p>
+          ) : (
             posts.map((post) => (
               <Card
                 key={post.id}
@@ -185,7 +187,10 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                   </CardDescription>
 
                   <CardContent className="ml-10">
-                    <img src={post.photos[0]?.cdnUrl} alt={post.caption} />
+                    <img
+                      src={post.photos ? post.photos : ""}
+                      alt={post.caption}
+                    />
                   </CardContent>
                   <CardFooter className="flex justify-between items-center">
                     <div className="w-[8vw] flex justify-between items-center">
@@ -216,8 +221,6 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                 </CardHeader>
               </Card>
             ))
-          ) : (
-            <span>no posts</span>
           )}
         </article>
       </section>

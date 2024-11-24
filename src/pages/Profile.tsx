@@ -142,7 +142,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 </CardHeader>
                 <CardContent className="w-full h-full">
                   <img
-                    src={`${post.photos.cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                    src={`${post.photos}/-/progressive/yes/-/scale_crop/300x300/center/`}
                     alt={post.caption}
                   />
                 </CardContent>
@@ -316,7 +316,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                           <CardContent className="w-full h-full">
                             {post.photos.length > 0 ? (
                               <img
-                                src={`${post.photos[0].cdnUrl}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                                src={`${post.photos}/-/progressive/yes/-/scale_crop/300x300/center/`}
                                 alt={post.caption}
                               />
                             ) : (
