@@ -156,19 +156,10 @@ export const usePosts = () => {
   };
 
   const getAllPosts = async () => {
-    try {
-      const querySnapshot = await getPosts();
-      const response: DocumentResponse[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as DocumentResponse[];
+    const response: DocumentResponse[] = (await getPosts()) || [];
 
-      console.log(response);
-      setPosts(response);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      // setError(error.message);
-    }
+    console.log(response);
+    setPosts(response);
   };
 
   const deletePost = async (postId: string) => {

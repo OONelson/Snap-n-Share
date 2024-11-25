@@ -71,7 +71,7 @@ export interface DocumentResponse {
   photos: string;
   likes: number;
   userlikes: string[];
-  userbookmarks: [];
+  userbookmarks?: [];
   username?: string;
   userId?: string | null;
   date?: Date;

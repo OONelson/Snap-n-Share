@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { usePosts } from "@/hooks/useUserPost";
 
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 interface ICreatePostProps {}
 
@@ -28,6 +28,12 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
       handleFileChange(e);
     }
   };
+
+  // const handleRemoveClick = useCallback(
+  //   (uuid: ["uuid"]) =>
+  //     handleFileChange({ file: file.filter((f: any) => f.uuid !== uuid) }),
+  //   [files, handleFileChange]
+  // );
   return (
     <>
       <div className="md:pb-40">
@@ -71,6 +77,12 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
                     objectFit: "cover",
                   }}
                 />
+                {/* <div className="cursor-pointer flex justify-center ">
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    onClick={() => handleRemoveClick(file.uuid)}
+                  />
+                </div> */}
               </div>
             )}
           </CardContent>

@@ -182,11 +182,11 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                     />
                   </div>
                   {openDeleteModal && selectedPost && <DeleteModal />}
-                  <CardDescription className="ml-14">
+                  <CardDescription className="ml-8">
                     <p>{post.caption}</p>
                   </CardDescription>
 
-                  <CardContent className="ml-10">
+                  <CardContent>
                     <img
                       src={post.photos ? post.photos : ""}
                       alt={post.caption}
