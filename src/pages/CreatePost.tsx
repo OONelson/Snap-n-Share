@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { usePosts } from "@/hooks/useUserPost";
 
-import { faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 interface ICreatePostProps {}
 
@@ -29,11 +29,6 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
     }
   };
 
-  // const handleRemoveClick = useCallback(
-  //   (uuid: ["uuid"]) =>
-  //     handleFileChange({ file: file.filter((f: any) => f.uuid !== uuid) }),
-  //   [files, handleFileChange]
-  // );
   return (
     <>
       <div className="md:pb-40">

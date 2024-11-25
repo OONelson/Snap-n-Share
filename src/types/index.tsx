@@ -25,13 +25,13 @@ export interface UserName {
 // }
 
 export interface Post {
-  id: string;
   caption: string;
   photos: string;
   likes: number;
   userlikes: string[];
+  userbookmarks?: string[];
   username?: string;
-  userId?: string | null;
+  userId?: string;
   date?: Date;
 }
 
@@ -71,7 +71,7 @@ export interface DocumentResponse {
   photos: string;
   likes: number;
   userlikes: string[];
-  userbookmarks?: [];
+  userbookmarks?: string[];
   username?: string;
   userId?: string | null;
   date?: Date;

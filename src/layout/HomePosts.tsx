@@ -22,11 +22,41 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DeleteModal from "@/components/reuseables/DeleteModal";
+import { auth } from "@/firebase/firebaseConfig";
+import { updateLikesOnPost } from "../repository/post.service";
+import { DocumentResponse } from "@/types";
 
-interface IHomePostsProps {}
+interface IHomePostsProps {
+  data: DocumentResponse;
+}
 
-const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
+const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
+  const user = auth.currentUser;
+
   const [isScrolled, setIsScrolled] = useState(false);
+  const [likesInfo, setLikesInfo] = useState<{
+    likes: number;
+    isLike: boolean;
+  }>({
+    likes: data?.likes ?? 0,
+    isLike: data?.userlikes?.includes(user!.uid) ? true : false,
+  });
+
+  const toggleLike = async (isVal: boolean) => {
+    setLikesInfo({
+      likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
+      isLike: !likesInfo.isLike,
+    });
+    isVal
+      ? data.userlikes?.push(user!.uid)
+      : data.userlikes?.splice(data.userlikes.indexOf(user!.uid), 1);
+
+    await updateLikesOnPost(
+      data.id!,
+      data.userlikes!,
+      isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
+    );
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,8 +78,6 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
     openDeleteModal,
     toggleDeleteModal,
     selectedPost,
-    liked,
-    toggleLike,
   } = usePosts();
 
   return (
@@ -125,13 +153,12 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                       <div>
                         <FontAwesomeIcon
                           className="cursor-pointer"
-                          onClick={() => toggleLike(post.id)}
-                          icon={
-                            liked.includes(post.id) ? solidHeart : regularHeart
-                          }
+                          onClick={() => toggleLike(!likesInfo.isLike)}
+                          icon={likesInfo.isLike ? solidHeart : regularHeart}
                         />
                         <span>
-                          {post.likes} {post.likes === 1 ? "like" : "likes"}
+                          {likesInfo.likes}{" "}
+                          {likesInfo.likes === 1 ? "like" : "likes"}
                         </span>
                       </div>
                       <FontAwesomeIcon
@@ -193,19 +220,16 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = () => {
                     />
                   </CardContent>
                   <CardFooter className="flex justify-between items-center">
-                    <div className="w-[8vw] flex justify-between items-center">
+                    <div>
                       <FontAwesomeIcon
                         className="cursor-pointer"
-                        onClick={() => toggleLike(post.id)}
-                        icon={
-                          liked.includes(post.id) ? solidHeart : regularHeart
-                        }
+                        onClick={() => toggleLike(!likesInfo.isLike)}
+                        icon={likesInfo.isLike ? solidHeart : regularHeart}
                       />
-                      {post.likes > 0 && (
-                        <span>
-                          {post.likes} {post.likes === 1 ? "likes" : "like"}
-                        </span>
-                      )}
+                      <span>
+                        {likesInfo.likes}{" "}
+                        {likesInfo.likes === 1 ? "like" : "likes"}
+                      </span>
                     </div>
 
                     <FontAwesomeIcon

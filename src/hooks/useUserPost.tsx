@@ -11,8 +11,6 @@ import {
   collection,
   getDocs,
   deleteDoc,
-  updateDoc,
-  increment,
   addDoc,
 } from "firebase/firestore";
 import { db, storage } from "@/firebase/firebaseConfig";
@@ -24,7 +22,6 @@ export const usePosts = () => {
 
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
-    id: "",
     caption: "",
     photos: "",
     likes: 0,
@@ -35,7 +32,7 @@ export const usePosts = () => {
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
-  const [liked, setLiked] = useState<string[]>([]);
+
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
@@ -95,12 +92,11 @@ export const usePosts = () => {
           console.log("File available at:", photoURL);
 
           const newPost: Post = {
-            id: user.uid,
             caption: post.caption,
             photos: photoURL,
             likes: 0,
             userlikes: [],
-            userId: user.uid,
+            userId: user?.uid,
             date: new Date(),
           };
 
@@ -111,7 +107,6 @@ export const usePosts = () => {
           // Reset form state
           setFile(null);
           setPost({
-            id: "",
             caption: "",
             photos: "",
             likes: 0,
@@ -193,24 +188,6 @@ export const usePosts = () => {
     await setDoc(userDocRef, { bookmarks: newBookmarks }, { merge: true });
   };
 
-  const toggleLike = async (postId: string) => {
-    const isLiked = liked.includes(postId);
-    const newLikes = isLiked
-      ? liked.filter((id) => id !== postId)
-      : [...liked, postId];
-
-    setLiked(newLikes);
-
-    const userDocRef = doc(db, "users", user?.uid);
-    await setDoc(userDocRef, { likes: newLikes }, { merge: true });
-
-    const postRef = doc(db, "posts", postId);
-
-    await updateDoc(postRef, {
-      likes: increment(isLiked ? -1 : 1),
-    });
-  };
-
   useEffect(() => {
     if (user) {
       getUserPosts(user?.uid);
@@ -243,7 +220,6 @@ export const usePosts = () => {
   }, [searchTerm]);
 
   return {
-    liked,
     posts,
     loading,
     error,
@@ -251,7 +227,6 @@ export const usePosts = () => {
     post,
     setPost,
     toggleBookmark,
-    toggleLike,
     searchTerm,
     setSearchTerm,
     filteredPosts,
