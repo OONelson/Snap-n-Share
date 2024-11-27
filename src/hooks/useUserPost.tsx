@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { DocumentResponse, Post } from "../types/index";
-import { getPostByUserId, getPosts } from "@/repository/post.service";
+import {
+  getPostByUserId,
+  getPosts,
+  searchPosts,
+} from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
   doc,
   setDoc,
   getDoc,
-  where,
-  query,
   collection,
-  getDocs,
   deleteDoc,
   addDoc,
 } from "firebase/firestore";
@@ -196,27 +197,19 @@ export const usePosts = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    const fetchFilteredPosts = async () => {
-      const postsCollection = collection(db, "posts");
-      const q = query(
-        postsCollection,
-        where("caption", ">=", searchTerm),
-        where("caption", "<=", searchTerm + "\uf8ff")
-      );
-      const postSnapshot = await getDocs(q);
-      const postsData: DocumentResponse[] = postSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as DocumentResponse[];
-      setFilteredPosts(postsData);
-    };
-
-    if (searchTerm) {
-      fetchFilteredPosts();
+  const fetchFilteredPosts = async () => {
+    if (searchTerm.trim() !== "") {
+      const results = await searchPosts(searchTerm.trim());
+      fetchFilteredPosts(results);
+      console.log("fetched");
     } else {
+      console.log("no fetched");
+
       setFilteredPosts([]);
     }
+  };
+  useEffect(() => {
+    fetchFilteredPosts();
   }, [searchTerm]);
 
   return {

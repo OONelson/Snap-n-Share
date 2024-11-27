@@ -1,63 +1,36 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { useUserProfile } from "@/contexts/UserProfileContext";
-import { usePosts } from "@/hooks/useUserPost";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHeart as regularHeart,
-  faBookmark as solidBookmark,
-} from "@fortawesome/free-regular-svg-icons";
-import {
-  faHeart as solidHeart,
-  faBookmark as regularBookmark,
-  faEllipsisV,
-} from "@fortawesome/free-solid-svg-icons";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+// } from "@/components/ui/card";
+// import { useUserProfile } from "@/contexts/UserProfileContext";
+// import { usePosts } from "@/hooks/useUserPost";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//   faHeart as regularHeart,
+//   faBookmark as solidBookmark,
+// } from "@fortawesome/free-regular-svg-icons";
+// import {
+//   faHeart as solidHeart,
+//   faBookmark as regularBookmark,
+//   faEllipsisV,
+// } from "@fortawesome/free-solid-svg-icons";
 
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DeleteModal from "@/components/reuseables/DeleteModal";
-import { auth } from "@/firebase/firebaseConfig";
-import { updateLikesOnPost } from "../repository/post.service";
+import PostComponent from "@/components/reuseables/PostComponent";
+import { useUserProfile } from "@/contexts/UserProfileContext";
+import { usePosts } from "@/hooks/useUserPost";
 import { DocumentResponse } from "@/types";
-
 interface IHomePostsProps {
   data: DocumentResponse;
 }
 
 const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
-  const user = auth.currentUser;
-
   const [isScrolled, setIsScrolled] = useState(false);
-  const [likesInfo, setLikesInfo] = useState<{
-    likes: number;
-    isLike: boolean;
-  }>({
-    likes: data?.likes ?? 0,
-    isLike: data?.userlikes?.includes(user!.uid) ? true : false,
-  });
-
-  const toggleLike = async (isVal: boolean) => {
-    setLikesInfo({
-      likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
-      isLike: !likesInfo.isLike,
-    });
-    isVal
-      ? data.userlikes?.push(user!.uid)
-      : data.userlikes?.splice(data.userlikes.indexOf(user!.uid), 1);
-
-    await updateLikesOnPost(
-      data.id!,
-      data.userlikes!,
-      isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
-    );
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -68,17 +41,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   }, []);
 
   const { userProfile, displayName, initials } = useUserProfile();
-  const {
-    posts,
-    bookmarked,
-    toggleBookmark,
-    searchTerm,
-    setSearchTerm,
-    filteredPosts,
-    openDeleteModal,
-    toggleDeleteModal,
-    selectedPost,
-  } = usePosts();
+  const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
     <main className="md:w-[60vw]">
@@ -115,7 +78,16 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                 className="w-1/2 p-2 border rounded-lg mb-4"
               />
             </div>
-            <ul>
+            <article>
+              {filteredPosts.length > 0 && (
+                <PostComponent posts={filteredPosts} />
+              )}
+            </article>
+
+            <article>
+              <PostComponent data={data} />
+            </article>
+            {/* <ul>
               {filteredPosts.map((post) => (
                 <Card
                   key={post.caption}
@@ -146,8 +118,12 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                       <p>{post.caption}</p>
                     </CardDescription>
 
-                    <CardContent>
-                      <img src={post?.photos} alt={post.caption} />
+                    <CardContent className="flex justify-center items-center">
+                      <img
+                        src={post.photos ? post.photos : ""}
+                        alt={post.caption}
+                        className="w-[400px] h-[200px] object-center md:w-[500px] md:object-fill"
+                      />
                     </CardContent>
                     <CardFooter className="flex justify-between items-center">
                       <div>
@@ -156,10 +132,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                           onClick={() => toggleLike(!likesInfo.isLike)}
                           icon={likesInfo.isLike ? solidHeart : regularHeart}
                         />
-                        <span>
-                          {likesInfo.likes}{" "}
-                          {likesInfo.likes === 1 ? "like" : "likes"}
-                        </span>
+                        <span>{likesInfo.likes} </span>
                       </div>
                       <FontAwesomeIcon
                         className="cursor-pointer"
@@ -174,79 +147,9 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                   </CardHeader>
                 </Card>
               ))}
-            </ul>
+            </ul> */}
           </div>
         </header>
-
-        <article className="flex flex-col justify-center items-center">
-          {posts.length === 0 ? (
-            <p>No post available</p>
-          ) : (
-            posts.map((post) => (
-              <Card
-                key={post.id}
-                className="flex justify-start items-center mb-4 w-[90vw] md:w-[50vw]"
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-center w-60 md:w-[45vw]">
-                    <Link to="/profile">
-                      <div className="flex items-center justify-between w-28">
-                        {userProfile?.photoURL ? (
-                          <img src={userProfile.photoURL} alt={displayName} />
-                        ) : (
-                          <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
-                            {initials}
-                          </div>
-                        )}
-
-                        <span>{userProfile?.username}</span>
-                      </div>
-                    </Link>
-                    <FontAwesomeIcon
-                      icon={faEllipsisV}
-                      className="text-gray-700 cursor-pointer hover:text-gray-950"
-                      onClick={toggleDeleteModal}
-                    />
-                  </div>
-                  {openDeleteModal && selectedPost && <DeleteModal />}
-                  <CardDescription className="ml-8">
-                    <p>{post.caption}</p>
-                  </CardDescription>
-
-                  <CardContent>
-                    <img
-                      src={post.photos ? post.photos : ""}
-                      alt={post.caption}
-                    />
-                  </CardContent>
-                  <CardFooter className="flex justify-between items-center">
-                    <div>
-                      <FontAwesomeIcon
-                        className="cursor-pointer"
-                        onClick={() => toggleLike(!likesInfo.isLike)}
-                        icon={likesInfo.isLike ? solidHeart : regularHeart}
-                      />
-                      <span>
-                        {likesInfo.likes}{" "}
-                        {likesInfo.likes === 1 ? "like" : "likes"}
-                      </span>
-                    </div>
-
-                    <FontAwesomeIcon
-                      className="cursor-pointer"
-                      onClick={() => toggleBookmark(post.id)}
-                      icon={
-                        bookmarked.includes(post.id)
-                          ? regularBookmark
-                          : solidBookmark
-                      }
-                    />
-                  </CardFooter>
-                </CardHeader>
-              </Card>
-            ))
-          )}
-        </article>
       </section>
     </main>
   );

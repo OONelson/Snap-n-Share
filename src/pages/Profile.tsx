@@ -34,13 +34,41 @@ import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
 import DeleteModal from "@/components/reuseables/DeleteModal";
+import { DocumentResponse } from "@/types";
+import { updateLikesOnPost } from "@/repository/post.service";
 
 type Tab = "Tab1" | "Tab2";
+interface IProfileProps {
+  data: DocumentResponse;
+}
 
-const Profile: React.FunctionComponent<IProfileProps> = () => {
+const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
+  // const [likesInfo, setLikesInfo] = useState<{
+  //   likes: number;
+  //   isLike: boolean;
+  // }>({
+  //   likes: data.likes,
+  //   isLike: data.userlikes.includes(user!.uid) ? true : false,
+  // });
+
+  // const toggleLike = async (isVal: boolean) => {
+  //   setLikesInfo({
+  //     likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
+  //     isLike: !likesInfo.isLike,
+  //   });
+  //   isVal
+  //     ? data.userlikes?.push(user!.uid)
+  //     : data.userlikes?.splice(data.userlikes.indexOf(user!.uid), 1);
+
+  //   await updateLikesOnPost(
+  //     data.id,
+  //     data.userlikes,
+  //     isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
+  //   );
+  // };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,11 +95,9 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const {
     posts,
     loading,
-    liked,
     error,
     bookmarked,
     toggleBookmark,
-    toggleLike,
     openDelete,
     toggleDeleteModal,
   } = usePosts();
@@ -140,24 +166,21 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                     <p>{post.caption}</p>
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="w-full h-full">
+                <CardContent className="flex justify-center items-center">
                   <img
-                    src={`${post.photos}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                    src={post.photos ? post.photos : ""}
                     alt={post.caption}
+                    className="w-[400px] h-[200px] object-center md:w-[500px] md:object-fill"
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  <div className="w-[8vw] flex justify-between items-center">
+                  <div>
                     <FontAwesomeIcon
                       className="cursor-pointer"
-                      onClick={() => toggleLike(post.id)}
-                      icon={liked.includes(post.id) ? solidHeart : regularHeart}
+                      onClick={() => toggleLike(!likesInfo.isLike)}
+                      icon={likesInfo.isLike ? solidHeart : regularHeart}
                     />
-                    {post.likes > 0 && (
-                      <span>
-                        {post.likes} {post.likes === 1 ? "like" : "likes"}
-                      </span>
-                    )}
+                    <span>{likesInfo.likes} </span>
                   </div>
 
                   <FontAwesomeIcon
@@ -324,22 +347,15 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                             )}
                           </CardContent>
                           <CardFooter className="flex justify-between items-center">
-                            <div className="w-[8vw] flex justify-between items-center">
+                            <div>
                               <FontAwesomeIcon
                                 className="cursor-pointer"
-                                onClick={() => toggleLike(post.id)}
+                                onClick={() => toggleLike(!likesInfo.isLike)}
                                 icon={
-                                  liked.includes(post.id)
-                                    ? solidHeart
-                                    : regularHeart
+                                  likesInfo.isLike ? solidHeart : regularHeart
                                 }
                               />
-                              {post.likes > 0 && (
-                                <span>
-                                  {post.likes}{" "}
-                                  {post.likes === 1 ? "like" : "likes"}
-                                </span>
-                              )}
+                              <span>{likesInfo.likes} </span>
                             </div>
 
                             <FontAwesomeIcon

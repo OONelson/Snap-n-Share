@@ -1,4 +1,3 @@
-// import { OutputFileEntry } from "@uploadcare/react-uploader";
 import { User } from "firebase/auth";
 
 export interface UserLogIn {
@@ -20,10 +19,6 @@ export interface UserName {
   username: string;
 }
 
-// export interface FileEntry {
-//   files: OutputFileEntry[];
-// }
-
 export interface Post {
   caption: string;
   photos: string;
@@ -32,13 +27,8 @@ export interface Post {
   userbookmarks?: string[];
   username?: string;
   userId?: string;
-  date?: Date;
+  date: Date;
 }
-
-// export interface PhotoMeta {
-//   cdnUrl: string;
-//   uuid: string;
-// }
 
 export interface ProfileInfo {
   user?: User;
@@ -67,13 +57,13 @@ export interface ProfileResponse {
 
 export interface DocumentResponse {
   id: string;
-  caption: string;
+  caption?: string;
   photos: string;
-  likes: number;
+  likes?: number;
   userlikes: string[];
   userbookmarks?: string[];
   username?: string;
-  userId?: string | null;
+  userId?: string;
   date?: Date;
 }
 

@@ -10,7 +10,7 @@ const DeleteModal: React.FunctionComponent<IDeleteModalProps> = () => {
   const { closeDeleteModal, deletePost } = usePosts();
   return (
     <article onClick={closeDeleteModal}>
-      <div className="relative ">
+      <div className="relative -mt-3">
         <Button
           onClick={deletePost}
           className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200"

@@ -51,6 +51,22 @@ export const getPostByUserId = (id: string) => {
   return getDocs(q);
 };
 
+export const searchPosts = async (searchTerm: string) => {
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    where("caption", ">=", searchTerm),
+    where("caption", "<=", searchTerm + "\uf8ff")
+  );
+
+  const postSnapshot = await getDocs(q);
+  const postsData: DocumentResponse[] = postSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as DocumentResponse[];
+
+  return postsData;
+};
+
 export const getPost = (id: string) => {
   const docRef = doc(db, COLLECTION_NAME, id);
   return getDoc(docRef);
@@ -67,7 +83,7 @@ export const updateLikesOnPost = (
 ) => {
   const docRef = doc(db, COLLECTION_NAME, id);
   return updateDoc(docRef, {
-    likes: likes,
-    userlikes: userlikes,
+    likes,
+    userlikes,
   });
 };
