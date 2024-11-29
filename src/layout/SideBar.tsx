@@ -1,6 +1,6 @@
 import * as React from "react";
 import HomeIcon from "@/components/assets/home-hover-home.svg";
-import ChatIcon from "@/components/assets/chat-hover-chat.svg";
+import SearchIcon from "@/components/assets/magnifying-glass-solid.svg";
 import ProfileIcon from "@/components/assets/account-hover-account.svg";
 import SettingIcon from "@/components/assets/settings.svg";
 import AddIcon from "@/components/assets/add.svg";
@@ -16,9 +16,9 @@ const navItems = [
     icon: HomeIcon,
   },
   {
-    name: "Messages",
-    link: "/messages",
-    icon: ChatIcon,
+    name: "Search",
+    link: "/search",
+    icon: SearchIcon,
   },
   {
     name: "Create",

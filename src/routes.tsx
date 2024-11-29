@@ -9,6 +9,8 @@ import ProtectedRoutes from "./pages/ProtectedRoutes";
 import PasswordReset from "./pages/PasswordReset";
 import CreateUsername from "./pages/CreateUsername";
 import Settings from "./pages/Settings";
+import MessagesPage from "./pages/MessagesPage";
+import SearchPage from "./pages/SearchPage";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +43,11 @@ export const router = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
         errorElement: <Error />,
       },
     ],
