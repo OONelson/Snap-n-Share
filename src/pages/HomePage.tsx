@@ -15,9 +15,9 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
       <div className="md:hidden block">
         <SideBar />
       </div>
-      <div className="md:block hidden">
-        <SideFooter />
-      </div>
+      {/* <div className="md:block hidden"> */}
+      <SideFooter />
+      {/* </div> */}
     </main>
   );
 };

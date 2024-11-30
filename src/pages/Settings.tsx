@@ -145,10 +145,6 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
         )}
       </section>
 
-      <section>
-        <SideFooter />
-      </section>
-
       {isPopupVisible && (
         <article className="md:hidden">
           <div className="popup-overlay" onClick={handleClosePopup}>

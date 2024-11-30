@@ -8,7 +8,7 @@ import AddIcon from "@/components/assets/add.svg";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
-interface ISideBarProps {}
+interface IIconOnlySideBarProps {}
 
 const navItems = [
   {
@@ -38,7 +38,7 @@ const navItems = [
   },
 ];
 
-const SideBar: React.FunctionComponent<ISideBarProps> = () => {
+const IconOnlySideBar: React.FunctionComponent<IIconOnlySideBarProps> = () => {
   const location = useLocation();
 
   const navVariants = {
@@ -58,20 +58,20 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
         variants={navVariants}
         initial="hidden"
         animate="visible"
-        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen"
+        className="sm:flex sm:items-start sm:justify-between sm:flex-col  sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-min mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen"
       >
         <div>
           <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
-            Snap n' Share
+            S n'S
           </h1>
         </div>
-        <div className="sm:flex sm:flex-col lg:full flex flex-row w-max">
+        <div className="sm:flex sm:flex-col lg:full flex flex-row ">
           {navItems.map((item) => (
             <div
               key={item.name}
               className={
                 location.pathname === item.link
-                  ? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 sm:py-2 w-max"
+                  ? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5  sm:py-2 w-max"
                   : "sm:mb-10  hover:bg-gray-100 px-5 sm:py-2 hover:rounded-md ease-in"
               }
             >
@@ -88,7 +88,6 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
                       : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 invert-0"
                   }
                 />
-                <span className="text-xl hidden lg:block  ">{item.name}</span>
               </Link>
             </div>
           ))}
@@ -113,7 +112,6 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
                   : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 flex justify-center items-center  invert-0"
               }
             />
-            <span className="text-xl hidden lg:block  ">Settings</span>
           </Link>
         </div>
       </motion.nav>
@@ -121,4 +119,4 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
   );
 };
 
-export default SideBar;
+export default IconOnlySideBar;
