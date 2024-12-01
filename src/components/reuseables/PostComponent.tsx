@@ -77,21 +77,21 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
         posts.map((post) => (
           <Card
             key={post.id}
-            className="flex justify-start items-center mb-4 w-[90vw] md:w-[50vw]"
+            className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
           >
             <CardHeader>
-              <div className="flex justify-between items-center w-60 md:w-[45vw]">
+              <div className="flex justify-between items-center w-full md:w-full ">
                 <Link to="/profile">
-                  <div className="flex items-center justify-between w-28">
+                  <div className="flex items-center justify-between w-full">
                     {userProfile?.photoURL ? (
                       <img src={userProfile.photoURL} alt={displayName} />
                     ) : (
-                      <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                      <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                         {initials}
                       </div>
                     )}
 
-                    <span>{userProfile?.username}</span>
+                    <span className="pl-2">{userProfile?.username}</span>
                   </div>
                 </Link>
                 <FontAwesomeIcon
@@ -105,11 +105,11 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 <p>{post.caption}</p>
               </CardDescription>
 
-              <CardContent className="flex justify-center items-center">
+              <CardContent>
                 <img
                   src={post.photos ? post.photos : ""}
                   alt={post.caption}
-                  className="w-[400px] h-[200px] object-center md:w-[500px] md:object-fill"
+                  className="w-[400px] h-[300px] "
                 />
               </CardContent>
               <CardFooter className="flex justify-between items-center">
