@@ -204,7 +204,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
   };
 
   return (
-    <main className="h-full flex w-full">
+    <main className="h-full flex w-full dark:bg-darkBg">
       <SideBar />
       {user ? (
         <Card className="sm:w-full  lg:w-11/12 w-full px-2 border-none h-full md:w-full">
@@ -228,7 +228,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
               </CardTitle>
               {/* <div> */}
               {!userProfile?.photoURL ? (
-                <div className="flex justify-center items-center w-20 h-20 rounded-full bg-slate-200 col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl">
+                <div className="flex justify-center items-center w-20 h-20 rounded-full bg-slate-200 col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl dark:bg-darkBg dark:border-2">
                   {initials}
                 </div>
               ) : (
@@ -269,7 +269,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
               </p>
             </section>
             <div
-              className={`sticky top-0 transition-all w-full flex justify-evenly mt-20 border-b-2 ${
+              className={`sticky top-0 transition-all w-full flex justify-evenly mt-20 border-b-2 dark:bg-darkBg ${
                 isScrolled
                   ? "backdrop-blur-md bg-white/70 shadow-md h-14 "
                   : "bg-white/100 shadow-none"

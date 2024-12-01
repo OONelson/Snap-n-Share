@@ -8,7 +8,7 @@ import {
 
 const SideFooter: React.FC = () => {
   return (
-    <nav className="bg-white w-[30vw] flex flex-col justify-start items-center md:sticky md:top-0 md:h-screen border md:block hidden">
+    <nav className="bg-white w-[30vw] flex flex-col justify-start items-center md:sticky md:top-0 md:h-screen border md:block hidden dark:bg-darkBg px-3">
       <div className="h-screen flex  items-center flex-col">
         <div className="flex justify-center h-[20vh] space-x-4 mt-10">
           <a
@@ -46,13 +46,15 @@ const SideFooter: React.FC = () => {
         </div>
 
         <div className="flex justify-center items-center w-[25vw]">
-          <p className="text-slate-700 font-sans italic ">
+          <p className="text-slate-700 font-sans italic dark:text-slate-400">
             Our mission is to empower connections, foster authentic relationship
             by creating a digital platform where individuals and communities can
             express themselves, share meaningful moments
           </p>
         </div>
-        <h1 className="font-semibold italic text-xl pt-5">Snap n' Share</h1>
+        <h1 className="font-semibold italic text-xl pt-5 dark:text-slate-200">
+          Snap n' Share
+        </h1>
       </div>
     </nav>
   );

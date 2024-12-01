@@ -44,10 +44,10 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
-    <main className="md:w-[60vw]">
-      <section>
+    <main className="md:w-[60vw] dark:bg-darkBg">
+      <section className="dark:bg-darkBg">
         <header
-          className={`sticky top-0  md:my-4 my-0 px-2 transition-all ${
+          className={`sticky top-0  md:my-4 my-0 px-2 transition-all dark:bg-darkBg ${
             isScrolled
               ? "backdrop-blur-md bg-white/70 shadow-md"
               : "bg-white/100 shadow-none"
@@ -56,7 +56,9 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
           <h1 className="text-xl font-medium block md:hidden pb-2">
             Snap n' Share
           </h1>
-          <h2 className="text-xl font-medium hidden md:block">Feeds</h2>
+          <h2 className="text-xl font-medium hidden md:block dark:text-slate-200">
+            Feeds
+          </h2>
           <div className="md:p-4">
             <div className="flex">
               <Link to="/profile">
