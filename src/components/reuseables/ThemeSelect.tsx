@@ -9,6 +9,7 @@ const ThemeSelect: React.FunctionComponent<IThemeSelectProps> = () => {
 
   return (
     <select
+      className="absolute bottom-2 right-2 z-10 dark:bg-slate-600 dark:text-white p-2"
       defaultValue={theme}
       onChange={(e) => {
         const selectedTheme = e.target.value as Theme;
@@ -16,7 +17,7 @@ const ThemeSelect: React.FunctionComponent<IThemeSelectProps> = () => {
       }}
     >
       {themeOptions.map((option) => (
-        <option value={option} key={option}>
+        <option className="dark:bg-black" value={option} key={option}>
           {option}
         </option>
       ))}

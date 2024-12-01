@@ -60,7 +60,11 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
       <div className="flex items-center  justify-center flex-col h-4/5 w-full">
         <CardHeader className="space-y-0 flex justify-center items-center  ">
           <div>
-            <img src={UserIcon} alt="userIcon" className="h-20 w-20 mb-6" />
+            <img
+              src={UserIcon}
+              alt="userIcon"
+              className="h-20 w-20 mb-6 dark:invert"
+            />
           </div>
           <CardTitle className="text-2xl ">Get yourself a Username</CardTitle>
           <CardDescription className="pb-5 font-medium xsm:font-light">

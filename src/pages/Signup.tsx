@@ -184,12 +184,12 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
               </div>
             )}
           </Button>
-          <p className="text-lg font-normal text-slate-600">
+          <p className="text-lg font-normal text-slate-600 dark:text-slate-400">
             Already have an account?{" "}
             <Link
               to="/login"
               className="font-medium 
-							text-gray-900 hover:text-gray-700 cursor-pointer:hover"
+							text-gray-900 hover:text-gray-700 cursor-pointer:hover dark:text-slate-300"
             >
               Login
             </Link>

@@ -58,10 +58,10 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
         variants={navVariants}
         initial="hidden"
         animate="visible"
-        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen"
+        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen dark:bg-darkBg"
       >
         <div>
-          <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block">
+          <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block dark:text-slate-100">
             Snap n' Share
           </h1>
         </div>
@@ -71,8 +71,8 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
               key={item.name}
               className={
                 location.pathname === item.link
-                  ? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 sm:py-2 w-max"
-                  : "sm:mb-10  hover:bg-gray-100 px-5 sm:py-2 hover:rounded-md ease-in"
+                  ? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 sm:py-2 w-max "
+                  : "sm:mb-10  hover:bg-gray-100 px-5 sm:py-2 hover:rounded-md ease-in dark:text-slate-200"
               }
             >
               <Link
@@ -84,8 +84,8 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
                   alt={item.name}
                   className={
                     location.pathname === item.link
-                      ? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3  invert"
-                      : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 invert-0"
+                      ? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3  invert dark:invert"
+                      : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 invert-0 dark:invert"
                   }
                 />
                 <span className="text-xl hidden lg:block  ">{item.name}</span>
@@ -97,7 +97,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
           className={
             location.pathname === "/settings"
               ? "hidden sm:block sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
-              : "hidden sm:block sm:mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in"
+              : "hidden sm:block sm:mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in dark:text-slate-200"
           }
         >
           <Link
@@ -109,8 +109,8 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
               alt="settings"
               className={
                 location.pathname === "/settings"
-                  ? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3 flex justify-center items-center invert"
-                  : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 flex justify-center items-center  invert-0"
+                  ? "w-8 h-8 lg:w-10 lg:h-10  md:mr-3 flex justify-center items-center invert dark:invert"
+                  : "w-8 h-8 lg:w-10 lg:h-10 md:mr-3 flex justify-center items-center  invert-0 dark:invert"
               }
             />
             <span className="text-xl hidden lg:block  ">Settings</span>

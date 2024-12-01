@@ -16,9 +16,9 @@ const App: React.FunctionComponent<IAppProps> = () => {
         <UserProfileProvider>
           <UsernameProvider>
             <ThemeProvider>
+              <ThemeSelect />
               <RouterProvider router={router} />
             </ThemeProvider>
-            <ThemeSelect />
           </UsernameProvider>
         </UserProfileProvider>
       </UserAuthProvider>

@@ -87,7 +87,7 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
       >
         <CardHeader className="space-y-1 flex justify-start ">
           <CardTitle className="text-2xl ">Snap 'n Share</CardTitle>
-          <CardDescription className="leading-none">
+          <CardDescription className="leading-none ">
             Enter your email and password below to login
           </CardDescription>
         </CardHeader>
@@ -133,13 +133,13 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
           </div>
           <p
             onClick={handlePasswordReset}
-            className="text-md font-medium text-slate-600 cursor-pointer hover:text-gray-900"
+            className="text-md font-medium text-slate-600 cursor-pointer hover:text-gray-900 dark:text-slate-400"
           >
             Forgot password?
           </p>
         </CardContent>
         <CardFooter className="flex flex-col justify-center items-center space-y-4">
-          <Button className="w-full" type="submit">
+          <Button className="w-full " type="submit">
             {!loading ? (
               <div>Login</div>
             ) : (
@@ -148,12 +148,12 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
               </div>
             )}
           </Button>
-          <p className="text-lg font-normal text-slate-600">
+          <p className="text-lg font-normal text-slate-600 dark:text-slate-400">
             Don't have an account?{" "}
             <Link
               to="/signup"
               className="font-medium 
-							text-gray-900 hover:text-gray-700 cursor-pointer:hover"
+							text-gray-900 hover:text-gray-700 cursor-pointer:hover dark:text-slate-300"
             >
               Signup
             </Link>
