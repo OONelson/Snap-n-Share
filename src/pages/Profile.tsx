@@ -174,14 +174,14 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  <div>
+                  {/* <div>
                     <FontAwesomeIcon
                       className="cursor-pointer"
                       onClick={() => toggleLike(!likesInfo.isLike)}
                       icon={likesInfo.isLike ? solidHeart : regularHeart}
                     />
                     <span>{likesInfo.likes} </span>
-                  </div>
+                  </div> */}
 
                   <FontAwesomeIcon
                     className="cursor-pointer"
@@ -347,7 +347,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                             )}
                           </CardContent>
                           <CardFooter className="flex justify-between items-center">
-                            <div>
+                            {/* <div>
                               <FontAwesomeIcon
                                 className="cursor-pointer"
                                 onClick={() => toggleLike(!likesInfo.isLike)}
@@ -356,7 +356,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                                 }
                               />
                               <span>{likesInfo.likes} </span>
-                            </div>
+                            </div> */}
 
                             <FontAwesomeIcon
                               className="cursor-pointer"
