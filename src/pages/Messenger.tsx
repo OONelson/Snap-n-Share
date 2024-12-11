@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import IconOnlySideBar from "@/layout/IconOnlySideBar";
+import SideBar from "@/layout/SideBar";
 import * as React from "react";
-import { Link } from "react-router-dom";
 
 interface IMessengerProps {}
 
@@ -32,11 +32,14 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   ];
 
   return (
-    <main className="flex">
-      <IconOnlySideBar />
-      <Card className="h-screen">
+    <main className="flex ">
+      <div className="hidden lg:block">
+        <IconOnlySideBar />
+      </div>
+      <SideBar />
+      <Card className="h-screen w-screen">
         <CardHeader>Messages</CardHeader>
-        <CardContent className="-m-4">
+        <CardContent>
           <div className="mb-10">
             <Input type="search" placeholder="Search Messages" />
           </div>

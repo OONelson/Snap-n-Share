@@ -17,8 +17,6 @@ import AccountSettings from "@/layout/settings/AccountSetting";
 import AppearanceSettings from "@/layout/settings/AppearanceSettings";
 import NotificationSettings from "@/layout/settings/NotificationSettings";
 import "../components/reuseables/tabs.css";
-import SideFooter from "@/layout/SideFooter";
-// import { Input } from "@/components/ui/input";
 
 interface ISettingsProps {}
 
@@ -82,14 +80,16 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
   };
 
   return (
-    <main className="md:flex items-start w-fit">
-      <nav className="md:w-64 sm:w-40 w-screen p-4 bg-stone-50 border-r-2 h-screen ">
+    <main className="md:flex items-start w-fit dark:bg-darkBg">
+      <nav className="md:w-64 sm:w-40 w-screen p-4 bg-stone-50 border-r-2 h-screen dark:bg-darkBg ">
         <header className="w-24 flex justify-between items-center">
           <FontAwesomeIcon
             icon={faArrowLeft}
-            className="text-slate-700 cursor-pointer"
+            className="text-slate-700 cursor-pointer dark:text-slate-200"
           />
-          <h1 className="font-inter text-xl text-black">Settings</h1>
+          <h1 className="font-inter text-xl text-black dark:text-slate-200">
+            Settings
+          </h1>
         </header>
 
         <ul className="py-16">
@@ -99,20 +99,20 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
               key={tab.id}
               className={`${
                 activeTab === tab.id
-                  ? "md:bg-slate-300 md:hover:bg-slate-300"
-                  : "md:bg-slate-50"
+                  ? "md:bg-slate-300 dark:bg-slate-800 md:hover:bg-slate-300"
+                  : "md:bg-slate-50 dark:bg-slate-900"
               }  sm:w-48 h-12 flex justify-between items-center cursor-pointer text-slate-600 bg-slate-100 hover:bg-slate-100 px-4 rounded-md mb-2 `}
             >
               <div>
                 <FontAwesomeIcon
                   icon={tab.icon}
-                  className=" pr-4 text-slate-600"
+                  className=" pr-4 text-slate-600 dark:text-slate-300"
                 />
-                <span>{tab.name}</span>
+                <span className="dark:text-slate-300">{tab.name}</span>
               </div>
               <FontAwesomeIcon
                 icon={faAngleRight}
-                className="block md:hidden font-thin"
+                className="block md:hidden font-thin dark:text-slate-300"
               />
             </div>
           ))}
@@ -120,7 +120,7 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
         <div className="px-4 cursor-pointer">
           <FontAwesomeIcon
             icon={faRightFromBracket}
-            className="text-slate-600 pr-4 "
+            className="text-slate-600 pr-4 dark:text-slate-200"
           />
           <span
             className="text-red-600 font-semibold "
@@ -136,7 +136,7 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
           />
         )}
       </nav>
-      <section>
+      <section className="dark:bg-darkBg">
         {tabs.map(
           (tab) =>
             activeTab === tab.id && (
@@ -146,11 +146,17 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
       </section>
 
       {isPopupVisible && (
-        <article className="md:hidden">
+        <article className="md:hidden dark:bg-darkBg">
           <div className="popup-overlay" onClick={handleClosePopup}>
-            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="popup-content dark:bg-background z-10 "
+              onClick={(e) => e.stopPropagation()}
+            >
               <button className="close-btn" onClick={handleClosePopup}>
-                <FontAwesomeIcon icon={faTimes} />
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className="dark:text-slate-300"
+                />
               </button>
 
               {activeTab === 1 && <GeneralSettings />}

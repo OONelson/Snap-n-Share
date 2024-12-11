@@ -9,6 +9,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { usePosts } from "@/hooks/useUserPost";
+import SideBar from "@/layout/SideBar";
 
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,15 +31,21 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
   };
 
   return (
-    <>
+    <main className="dark:bg-darkBg h-screen">
       <div className="md:pb-40">
-        <FontAwesomeIcon icon={faArrowLeft} className="cursor-pointer p-4" />
+        <FontAwesomeIcon
+          icon={faArrowLeft}
+          className="cursor-pointer p-4 dark:text-slate-100"
+        />
+      </div>
+      <div>
+        <SideBar />
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex justify-center items-center w-full "
+        className="flex justify-center items-center w-full dark:bg-darkBg"
       >
-        <Card className="sm:w-2/5 w-4/5 lg:ml-40 md:ml-20 md:w-2/5">
+        <Card className="sm:w-2/5 w-4/5 lg:ml-40 md:ml-20 md:w-2/5 dark:bg-darkBg">
           <CardHeader>
             <CardTitle>Time to snap and share</CardTitle>
           </CardHeader>
@@ -88,7 +95,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
           </CardFooter>
         </Card>
       </form>
-    </>
+    </main>
   );
 };
 

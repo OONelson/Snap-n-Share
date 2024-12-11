@@ -72,7 +72,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
               className={
                 location.pathname === item.link
                   ? "sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 sm:py-2 w-max "
-                  : "sm:mb-10  hover:bg-gray-100 px-5 sm:py-2 hover:rounded-md ease-in dark:text-slate-200"
+                  : "sm:mb-10 hover:dark:bg-gray-800 hover:bg-gray-100 px-5 sm:py-2 hover:rounded-md ease-in dark:text-slate-200"
               }
             >
               <Link
@@ -97,7 +97,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
           className={
             location.pathname === "/settings"
               ? "hidden sm:block sm:mb-10 bg-gray-900 text-slate-50 hover:bg-gray-800 rounded-md ease-in px-5 lg:pr-20 py-2 w-max"
-              : "hidden sm:block sm:mb-10  hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in dark:text-slate-200"
+              : "hidden sm:block sm:mb-10 hover:dark:bg-gray-800 hover:bg-gray-100 px-5  py-2 hover:rounded-md ease-in dark:text-slate-200"
           }
         >
           <Link

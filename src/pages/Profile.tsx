@@ -208,7 +208,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
       <SideBar />
       {user ? (
         <Card className="sm:w-full  lg:w-11/12 w-full px-2 border-none h-full md:w-full">
-          <div className="flex justify-end items-center pt-2 md:pb-10">
+          <div className=" flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />
             {/* LOGOUT MODAL */}
 

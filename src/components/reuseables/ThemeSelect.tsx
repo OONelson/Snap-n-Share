@@ -10,7 +10,7 @@ const ThemeSelect: React.FunctionComponent<IThemeSelectProps> = () => {
   return (
     <main className="relative">
       <select
-        className="fixed bottom-2 right-2 z-10 dark:bg-slate-600 dark:text-white p-2"
+        className="fixed md:bottom-2 bottom-20 right-2 z-10 bg-slate-300 dark:bg-slate-600 dark:text-white p-2"
         defaultValue={theme}
         onChange={(e) => {
           const selectedTheme = e.target.value as Theme;

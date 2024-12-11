@@ -36,22 +36,22 @@ const Dropdown: React.FC<DropdownProps> = ({ onSelect }) => {
   };
 
   return (
-    <div className=" cursor-pointer relative inline-block text-left">
+    <div className=" cursor-pointer relative inline-block text-left dark:bg-darkBg">
       {!isOpen ? (
         <FontAwesomeIcon
           onClick={toggleDropdown}
-          className="px-4 py-2 text-md font-medium text-black "
+          className="px-4 py-2 text-md font-medium text-black dark:text-slate-200 "
           icon={faBars}
         />
       ) : (
         <FontAwesomeIcon
           onClick={toggleDropdown}
-          className="px-4 py-2 text-md font-medium text-black "
+          className="px-4 py-2 text-md font-medium text-black dark:text-slate-200 "
           icon={faTimes}
         />
       )}
       {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dark:bg-background dark:border dark:text-white">
           <div className="py-1">
             {options.map((option, index) => (
               <button
@@ -59,8 +59,11 @@ const Dropdown: React.FC<DropdownProps> = ({ onSelect }) => {
                 onClick={() => handleOptionClick(option)}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100"
               >
-                <span className="pr-3">{option.name}</span>
-                <FontAwesomeIcon icon={option.icon} />
+                <span className="pr-3 dark:text-slate-200">{option.name}</span>
+                <FontAwesomeIcon
+                  icon={option.icon}
+                  className="dark:text-slate-200"
+                />
               </button>
             ))}
           </div>

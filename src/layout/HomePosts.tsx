@@ -44,16 +44,16 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
-    <main className="md:w-[60vw] dark:bg-darkBg">
-      <section className="dark:bg-darkBg">
+    <main className="md:w-[60vw] dark:bg-darkBg h-screen">
+      <section className="relative dark:bg-darkBg">
         <header
-          className={`sticky top-0  md:my-4 my-0 px-2 transition-all dark:bg-darkBg ${
+          className={`sticky top-0 md:my-4 my-0 px-2 transition-all dark:bg-darkBg ${
             isScrolled
               ? "backdrop-blur-md bg-white/70 shadow-md"
               : "bg-white/100 shadow-none"
           }`}
         >
-          <h1 className="text-xl font-medium block md:hidden pb-2">
+          <h1 className="text-xl dark:text-slate-200 font-medium block md:hidden pb-2">
             Snap n' Share
           </h1>
           <h2 className="text-xl font-medium hidden md:block dark:text-slate-200">
@@ -77,7 +77,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search posts..."
-                className="w-1/2 p-2 border rounded-lg mb-4"
+                className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4"
               />
             </div>
             <article>

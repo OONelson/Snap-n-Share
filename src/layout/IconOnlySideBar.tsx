@@ -54,10 +54,10 @@ const IconOnlySideBar: React.FunctionComponent<IIconOnlySideBarProps> = () => {
   };
   return (
     <>
-      <motion.nav
-        variants={navVariants}
-        initial="hidden"
-        animate="visible"
+      <nav
+        // variants={navVariants}
+        // initial="hidden"
+        // animate="visible"
         className="sm:flex sm:items-start sm:justify-between sm:flex-col  sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-min mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen"
       >
         <div>
@@ -114,7 +114,7 @@ const IconOnlySideBar: React.FunctionComponent<IIconOnlySideBarProps> = () => {
             />
           </Link>
         </div>
-      </motion.nav>
+      </nav>
     </>
   );
 };
