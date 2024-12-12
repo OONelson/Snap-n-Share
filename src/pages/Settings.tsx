@@ -17,6 +17,7 @@ import AccountSettings from "@/layout/settings/AccountSetting";
 import AppearanceSettings from "@/layout/settings/AppearanceSettings";
 import NotificationSettings from "@/layout/settings/NotificationSettings";
 import "../components/reuseables/tabs.css";
+import { useNavigate } from "react-router-dom";
 
 interface ISettingsProps {}
 
@@ -55,6 +56,7 @@ const tabs: Tab[] = [
 ];
 
 const Settings: React.FunctionComponent<ISettingsProps> = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<number>(1);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
@@ -79,11 +81,16 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
     setOpenLogout(false);
   };
 
+  const handleGoBack = () => {
+    navigate("/");
+  };
+
   return (
     <main className="lg:flex w-fit overflow-hidden dark:bg-darkBg h-screen">
       <nav className="md:w-64 sm:w-40 w-screen p-4 bg-stone-50 border-r-2 h-screen dark:bg-darkBg ">
         <header className="w-24 flex justify-between items-center">
           <FontAwesomeIcon
+            onClick={handleGoBack}
             icon={faArrowLeft}
             className="text-slate-700 cursor-pointer dark:text-slate-200"
           />

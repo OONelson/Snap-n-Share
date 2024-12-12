@@ -36,6 +36,7 @@ import { Link, useNavigate } from "react-router-dom";
 import DeleteModal from "@/components/reuseables/DeleteModal";
 import { DocumentResponse } from "@/types";
 import { updateLikesOnPost } from "@/repository/post.service";
+import PostComponent from "@/components/reuseables/PostComponent";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
@@ -98,7 +99,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     error,
     bookmarked,
     toggleBookmark,
-    openDelete,
+    openDeleteModal,
     toggleDeleteModal,
   } = usePosts();
 
@@ -133,55 +134,58 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
 
   const renderPost = () => {
     return (
-      <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
-        {posts.length > 0 ? (
-          posts.map((post) => {
-            return (
-              <Card
-                key={post.id}
-                className="flex flex-col  mb-3 sm:w-3/6 w-full"
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-center w-60 md:w-[36.5vw]">
-                    <Link to="/profile">
-                      <div className="flex justify-between items-center w-28">
-                        {userProfile?.photoURL ? (
-                          <img src={userProfile.photoURL} alt={displayName} />
-                        ) : (
-                          <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
-                            {initials}
-                          </div>
-                        )}
-                        <span>{userProfile?.username}</span>
-                      </div>
-                    </Link>
-                    <FontAwesomeIcon
-                      icon={faEllipsisV}
-                      className="text-gray-700 cursor-pointer"
-                      onClick={toggleDeleteModal}
-                    />
-                  </div>
-                  {openDelete && <DeleteModal />}
-                  <CardDescription>
-                    <p>{post.caption}</p>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex justify-center items-center">
+      <article className="flex flex-col justify-center items-center">
+        {posts.length === 0 ? (
+          <p>No post available</p>
+        ) : (
+          posts.map((post) => (
+            <Card
+              key={post.id}
+              className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center w-full md:w-full ">
+                  <Link to="/profile">
+                    <div className="flex items-center justify-between w-full">
+                      {userProfile?.photoURL ? (
+                        <img src={userProfile.photoURL} alt={displayName} />
+                      ) : (
+                        <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
+                          {initials}
+                        </div>
+                      )}
+
+                      <span className="pl-2">{userProfile?.username}</span>
+                    </div>
+                  </Link>
+                  <FontAwesomeIcon
+                    icon={faEllipsisV}
+                    className="text-gray-700 cursor-pointer hover:text-gray-950"
+                    onClick={toggleDeleteModal}
+                  />
+                </div>
+                {openDeleteModal && <DeleteModal />}
+                <CardDescription className="ml-8">
+                  <p>{post.caption}</p>
+                </CardDescription>
+
+                <CardContent>
                   <img
                     src={post.photos ? post.photos : ""}
                     alt={post.caption}
-                    className="w-[400px] h-[200px] object-center md:w-[500px] md:object-fill"
+                    className="w-[400px] h-[300px] "
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
-                  {/* <div>
+                  <div>
                     <FontAwesomeIcon
                       className="cursor-pointer"
-                      onClick={() => toggleLike(!likesInfo.isLike)}
-                      icon={likesInfo.isLike ? solidHeart : regularHeart}
+                      // onClick={() => toggleLike(!likesInfo.isLike)}
+                      // icon={likesInfo.isLike ? solidHeart : regularHeart}
+                      icon={regularHeart}
                     />
-                    <span>{likesInfo.likes} </span>
-                  </div> */}
+                    <span>{/* {likesInfo.likes} */}0</span>
+                  </div>
 
                   <FontAwesomeIcon
                     className="cursor-pointer"
@@ -193,13 +197,11 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                     }
                   />
                 </CardFooter>
-              </Card>
-            );
-          })
-        ) : (
-          <p>{error}</p>
+              </CardHeader>
+            </Card>
+          ))
         )}
-      </div>
+      </article>
     );
   };
 
@@ -292,13 +294,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                 Bookmarks
               </h2>
             </div>
-            <article className="flex justify-center items-center mt-10">
+            <article className="h-min-[60vh] flex justify-center items-center mt-10">
               {activeTab === "Tab1" && (
                 <div>{posts ? renderPost() : <SmallSpinner />}</div>
               )}
 
               {activeTab === "Tab2" && (
-                <div className="w-[90vw] sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
+                <div className="w-[90vw] h-min-[60vh]  sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
                   {bookmarked.length === 0 ? (
                     <p>No bookmarked posts found.</p>
                   ) : (
@@ -306,68 +308,74 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                       {bookmarkedPosts.map((post) => (
                         <Card
                           key={post.id}
-                          className="flex flex-col  mb-3 sm:w-3/6 w-full"
+                          className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
                         >
                           <CardHeader>
-                            <div className="flex justify-between items-center w-60 md:w-[36.5vw]">
+                            <div className="flex justify-between items-center w-full md:w-full ">
                               <Link to="/profile">
-                                <div className="flex justify-between items-center w-28">
+                                <div className="flex items-center justify-between w-full">
                                   {userProfile?.photoURL ? (
                                     <img
                                       src={userProfile.photoURL}
                                       alt={displayName}
                                     />
                                   ) : (
-                                    <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                                    <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                                       {initials}
                                     </div>
                                   )}
-                                  <span>{userProfile?.username}</span>
+
+                                  <span className="pl-2">
+                                    {userProfile?.username}
+                                  </span>
                                 </div>
                               </Link>
                               <FontAwesomeIcon
                                 icon={faEllipsisV}
-                                className="text-gray-700 cursor-pointer"
+                                className="text-gray-700 cursor-pointer hover:text-gray-950"
                                 onClick={toggleDeleteModal}
                               />
                             </div>
-                            {openDelete && <DeleteModal />}
-                            <CardDescription>
+                            {openDeleteModal && <DeleteModal />}
+                            <CardDescription className="ml-8">
                               <p>{post.caption}</p>
                             </CardDescription>
-                          </CardHeader>
-                          <CardContent className="w-full h-full">
-                            {post.photos.length > 0 ? (
+
+                            <CardContent>
                               <img
-                                src={`${post.photos}/-/progressive/yes/-/scale_crop/300x300/center/`}
+                                src={post.photos ? post.photos : ""}
                                 alt={post.caption}
+                                className="w-[400px] h-[300px] "
                               />
-                            ) : (
-                              <p>no pcitures</p>
-                            )}
-                          </CardContent>
-                          <CardFooter className="flex justify-between items-center">
-                            {/* <div>
+                            </CardContent>
+                            <CardFooter className="flex justify-between items-center">
+                              <div>
+                                <FontAwesomeIcon
+                                  className="cursor-pointer"
+                                  // onClick={() =>
+                                  //   toggleLike(!likesInfo.isLike)
+                                  // }
+                                  // icon={
+                                  //   likesInfo.isLike
+                                  //     ? solidHeart
+                                  //     : regularHeart
+                                  // }
+                                  icon={regularHeart}
+                                />
+                                <span>{/* {likesInfo.likes} */}0</span>
+                              </div>
+
                               <FontAwesomeIcon
                                 className="cursor-pointer"
-                                onClick={() => toggleLike(!likesInfo.isLike)}
+                                onClick={() => toggleBookmark(post.id)}
                                 icon={
-                                  likesInfo.isLike ? solidHeart : regularHeart
+                                  bookmarked.includes(post.id)
+                                    ? regularBookmark
+                                    : solidBookmark
                                 }
                               />
-                              <span>{likesInfo.likes} </span>
-                            </div> */}
-
-                            <FontAwesomeIcon
-                              className="cursor-pointer"
-                              onClick={() => toggleBookmark(post.id)}
-                              icon={
-                                bookmarked.includes(post.id)
-                                  ? regularBookmark
-                                  : solidBookmark
-                              }
-                            />
-                          </CardFooter>
+                            </CardFooter>
+                          </CardHeader>
                         </Card>
                       ))}
                     </>

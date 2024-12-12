@@ -14,10 +14,13 @@ import SideBar from "@/layout/SideBar";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ICreatePostProps {}
 
 const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
+  const navigate = useNavigate();
+
   const { handleSubmit, handleFileChange, post, setPost } = usePosts();
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -30,10 +33,15 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
     }
   };
 
+  const handleGoBack = () => {
+    navigate("/");
+  };
+
   return (
     <main className="dark:bg-darkBg h-screen">
       <div className="md:pb-40">
         <FontAwesomeIcon
+          onClick={handleGoBack}
           icon={faArrowLeft}
           className="cursor-pointer p-4 dark:text-slate-100"
         />
