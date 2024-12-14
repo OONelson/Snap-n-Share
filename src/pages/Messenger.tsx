@@ -77,10 +77,12 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
                         {message.username}
                       </span>
                     </div>
-                    <p className="ml-2">{message.message}</p>
+                    <p className="ml-2 dark:text-slate-300">
+                      {message.message}
+                    </p>
                   </div>
                 </div>
-                .{message.date}
+                <span className="dark:text-slate-300">.{message.date}</span>
               </article>
             ))}
           </section>

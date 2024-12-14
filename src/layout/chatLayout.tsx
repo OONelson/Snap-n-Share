@@ -42,6 +42,39 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
           className="text-3xl dark:text-slate-300"
         />
       </article>
+
+      <section className="flex-1 overflow-x-hidden overflow-y-scroll flex flex-col gap-8">
+        <div className="lg:max-w-[60%] mt-2 p-3 rounded-md dark:bg-slate-700 bg-slate-200 dark:text-slate-300 flex ml-2 self-start justify-between">
+          <img
+            src="src/components/assets/avatar.avif"
+            alt="avatar"
+            className="rounded-full h-20 w-20 mr-2"
+          />
+          <div>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
+              totam? Pariatur sapiente debitis earum nulla! Facilis perspiciatis
+              ex voluptates aut, dolore a. Nam odit velit iure! Maxime quidem
+              laboriosam non!
+            </p>
+            <span>1 min ago</span>
+          </div>
+        </div>
+
+        <div className="lg:max-w-[60%] mt-2 p-3 rounded-md flex mr-2 justify-between self-end dark:bg-slate-700 bg-slate-200 dark:text-slate-300">
+          {/* <img src="src/components/assets/avatar.avif" alt="avatar" /> */}
+          <div>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
+              totam? Pariatur sapiente debitis earum nulla! Facilis perspiciatis
+              ex voluptates aut, dolore a. Nam odit velit iure! Maxime quidem
+              laboriosam non!
+            </p>
+            <span>1 min ago</span>
+          </div>
+        </div>
+      </section>
+
       <section className="flex items-center lg:bottom-5 lg:fixed px-3">
         <div className="w-[120px] flex justify-between items-center">
           <FontAwesomeIcon
