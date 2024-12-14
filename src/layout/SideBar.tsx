@@ -58,7 +58,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
         variants={navVariants}
         initial="hidden"
         animate="visible"
-        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen dark:bg-darkBg"
+        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 sm:sticky md:top-0 md:h-screen dark:bg-darkBg"
       >
         <div>
           <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block dark:text-slate-100">

@@ -86,8 +86,8 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
   };
 
   return (
-    <main className="lg:flex w-fit overflow-hidden dark:bg-darkBg h-screen">
-      <nav className="md:w-64 sm:w-40 w-screen p-4 bg-stone-50 border-r-2 h-screen dark:bg-darkBg ">
+    <main className="md:flex w-fit overflow-hidden dark:bg-darkBg h-screen">
+      <nav className="md:w-[400px] sm:w-[250px] w-screen p-4 bg-stone-50 border-r-2 h-screen dark:bg-darkBg ">
         <header className="w-24 flex justify-between items-center">
           <FontAwesomeIcon
             onClick={handleGoBack}
@@ -106,9 +106,9 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
               key={tab.id}
               className={`${
                 activeTab === tab.id
-                  ? "md:bg-slate-300 dark:bg-slate-800 md:hover:bg-slate-300"
-                  : "md:bg-slate-50 dark:bg-slate-900"
-              }  sm:w-48 h-12 flex justify-between items-center cursor-pointer text-slate-600 bg-slate-100 hover:bg-slate-100 px-4 rounded-md mb-2 `}
+                  ? "md:bg-slate-300 dark:bg-gray-900 md:hover:bg-slate-300 md:dark:hover:bg-gray-800 "
+                  : "md:bg-slate-50 dark:bg-gray-900 md:hover:dark:bg-gray-800"
+              }  sm:w-[200px] md:w-[300px] h-12 flex justify-between items-center cursor-pointer text-slate-600 bg-slate-100 hover:bg-slate-100 px-4 rounded-md mb-2 `}
             >
               <div>
                 <FontAwesomeIcon
@@ -143,7 +143,7 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
           />
         )}
       </nav>
-      <section className="dark:bg-darkBg">
+      <section className="dark:bg-darkBg w-[1200px]">
         {tabs.map(
           (tab) =>
             activeTab === tab.id && (
@@ -153,7 +153,7 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
       </section>
 
       {isPopupVisible && (
-        <article className="md:hidden dark:bg-darkBg">
+        <article className="sm:hidden dark:bg-darkBg">
           <div className="popup-overlay" onClick={handleClosePopup}>
             <div
               className="popup-content dark:bg-background z-10 "

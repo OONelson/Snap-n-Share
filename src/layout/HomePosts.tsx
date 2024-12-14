@@ -44,8 +44,8 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
-    <main className="md:w-[60vw] dark:bg-darkBg h-screen">
-      <section className="relative dark:bg-darkBg">
+    <main className="md:w-[60vw] dark:bg-darkBg h-screen ">
+      <section className="dark:bg-darkBg">
         <header
           className={`sticky top-0 md:my-4 my-0 px-2 transition-all dark:bg-darkBg ${
             isScrolled

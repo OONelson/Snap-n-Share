@@ -46,7 +46,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
           className="cursor-pointer p-4 dark:text-slate-100"
         />
       </div>
-      <div>
+      <div className="block sm:hidden">
         <SideBar />
       </div>
       <form

@@ -28,7 +28,7 @@ const LogoutModal: React.FunctionComponent<ILogoutModalProps> = ({
           <FontAwesomeIcon
             onClick={onClose}
             icon={faTimes}
-            className="cursor-pointer"
+            className="cursor-pointer dark:text-slate-300"
           />
         </div>
         <div className="px-3">
