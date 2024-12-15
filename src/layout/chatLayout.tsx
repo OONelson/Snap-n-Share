@@ -25,7 +25,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
 
   return (
     <main className="w-[60vw] dark:bg-darkBg">
-      <article className="border-b border-slate-300 flex justify-between  px-2 py-2">
+      <article className="border-b  flex justify-between px-2 py-2 sticky top-0 bg-inherit">
         <div className="flex justify-between items-center max-w-[250px] pb-2">
           <img
             src="src/components/assets/avatar.avif"
@@ -43,39 +43,61 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
         />
       </article>
 
-      <section className="flex-1 overflow-x-hidden overflow-y-scroll flex flex-col gap-8">
-        <div className="lg:max-w-[60%] mt-2 p-3 rounded-md dark:bg-slate-700 bg-slate-200 dark:text-slate-300 flex ml-2 self-start justify-between">
+      <section className="flex-1  flex flex-col gap-8 mb-20">
+        <div className="lg:max-w-[60%] mt-2 p-3 dark:text-slate-300 flex ml-2 self-start justify-between">
           <img
             src="src/components/assets/avatar.avif"
             alt="avatar"
-            className="rounded-full h-20 w-20 mr-2"
+            className="rounded-full h-12 w-12 object-cover mr-2"
           />
-          <div>
-            <p>
+          <div className="flex-1 flex flex-col ">
+            <p className="dark:bg-slate-700 bg-slate-200  rounded-md p-2">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
               totam? Pariatur sapiente debitis earum nulla! Facilis perspiciatis
               ex voluptates aut, dolore a. Nam odit velit iure! Maxime quidem
               laboriosam non!
             </p>
-            <span>1 min ago</span>
+            <span className="text-slate-400">1 min ago</span>
           </div>
         </div>
 
-        <div className="lg:max-w-[60%] mt-2 p-3 rounded-md flex mr-2 justify-between self-end dark:bg-slate-700 bg-slate-200 dark:text-slate-300">
+        <div className="lg:max-w-[60%] mt-2 p-3 rounded-md flex mr-2 justify-between self-end  dark:text-slate-300">
           {/* <img src="src/components/assets/avatar.avif" alt="avatar" /> */}
           <div>
-            <p>
+            <img
+              src="src/components/assets/download.jpg"
+              alt="car"
+              className="pb-2 lg:w-full rounded-md"
+            />
+            <p className="dark:bg-slate-700 bg-slate-200 rounded-md p-2">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
               totam? Pariatur sapiente debitis earum nulla! Facilis perspiciatis
               ex voluptates aut, dolore a. Nam odit velit iure! Maxime quidem
               laboriosam non!
             </p>
-            <span>1 min ago</span>
+            <span className=" text-slate-400">1 min ago</span>
+          </div>
+        </div>
+
+        <div className="lg:max-w-[60%] mt-2 p-3 dark:text-slate-300 flex ml-2 self-start justify-between">
+          <img
+            src="src/components/assets/avatar.avif"
+            alt="avatar"
+            className="rounded-full h-12 w-12 object-cover mr-2"
+          />
+          <div className="flex-1 flex flex-col ">
+            <p className="dark:bg-slate-700 bg-slate-200  rounded-md p-2">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
+              totam? Pariatur sapiente debitis earum nulla! Facilis perspiciatis
+              ex voluptates aut, dolore a. Nam odit velit iure! Maxime quidem
+              laboriosam non!
+            </p>
+            <span className="text-slate-400">1 min ago</span>
           </div>
         </div>
       </section>
 
-      <section className="flex items-center lg:bottom-5 lg:fixed px-3">
+      <section className="flex items-center lg:bottom-1 lg:fixed px-3 bg-slate-950 p-4 rounded-md">
         <div className="w-[120px] flex justify-between items-center">
           <FontAwesomeIcon
             icon={faPhotoFilm}

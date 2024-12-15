@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import ChatLayout from "@/layout/chatLayout";
 import IconOnlySideBar from "@/layout/IconOnlySideBar";
 import SideBar from "@/layout/SideBar";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faCog, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 
@@ -16,24 +16,35 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
       displayName: "joe",
       username: "theBOYjoe",
       message: "You shared a post",
-      date: "nov 23, 2024",
+      date: "11/23/24",
     },
     {
       userImg: "src/components/assets/avatar.avif",
       displayName: "dylan",
       username: "theBOYdylan",
       message: "You shared a post",
-      date: "nov 23, 2024",
+      date: "11/23/24",
     },
     {
       userImg: "src/components/assets/avatar.avif",
       displayName: "athur",
       username: "theBOYauthur",
       message: "You shared a post",
-      date: "nov 23, 2024",
+      date: "11/23/24",
     },
   ];
 
+  const truncateText = (text: string, maxLength: number): string => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
+  const shortUsername = "theBOYauthur";
+  const truncated = truncateText(shortUsername, 8);
+  const longerTruncated = truncateText(shortUsername, 15);
+
+  const shortMessage = "You shared a post";
+  const truncatedMessage = truncateText(shortMessage, 10);
+  const longerTruncatedMessage = truncateText(shortMessage, 20);
   return (
     <main className="md:grid grid-cols-10 gap-0">
       <div className="hidden md:block col-span-1">
@@ -42,18 +53,21 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
       <div className="block sm:hidden">
         <SideBar />
       </div>
-      <Card className="h-screen md:col-span-9 lg:col-span-3 col-span-9 rounded-none">
-        <CardHeader>Messages</CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center mb-10 sm:w-[550px] lg:max-w-[400px]">
+      <Card className="h-screen md:col-span-9 lg:col-span-3 col-span-9 rounded-none ">
+        <CardHeader className="flex flex-row justify-between items-center">
+          <h3>Messages</h3>
+          <FontAwesomeIcon icon={faCog} className="cursor-pointer" />
+        </CardHeader>
+        <CardContent className="px-2 sm:px-3">
+          <div className="flex justify-between items-center mb-8 sm:w-[550px] lg:max-w-[340px] md:max-w-[340px]">
             <Input
               type="search"
               placeholder="Search Messages"
-              className="sm:w-[500px] lg:max-w-[300px]"
+              className="sm:w-[500px] lg:w-[300px] md:w-[300px] mr-2 lg:mr-0"
             />
             <FontAwesomeIcon
-              icon={faEllipsis}
-              className="text-3xl cursor-pointer"
+              icon={faEllipsisVertical}
+              className="text-2xl cursor-pointer"
             />
           </div>
 
@@ -61,7 +75,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
             {messages.map((message) => (
               <article className="flex justify-between border-b py-3 px-1 transition-all cursor-pointer dark:hover:bg-slate-900 rounded-sm">
                 {/* <Link> */}
-                <div className="flex ">
+                <div className="flex justify-between ">
                   <img
                     src={message.userImg}
                     alt={message.username}
@@ -73,16 +87,36 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
                       <h2 className="font-bold text-xl">
                         {message.displayName}
                       </h2>
-                      <span className="text-slate-500 md:px-2 px-1">
-                        {message.username}
+                      <span
+                        title={shortUsername}
+                        className="text-slate-500 md:px-2 px-1 hidden sm:block"
+                      >
+                        {longerTruncated}
+                      </span>
+                      <span
+                        title={shortUsername}
+                        className="text-slate-500 md:px-2 px-1 block sm:hidden"
+                      >
+                        {truncated}
                       </span>
                     </div>
-                    <p className="ml-2 dark:text-slate-300">
-                      {message.message}
+                    <p
+                      title={shortMessage}
+                      className="ml-2 dark:text-slate-300 text-slate-600 hidden md:block"
+                    >
+                      {longerTruncatedMessage}
+                    </p>
+                    <p
+                      title={shortMessage}
+                      className="ml-2 dark:text-slate-300 text-slate-600 block md:hidden"
+                    >
+                      {truncatedMessage}
                     </p>
                   </div>
                 </div>
-                <span className="dark:text-slate-300">.{message.date}</span>
+                <span className="dark:text-slate-300 text-slate-500 ">
+                  .{message.date}
+                </span>
               </article>
             ))}
           </section>

@@ -43,7 +43,7 @@ const IconOnlySideBar: React.FunctionComponent<IIconOnlySideBarProps> = () => {
 
   return (
     <>
-      <nav className="dark:bg-darkBg sm:flex sm:items-start sm:justify-between sm:flex-col  sm:h-screen bg-white flex items-center justify-center flex-row lg:w-[160px] mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen">
+      <nav className="dark:bg-darkBg sm:flex sm:items-start sm:justify-between sm:flex-col  sm:h-screen bg-white flex items-center justify-center flex-row  mb-2 sm:mb-0 h-12 border fixed bottom-0 md:sticky md:top-0 md:h-screen ">
         <div>
           <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block dark:text-slate-200">
             S n'S
