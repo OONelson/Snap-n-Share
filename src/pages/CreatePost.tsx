@@ -38,7 +38,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
   };
 
   return (
-    <main className="dark:bg-darkBg h-screen">
+    <main className="dark:bg-darkBg h-screen bg-slate-100">
       <div className="md:pb-40">
         <FontAwesomeIcon
           onClick={handleGoBack}

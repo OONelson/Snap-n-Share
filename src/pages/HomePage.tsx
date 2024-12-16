@@ -7,16 +7,19 @@ interface IHomeProps {}
 
 const Home: React.FunctionComponent<IHomeProps> = () => {
   return (
-    <main className="md:flex md:justify-between w-screen">
-      <div className="md:block hidden">
+    <main className="sm:grid lg:grid-cols-[210px,500px,300px] gap-0 ">
+      <div className="md:block hidden ">
         <SideBar />
       </div>
-
-      <HomePosts />
-      <div className="md:hidden block">
+      <div className="-mt-4">
+        <HomePosts />
+      </div>
+      <div className="md:hidden block ">
         <SideBar />
       </div>
-      <SideFooter />
+      <div>
+        <SideFooter />
+      </div>
     </main>
   );
 };

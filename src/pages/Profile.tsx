@@ -206,10 +206,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
   };
 
   return (
-    <main className="h-full flex w-full dark:bg-darkBg">
-      <SideBar />
+    <main className="h-full dark:bg-darkBg sm:grid lg:grid-cols-[210px,1370px] md:grid-cols-[90px,680px]">
+      <div>
+        <SideBar />
+      </div>
+
       {user ? (
-        <Card className="sm:w-full  lg:w-11/12 w-full px-2 border-none h-full md:w-full">
+        <Card className=" w-full px-2 border-none h-full ">
           <div className=" flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />
             {/* LOGOUT MODAL */}
@@ -224,7 +227,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
             {/* LOGOUT MODAL END */}
           </div>
           <CardContent className="p-0 pt-10">
-            <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full sm:w-4/5 md:pl-3">
+            <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full md:pl-3">
               <CardTitle className="col-start-2 col-span-3 row-start-1 row-end-2 ">
                 <span>{userProfile?.username}</span>
               </CardTitle>
@@ -294,7 +297,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                 Bookmarks
               </h2>
             </div>
-            <article className="h-min-[60vh] flex justify-center items-center mt-10">
+            <article className="h-min-[60vh] flex justify-center items-center pt-10 bg-slate-100">
               {activeTab === "Tab1" && (
                 <div>{posts ? renderPost() : <SmallSpinner />}</div>
               )}

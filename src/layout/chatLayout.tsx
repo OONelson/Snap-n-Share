@@ -9,13 +9,22 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmojiPicker from "emoji-picker-react";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IChatLayoutProps {}
 
 const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
   const [openEmoji, setOpenEmoji] = useState(false);
   const [text, setText] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleClickEmoji = (e: { emoji: string }) => {
     setText((prev) => prev + e.emoji);
@@ -24,8 +33,14 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
   console.log(text);
 
   return (
-    <main className="w-[60vw] dark:bg-darkBg">
-      <article className="border-b  flex justify-between px-2 py-2 sticky top-0 bg-inherit">
+    <main className="md:w-[59vw] dark:bg-darkBg">
+      <article
+        className={` justify-between px-2 py-2 sticky top-0 bg-inherit flex  pt-2 pb-2  my-0  transition-all dark:bg-darkBg border-b ${
+          isScrolled
+            ? "backdrop-blur-md bg-white/70 shadow-md dark:bg-darkBg/70"
+            : "bg-white/100 shadow-none"
+        }`}
+      >
         <div className="flex justify-between items-center max-w-[250px] pb-2">
           <img
             src="src/components/assets/avatar.avif"
@@ -43,7 +58,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
         />
       </article>
 
-      <section className="flex-1  flex flex-col gap-8 mb-20">
+      <section className="flex-1  flex flex-col gap-8 mb-20 bg-slate-50">
         <div className="lg:max-w-[60%] mt-2 p-3 dark:text-slate-300 flex ml-2 self-start justify-between">
           <img
             src="src/components/assets/avatar.avif"
@@ -97,7 +112,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
         </div>
       </section>
 
-      <section className="flex items-center lg:bottom-1 lg:fixed px-3 bg-slate-950 p-4 rounded-md">
+      <section className="flex items-center lg:bottom-1 lg:fixed px-3 dark:bg-slate-950 bg-white border-2 p-4 rounded-md">
         <div className="w-[120px] flex justify-between items-center">
           <FontAwesomeIcon
             icon={faPhotoFilm}

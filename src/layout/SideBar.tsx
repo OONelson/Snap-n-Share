@@ -6,7 +6,6 @@ import MessageIcon from "@/components/assets/chat-hover-chat.svg";
 import SettingIcon from "@/components/assets/settings.svg";
 import AddIcon from "@/components/assets/add.svg";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
 
 interface ISideBarProps {}
 
@@ -41,25 +40,9 @@ const navItems = [
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
   const location = useLocation();
 
-  const navVariants = {
-    hidden: { opacity: 0, x: -75 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 120,
-      },
-    },
-  };
   return (
     <>
-      <motion.nav
-        variants={navVariants}
-        initial="hidden"
-        animate="visible"
-        className="sm:flex sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2  lg:pr-5 flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 sm:sticky md:top-0 md:h-screen dark:bg-darkBg"
-      >
+      <nav className=" sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2   flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 sm:fixed z-10 sm:top-0 sm:left-0 md:h-screen dark:bg-darkBg">
         <div>
           <h1 className="text-3xl font-sans font-bold text-gray-900 italic hidden lg:block dark:text-slate-100">
             Snap n' Share
@@ -116,7 +99,7 @@ const SideBar: React.FunctionComponent<ISideBarProps> = () => {
             <span className="text-xl hidden lg:block  ">Settings</span>
           </Link>
         </div>
-      </motion.nav>
+      </nav>
     </>
   );
 };

@@ -70,7 +70,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   };
 
   return (
-    <article className="flex flex-col justify-center items-center">
+    <article className="flex flex-col justify-center items-center lg:w-max">
       {posts.length === 0 ? (
         <p>No post available</p>
       ) : (
