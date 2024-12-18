@@ -7,7 +7,7 @@ interface IHomeProps {}
 
 const Home: React.FunctionComponent<IHomeProps> = () => {
   return (
-    <main className="sm:grid lg:grid-cols-[210px,500px,300px] gap-0 ">
+    <main className="sm:grid lg:grid-cols-[210px,500px,300px] gap-0  ">
       <div className="md:block hidden ">
         <SideBar />
       </div>
