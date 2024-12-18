@@ -44,7 +44,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
-    <main className=" dark:bg-darkBg h-screen  lg:w-[55vw] ">
+    <main className=" dark:bg-darkBg h-screen  lg:w-[55vw] md:w-[88vw]">
       <section className="dark:bg-slate-900 lg:w-[56vw] bg-slate-100">
         <header
           className={`sticky top-0 md:my-4 my-0 px-2 py-1 transition-all dark:bg-darkBg border-b ${
@@ -86,7 +86,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
         <article>
           {filteredPosts.length > 0 && <PostComponent posts={filteredPosts} />}
         </article>
-        <article className=" flex justify-center items-center">
+        <article className="h-full flex justify-center items-center">
           <PostComponent data={data} />
         </article>
       </section>

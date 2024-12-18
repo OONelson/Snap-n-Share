@@ -25,6 +25,7 @@ import DeleteModal from "@/components/reuseables/DeleteModal";
 import { auth } from "@/firebase/firebaseConfig";
 import { updateLikesOnPost } from "../../repository/post.service";
 import { DocumentResponse } from "@/types";
+import SmallSpinner from "./SmallSpinner";
 
 interface IPostComponentProps {
   data: DocumentResponse;
@@ -72,7 +73,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   return (
     <article className="flex flex-col justify-center items-center lg:w-max">
       {posts.length === 0 ? (
-        <p>No post available</p>
+        <SmallSpinner />
       ) : (
         posts.map((post) => (
           <Card
@@ -97,10 +98,10 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 <FontAwesomeIcon
                   icon={faEllipsisV}
                   className="text-gray-700 cursor-pointer hover:text-gray-950"
-                  onClick={toggleDeleteModal}
+                  onClick={() => toggleDeleteModal(post.id)}
                 />
               </div>
-              {openDeleteModal && selectedPost && <DeleteModal />}
+              {openDeleteModal && <DeleteModal />}
               <CardDescription className="ml-8">
                 <p>{post.caption}</p>
               </CardDescription>

@@ -4,6 +4,7 @@ import {
   getPostByUserId,
   getPosts,
   searchPosts,
+  deleteSinglePost,
 } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
@@ -44,9 +45,7 @@ export const usePosts = () => {
 
   const toggleDeleteModal = (postId: string) => {
     setSelectedPost(postId);
-    if (postId) {
-      setOpenDeleteModal((prev) => !prev);
-    }
+    setOpenDeleteModal((prev) => !prev);
   };
 
   const closeDeleteModal = () => {
@@ -158,10 +157,23 @@ export const usePosts = () => {
     setPosts(response);
   };
 
-  const deletePost = async (postId: string) => {
-    selectedPost && (await deleteDoc(doc(db, "posts", postId)));
-    setPosts(posts.filter((post) => post.id !== postId));
-    closeDeleteModal();
+  // const deletePost = async (postId: string) => {
+  //   selectedPost && (await deleteDoc(doc(db, "posts", postId)));
+  //   setPosts(posts.filter((post) => post.id !== postId));
+  //   closeDeleteModal();
+  // };
+
+  const deletePost = async (id: string) => {
+    if (selectedPost) {
+      try {
+        await deleteSinglePost;
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+        closeDeleteModal();
+        console.log("done");
+      } catch (error) {
+        console.error("error deleting post", error);
+      }
+    }
   };
 
   const loadBookmarks = async () => {
@@ -199,8 +211,7 @@ export const usePosts = () => {
 
   const fetchFilteredPosts = async () => {
     if (searchTerm.trim() !== "") {
-      const results = await searchPosts(searchTerm.trim());
-      fetchFilteredPosts(results);
+      await searchPosts(searchTerm.trim());
       console.log("fetched");
     } else {
       console.log("no fetched");

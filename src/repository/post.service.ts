@@ -72,7 +72,7 @@ export const getPost = (id: string) => {
   return getDoc(docRef);
 };
 
-export const deletePost = (id: string) => {
+export const deleteSinglePost = (id: string) => {
   return deleteDoc(doc(db, COLLECTION_NAME, id));
 };
 
