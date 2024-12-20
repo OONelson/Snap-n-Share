@@ -17,6 +17,7 @@ import {
   faHeart as solidHeart,
   faBookmark as regularBookmark,
   faEllipsisV,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faHeart as regularHeart,
@@ -33,7 +34,6 @@ import { usePosts } from "@/hooks/useUserPost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
-import DeleteModal from "@/components/reuseables/DeleteModal";
 import { DocumentResponse } from "@/types";
 import { updateLikesOnPost } from "@/repository/post.service";
 import PostComponent from "@/components/reuseables/PostComponent";
@@ -101,6 +101,8 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     toggleBookmark,
     openDeleteModal,
     toggleDeleteModal,
+    closeDeleteModal,
+    deletePost,
   } = usePosts();
 
   const navigate = useNavigate();
@@ -339,7 +341,19 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                                 onClick={toggleDeleteModal}
                               />
                             </div>
-                            {openDeleteModal && <DeleteModal />}
+                            {openDeleteModal && (
+                              <article onClick={closeDeleteModal}>
+                                <div className="dark:bg-darkBg relative -mt-3">
+                                  <Button
+                                    onClick={() => deletePost(post.id)}
+                                    className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200 dark:bg-slate-900 border"
+                                  >
+                                    <span className="pr-1">Delete</span>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </Button>
+                                </div>
+                              </article>
+                            )}
                             <CardDescription className="ml-8">
                               <p>{post.caption}</p>
                             </CardDescription>

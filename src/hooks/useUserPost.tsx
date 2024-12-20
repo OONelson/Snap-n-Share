@@ -157,22 +157,19 @@ export const usePosts = () => {
     setPosts(response);
   };
 
-  // const deletePost = async (postId: string) => {
-  //   selectedPost && (await deleteDoc(doc(db, "posts", postId)));
-  //   setPosts(posts.filter((post) => post.id !== postId));
-  //   closeDeleteModal();
-  // };
+  const deletePost = async () => {
+    !selectedPost && alert("please select a post to be deleted");
 
-  const deletePost = async (id: string) => {
-    if (selectedPost) {
-      try {
-        await deleteSinglePost;
-        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-        closeDeleteModal();
-        console.log("done");
-      } catch (error) {
-        console.error("error deleting post", error);
-      }
+    try {
+      await deleteDoc(doc(db, "posts", selectedPost));
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => post.id !== selectedPost)
+      );
+      setSelectedPost(null);
+      alert("post deleted successfully");
+    } catch (error) {
+      console.error("error deleting post", error);
+      alert("failed to delete post");
     }
   };
 

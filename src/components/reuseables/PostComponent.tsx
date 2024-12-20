@@ -17,15 +17,16 @@ import {
   faHeart as solidHeart,
   faBookmark as regularBookmark,
   faEllipsisV,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import DeleteModal from "@/components/reuseables/DeleteModal";
 import { auth } from "@/firebase/firebaseConfig";
 import { updateLikesOnPost } from "../../repository/post.service";
 import { DocumentResponse } from "@/types";
 import SmallSpinner from "./SmallSpinner";
+import { Button } from "../ui/button";
 
 interface IPostComponentProps {
   data: DocumentResponse;
@@ -41,6 +42,8 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     toggleBookmark,
     openDeleteModal,
     toggleDeleteModal,
+    closeDeleteModal,
+    deletePost,
     selectedPost,
   } = usePosts();
 
@@ -97,15 +100,27 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 </Link>
                 <FontAwesomeIcon
                   icon={faEllipsisV}
-                  className="text-gray-700 cursor-pointer hover:text-gray-950"
+                  className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
                   onClick={() => toggleDeleteModal(post.id)}
                 />
               </div>
-              {openDeleteModal && <DeleteModal />}
+              {/* DELETE MODAL */}
+              {openDeleteModal && (
+                <article onClick={closeDeleteModal}>
+                  <div className="dark:bg-darkBg relative -mt-3">
+                    <Button
+                      onClick={deletePost}
+                      className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200 dark:bg-slate-900 border"
+                    >
+                      <span className="pr-1">Delete</span>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </div>
+                </article>
+              )}
               <CardDescription className="ml-8">
                 <p>{post.caption}</p>
               </CardDescription>
-
               <CardContent>
                 <img
                   src={post.photos ? post.photos : ""}
