@@ -44,8 +44,8 @@ export const usePosts = () => {
   const navigate = useNavigate();
 
   const toggleDeleteModal = (postId: string) => {
-    setSelectedPost(postId);
-    setOpenDeleteModal((prev) => !prev);
+    // setOpenDeleteModal((prev) => (prev === postId ? null : postId));
+    setSelectedPost((prev) => (prev === postId ? null : postId));
   };
 
   const closeDeleteModal = () => {
@@ -237,6 +237,7 @@ export const usePosts = () => {
     closeDeleteModal,
     deletePost,
     selectedPost,
+    setSelectedPost,
     handleSubmit,
   };
 };

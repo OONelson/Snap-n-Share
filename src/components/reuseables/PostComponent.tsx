@@ -45,6 +45,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     closeDeleteModal,
     deletePost,
     selectedPost,
+    setSelectedPost,
   } = usePosts();
 
   const user = auth.currentUser;
@@ -105,7 +106,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 />
               </div>
               {/* DELETE MODAL */}
-              {openDeleteModal && (
+              {selectedPost === post.id && (
                 <article onClick={closeDeleteModal}>
                   <div className="dark:bg-darkBg relative -mt-3">
                     <Button
