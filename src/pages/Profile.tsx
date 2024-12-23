@@ -299,13 +299,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                 Bookmarks
               </h2>
             </div>
-            <article className="h-min-[60vh] flex justify-center items-center pt-10 bg-slate-100">
+            <article className="h-min-[60vh] flex justify-center items-center pt-10 bg-slate-100 dark:bg-slate-900">
               {activeTab === "Tab1" && (
                 <div>{posts ? renderPost() : <SmallSpinner />}</div>
               )}
 
               {activeTab === "Tab2" && (
-                <div className="w-[90vw] h-min-[60vh]  sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14">
+                <div className="w-[90vw] h-min-[60vh]  sm:w-[80vw] flex flex-col justify-center items-center overflow-x-hidden mb-14 bg-slate-100 dark:bg-slate-900">
                   {bookmarked.length === 0 ? (
                     <p>No bookmarked posts found.</p>
                   ) : (
