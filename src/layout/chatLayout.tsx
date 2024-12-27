@@ -33,7 +33,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
   console.log(text);
 
   return (
-    <main className="md:w-[59vw] dark:bg-darkBg">
+    <main className="flex-1 flex flex-col md:w-[59vw] dark:bg-darkBg h-full">
       <article
         className={` justify-between px-2 py-2 sticky top-0 bg-inherit flex  pt-2 pb-2  my-0  transition-all dark:bg-darkBg border-b ${
           isScrolled
@@ -58,7 +58,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
         />
       </article>
 
-      <section className="flex-1  flex flex-col gap-8 mb-20 bg-slate-50">
+      <section className="flex-1 overflow-y-auto dark:bg-darkBg flex flex-col gap-8 mb-20 bg-slate-50">
         <div className="lg:max-w-[60%] mt-2 p-3 dark:text-slate-300 flex ml-2 self-start justify-between">
           <img
             src="src/components/assets/avatar.avif"

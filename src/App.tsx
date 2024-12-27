@@ -4,7 +4,6 @@ import { router } from "./routes";
 import { UserAuthProvider } from "./contexts/UserAuthContext";
 import { UserProfileProvider } from "./contexts/UserProfileContext";
 import { UsernameProvider } from "./contexts/UsernameContext";
-import ThemeSelect from "./components/reuseables/ThemeSelect";
 import ThemeProvider from "./contexts/ThemeContext";
 
 interface IAppProps {}
@@ -16,7 +15,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
         <UserProfileProvider>
           <UsernameProvider>
             <ThemeProvider>
-              <ThemeSelect />
               <RouterProvider router={router} />
             </ThemeProvider>
           </UsernameProvider>
