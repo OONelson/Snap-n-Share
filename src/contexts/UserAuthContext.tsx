@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebaseConfig";
-import { ProfileInfo } from "@/types";
+import { UserProfileInfo } from "@/types";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 interface IUserAuthProviderProps {
@@ -30,7 +30,7 @@ const logIn = (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-const signUp = (email: string, password: string) => {
+const signUp = async (email: string, password: string) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
@@ -43,11 +43,11 @@ const googleSignIn = () => {
   return signInWithPopup(auth, googleAuthProvider);
 };
 
-const updateProfileInfo = (profileInfo: ProfileInfo) => {
-  console.log("The user profileInfo is : ", profileInfo);
-  return updateProfile(profileInfo.user!, {
-    displayName: profileInfo.displayName,
-    photoURL: profileInfo.photoURL,
+const updateProfileInfo = (userProfileInfo: UserProfileInfo) => {
+  console.log("The user profileInfo is : ", userProfileInfo);
+  return updateProfile(userProfileInfo.user!, {
+    displayName: userProfileInfo.displayName,
+    photoURL: userProfileInfo.photoURL,
   });
 };
 
@@ -72,8 +72,8 @@ export const UserAuthProvider: React.FunctionComponent<
       const userData = {
         uid: user?.uid,
         email: user?.email,
-        displayName: user?.displayName,
-        photoURL: user?.photoURL,
+        // displayName: user?.displayName,
+        // photoURL: user?.photoURL,
         createdAt: serverTimestamp(),
       };
       if (user) {

@@ -6,8 +6,8 @@ import { UserProfileProvider } from "./contexts/UserProfileContext";
 import { UsernameProvider } from "./contexts/UsernameContext";
 import ThemeProvider from "./contexts/ThemeContext";
 
+import "stream-chat-react/dist/css/v2/index.css";
 interface IAppProps {}
-
 const App: React.FunctionComponent<IAppProps> = () => {
   return (
     <>

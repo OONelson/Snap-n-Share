@@ -16,11 +16,17 @@ import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
 import { useUsername } from "@/contexts/UsernameContext";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { useUserProfile } from "@/contexts/UserProfileContext";
 interface ICreateUsernameProps {}
 
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
@@ -36,6 +42,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
     setError,
   } = useUsername();
 
+  const { initial } = useUserProfile();
   const navigate = useNavigate();
 
   const { user } = useUserAuth();
@@ -51,7 +58,15 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
     });
 
     setDoc(doc(db, "users", uid), { username }, { merge: true });
+    const userData = {
+      username: username,
+      photoURL: initial,
+    };
 
+    if (user) {
+      addDoc(collection(db, "users"), userData);
+      console.log(user);
+    }
     navigate("/");
   };
 

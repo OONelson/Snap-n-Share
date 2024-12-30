@@ -1,7 +1,6 @@
-import { auth, db, storage } from "@/firebase/firebaseConfig";
+import { auth, db } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import React, { MouseEventHandler, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 
@@ -111,26 +110,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     }
   };
 
-  // const updateProfilePhoto = async (url: any) => {
-  //   const user = auth.currentUser;
-  //   if (user) {
-  //     const storageRef = ref(storage, `profilephotos/${user.uid}`);
-  //     await uploadBytes(storageRef, url);
-  //     const photoURL = await getDownloadURL(storageRef);
-  //     await setDoc(
-  //       doc(db, "users", user.uid),
-  //       { photoURL: url },
-  //       { merge: true }
-  //     );
-  //     setUserProfile((prev) => (prev ? { ...prev, photoURL } : null));
-  //   }
-  // };
-
   const handleUpdateProfile = async () => {
-    // displayName ? changeDisplayName : displayName;
-    // bio ? updateBio : bio;
-    // newPhoto ? updateProfilePhoto : newPhoto;
-    // if () {
     await changeDisplayName(displayName);
     await updateBio(bio);
     alert("profile updated");

@@ -30,11 +30,11 @@ export interface Post {
   date: Date;
 }
 
-export interface ProfileInfo {
-  user?: User;
-  displayName?: string;
-  photoURL?: string;
-}
+// export interface ProfileInfo {
+//   user?: User;
+//   displayName?: string;
+//   photoURL?: string;
+// }
 
 export interface UserProfileInfo {
   user: User;
