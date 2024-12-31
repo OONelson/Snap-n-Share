@@ -10,6 +10,9 @@ import {
   ChannelHeader,
   MessageList,
   MessageInput,
+  TypingIndicator,
+  ChannelSearch,
+  UnreadMessagesNotification,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -86,6 +89,8 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   return (
     <Chat client={client}>
       <ChannelList filters={filters} sort={sort} />
+      <ChannelSearch />
+      <UnreadMessagesNotification />
       <StreamChannel>
         <Window>
           <ChannelHeader />
@@ -93,6 +98,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
           <MessageInput />
         </Window>
         <Thread />
+        <TypingIndicator />
       </StreamChannel>
     </Chat>
   );
