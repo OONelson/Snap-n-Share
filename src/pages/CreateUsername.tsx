@@ -22,8 +22,9 @@ import {
   doc,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+import { auth, db } from "@/firebase/firebaseConfig";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "@/contexts/UserProfileContext";
@@ -42,32 +43,30 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
     setError,
   } = useUsername();
 
-  const { initial } = useUserProfile();
+  const { initials } = useUserProfile();
   const navigate = useNavigate();
 
-  const { user } = useUserAuth();
+  // const { user } = useUserAuth();
+  const user = auth.currentUser;
 
-  const uid = user?.uid;
-
-  const handleSaveUsername = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSaveUsername = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
-    setDoc(doc(db, "usernames", uid), {
-      username,
-      createdAt: serverTimestamp(),
-    });
-
-    setDoc(doc(db, "users", uid), { username }, { merge: true });
-    const userData = {
-      username: username,
-      photoURL: initial,
-    };
-
     if (user) {
-      addDoc(collection(db, "users"), userData);
-      console.log(user);
+      await setDoc(doc(db, "usernames", user?.uid), {
+        username,
+        createdAt: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "users", user?.uid), {
+        username,
+      });
+
+      alert("username saved");
+      navigate("/");
+    } else {
+      setError("user not authenticated");
+      alert("user not authenticated");
     }
-    navigate("/");
   };
 
   return (

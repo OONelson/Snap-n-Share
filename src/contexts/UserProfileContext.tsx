@@ -1,6 +1,6 @@
 import { auth, db } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import React, { MouseEventHandler, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 
@@ -86,8 +86,9 @@ export const UserProfileProvider: React.FunctionComponent<{
   const changeDisplayName = async (displayName: string) => {
     try {
       const user = auth.currentUser;
-      const displayNameRef = doc(db, "users", user?.uid);
-      await setDoc(displayNameRef, { displayName }, { merge: true });
+      await updateDoc(doc(db, "users", user?.uid), {
+        displayName,
+      });
       await setDoc(doc(db, "displaynames", user?.uid), { bio });
 
       console.log("display name saved ", displayName);
@@ -99,10 +100,11 @@ export const UserProfileProvider: React.FunctionComponent<{
   //CHANGE BIO
   const updateBio = async (bio: string) => {
     try {
-      const user = auth.currentUser;
-      const bioRef = doc(db, "users", user?.uid);
-      await setDoc(bioRef, { bio }, { merge: true });
-      await setDoc(doc(db, "bios", user?.uid), { bio });
+      // const user = auth.currentUser;
+      await updateDoc(doc(db, "users", userProfile?.uid), {
+        bio,
+      });
+      await setDoc(doc(db, "bios", userProfile?.uid), { bio });
 
       console.log("bio saved ", bio);
     } catch (error) {
@@ -118,19 +120,16 @@ export const UserProfileProvider: React.FunctionComponent<{
     console.log(displayName);
 
     setEdit(false);
-    // }
-    // console.log();
   };
 
-  const fetchDisplayName = async (userId: string): Promise<string> => {
+  const fetchDisplayName = async (): Promise<string> => {
     try {
-      const displayNameRef = doc(db, "users", userId);
+      const displayNameRef = doc(db, "users", userProfile?.uid);
 
       const docSnap = await getDoc(displayNameRef);
 
       if (docSnap.exists()) {
         return docSnap.data().displayName;
-        console.log(displayName);
       } else {
         console.log("no such doc");
         return "";
@@ -143,12 +142,10 @@ export const UserProfileProvider: React.FunctionComponent<{
 
   useEffect(() => {
     const loadDisplayName = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const uid = user.uid;
+      if (userProfile?.uid) {
+        const uid = userProfile?.uid;
         setDisplayName(uid);
         const changeDisplayName = await fetchDisplayName(uid);
-        // setUserProfile(changeDisplayName || "");
         setDisplayName(changeDisplayName || "");
       }
     };
@@ -157,15 +154,14 @@ export const UserProfileProvider: React.FunctionComponent<{
 
   // FETCH BIO
 
-  const fetchBio = async (userId: string): Promise<string> => {
+  const fetchBio = async (): Promise<string> => {
     try {
-      const bioRef = doc(db, "users", userId);
+      const bioRef = doc(db, "users", userProfile?.uid);
 
       const docSnap = await getDoc(bioRef);
 
       if (docSnap.exists()) {
         return docSnap.data().bio;
-        console.log(bio);
       } else {
         console.log("no such doc");
         return "";
@@ -178,12 +174,10 @@ export const UserProfileProvider: React.FunctionComponent<{
 
   useEffect(() => {
     const loadBio = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const uid = user.uid;
+      if (userProfile?.uid) {
+        const uid = userProfile?.uid;
         setBio(uid);
         const updateBio = await fetchBio(uid);
-        // setUserProfile(changeDisplayName || "");
         setBio(updateBio || "");
       }
     };

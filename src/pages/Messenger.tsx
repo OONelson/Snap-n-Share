@@ -89,8 +89,6 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   return (
     <Chat client={client}>
       <ChannelList filters={filters} sort={sort} />
-      <ChannelSearch />
-      <UnreadMessagesNotification />
       <StreamChannel>
         <Window>
           <ChannelHeader />

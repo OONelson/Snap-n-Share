@@ -72,8 +72,6 @@ export const UserAuthProvider: React.FunctionComponent<
       const userData = {
         uid: user?.uid,
         email: user?.email,
-        // displayName: user?.displayName,
-        // photoURL: user?.photoURL,
         createdAt: serverTimestamp(),
       };
       if (user) {
