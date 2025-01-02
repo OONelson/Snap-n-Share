@@ -1,7 +1,7 @@
 import { auth, db } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import React, { MouseEventHandler, useEffect } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import React, { MouseEventHandler, SetStateAction, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 
 interface UserProfileData {
@@ -15,15 +15,15 @@ interface UserProfileData {
   handleUpdateProfile: () => void;
   edit: boolean;
   bio: string;
-  setBio: (bio: string) => void;
+  setBio: React.Dispatch<SetStateAction<string>>;
   handleOpenEdit: () => MouseEventHandler<HTMLButtonElement>;
   handleCloseEdit: () => MouseEventHandler<HTMLButtonElement>;
   isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
+  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
   initials: string;
   fetchBio: (bio: string) => Promise<string>;
   displayName: string;
-  setDisplayName: (displayName: string) => void;
+  setDisplayName: React.Dispatch<SetStateAction<string>>;
 }
 
 const UserProfileContext = createContext<UserProfileData | undefined>(
@@ -82,16 +82,30 @@ export const UserProfileProvider: React.FunctionComponent<{
   }, []);
 
   // CHANGE DISPLAY NAME
+  //  if (user) {
+
+  //       await updateDoc(userDocRef, {
+  //         username,
+  //       });
+
+  //       navigate("/");
+  //     } else {
+  //       setError("user not authenticated");
+  //       alert("user not authenticated");
+  //  }
 
   const changeDisplayName = async (displayName: string) => {
     try {
       const user = auth.currentUser;
-      await updateDoc(doc(db, "users", user?.uid), {
-        displayName,
-      });
-      await setDoc(doc(db, "displaynames", user?.uid), { bio });
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
 
-      console.log("display name saved ", displayName);
+        await updateDoc(userDocRef, {
+          displayName,
+        });
+
+        console.log("display name saved ", displayName);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -100,13 +114,17 @@ export const UserProfileProvider: React.FunctionComponent<{
   //CHANGE BIO
   const updateBio = async (bio: string) => {
     try {
-      // const user = auth.currentUser;
-      await updateDoc(doc(db, "users", userProfile?.uid), {
-        bio,
-      });
-      await setDoc(doc(db, "bios", userProfile?.uid), { bio });
+      const user = auth.currentUser;
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
 
-      console.log("bio saved ", bio);
+        await updateDoc(userDocRef, {
+          bio,
+        });
+        // await setDoc(doc(db, "bios", userProfile?.uid), { bio });
+
+        console.log("bio saved ", bio);
+      }
     } catch (error) {
       console.error(error);
     }

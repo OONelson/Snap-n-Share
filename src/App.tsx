@@ -11,15 +11,15 @@ interface IAppProps {}
 const App: React.FunctionComponent<IAppProps> = () => {
   return (
     <>
-      <UserAuthProvider>
-        <UserProfileProvider>
+      <UserProfileProvider>
+        <UserAuthProvider>
           <UsernameProvider>
             <ThemeProvider>
               <RouterProvider router={router} />
             </ThemeProvider>
           </UsernameProvider>
-        </UserProfileProvider>
-      </UserAuthProvider>
+        </UserAuthProvider>
+      </UserProfileProvider>
     </>
   );
 };

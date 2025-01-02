@@ -2,18 +2,24 @@ import { db } from "@/firebase/firebaseConfig";
 import { validateUsername } from "@/lib/usernameRegex";
 import { UserProfileInfo } from "@/types";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 interface UsernameData {
-  userProfile: UserProfileInfo | null;
   username: string;
-  setUsername: (username: string) => void;
+  setUsername: React.Dispatch<SetStateAction<string>>;
   isAvailable: boolean | null;
-  setIsAvailable: (isAvailable: boolean | null) => void;
+  setIsAvailable: React.Dispatch<SetStateAction<boolean | null>>;
   loading: boolean;
   error: string | null;
-  setError: (error: string | null) => void;
-  handleCheckUsername: () => void;
+  setError: React.Dispatch<SetStateAction<string | null>>;
+  handleCheckUsername: () => Promise<void>;
+  userProfile: UserProfileInfo;
 }
 const UsernameContext = createContext<UsernameData | undefined>(undefined);
 
@@ -56,19 +62,18 @@ export const UsernameProvider: React.FunctionComponent<{
     setLoading(false);
   };
 
+  const value = {
+    username,
+    setUsername,
+    loading,
+    handleCheckUsername,
+    isAvailable,
+    setIsAvailable,
+    setError,
+    error,
+  };
   return (
-    <UsernameContext.Provider
-      value={{
-        username,
-        setUsername,
-        loading,
-        handleCheckUsername,
-        isAvailable,
-        setIsAvailable,
-        setError,
-        error,
-      }}
-    >
+    <UsernameContext.Provider value={value}>
       {children}
     </UsernameContext.Provider>
   );

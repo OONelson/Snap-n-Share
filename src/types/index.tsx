@@ -50,7 +50,7 @@ export interface ProfileResponse {
   id?: string;
   bio?: string;
   username?: string;
-  displayName: string;
+  displayName?: string;
   photoURL?: string;
   userEmail?: string;
 }
