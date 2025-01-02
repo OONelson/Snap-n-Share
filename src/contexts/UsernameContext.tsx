@@ -43,7 +43,7 @@ export const UsernameProvider: React.FunctionComponent<{
       return;
     }
 
-    const usersRef = collection(db, "usernames");
+    const usersRef = collection(db, "users");
     const q = query(usersRef, where("username", "==", username));
     const querySnapshot = await getDocs(q);
 

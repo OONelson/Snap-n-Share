@@ -48,7 +48,7 @@ export const UserProfileProvider: React.FunctionComponent<{
 }> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""

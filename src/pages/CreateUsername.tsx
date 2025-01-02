@@ -16,18 +16,10 @@ import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import UserIcon from "@/components/assets/account-hover-account.svg";
 import { motion } from "framer-motion";
 import { useUsername } from "@/contexts/UsernameContext";
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/firebaseConfig";
-import { useUserAuth } from "@/contexts/UserAuthContext";
 import { useNavigate } from "react-router-dom";
-import { useUserProfile } from "@/contexts/UserProfileContext";
+// import { useUserProfile } from "@/contexts/UserProfileContext";
 interface ICreateUsernameProps {}
 
 const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
@@ -43,7 +35,7 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
     setError,
   } = useUsername();
 
-  const { initials } = useUserProfile();
+  // const { initials } = useUserProfile();
   const navigate = useNavigate();
 
   // const { user } = useUserAuth();
@@ -51,13 +43,11 @@ const CreateUsername: React.FunctionComponent<ICreateUsernameProps> = () => {
 
   const handleSaveUsername = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (user) {
-      await setDoc(doc(db, "usernames", user?.uid), {
-        username,
-        createdAt: serverTimestamp(),
-      });
 
-      await updateDoc(doc(db, "users", user?.uid), {
+    if (user) {
+      const userDocRef = doc(db, "users", user.uid);
+
+      await updateDoc(userDocRef, {
         username,
       });
 

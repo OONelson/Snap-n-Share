@@ -11,7 +11,14 @@ import {
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 
 interface IUserAuthProviderProps {
   children: React.ReactNode;
@@ -66,25 +73,36 @@ export const UserAuthProvider: React.FunctionComponent<
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       console.log("I am in useEffect and user is : ", user);
 
-      const userData = {
-        uid: user?.uid,
-        email: user?.email,
-        createdAt: serverTimestamp(),
-      };
       if (user) {
-        addDoc(collection(db, "users"), userData);
-        console.log("The logged in user state is : ", user);
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          const userData = {
+            uid: user?.uid,
+            email: user?.email,
+            createdAt: serverTimestamp(),
+          };
+
+          await setDoc(userDocRef, userData);
+          console.log("user data created in firestore", userData);
+        } else {
+          console.log("user already exists in firestore");
+        }
         setUser(user);
+      } else {
+        setUser(null);
       }
 
       return () => {
         unsubscribe();
       };
     });
-  });
+  }, []);
+
   const value: AuthContextData = {
     user,
     logIn,
