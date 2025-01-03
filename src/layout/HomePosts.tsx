@@ -98,6 +98,9 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
           </div>
         </header>
         {loading && <SmallSpinner />}
+        {searchTerm && filteredPosts.length === 0 && !loading && (
+          <h2 className="text-slate-200">no posts found</h2>
+        )}
         <article className="mb-5">
           {filteredPosts.length > 0 &&
             filteredPosts.map((post) => (
