@@ -127,9 +127,9 @@ export const usePosts = () => {
     }
   };
 
-  const getUserPosts = async (id: string) => {
+  const getUserPosts = async (uid: string) => {
     try {
-      const querySnapshot = await getPostByUserId(id);
+      const querySnapshot = await getPostByUserId(uid);
       const tempArr: DocumentResponse[] = [];
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((doc) => {
@@ -143,6 +143,7 @@ export const usePosts = () => {
           tempArr.push(responseObj);
         });
         setUserPosts(tempArr);
+        console.log(userPosts);
       } else {
         console.log("No posts found for this user.");
       }
@@ -186,7 +187,7 @@ export const usePosts = () => {
         })
       );
 
-      console.log(enrichedPosts);
+      // console.log(enrichedPosts);
       setPosts(enrichedPosts);
     }
   };

@@ -86,7 +86,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
           >
             <CardHeader>
               <div className="flex justify-between items-center w-full md:w-full ">
-                <Link to="/profile">
+                <Link to={`/profile/${user?.uid}`}>
                   <div className="flex items-center justify-between w-full">
                     {userProfile?.photoURL ? (
                       <img src={userProfile.photoURL} alt={displayName} />
@@ -96,8 +96,10 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                       </div>
                     )}
 
-                    <span className="pl-2">{post.username}</span>
-                    <span>{post.displayName}</span>
+                    <span className="pl-2">{post.displayName}</span>
+                    <span className="pl-2 text-slate-400 text-sm">
+                      @{post.username}
+                    </span>
                   </div>
                 </Link>
                 <FontAwesomeIcon

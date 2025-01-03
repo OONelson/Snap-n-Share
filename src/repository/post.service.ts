@@ -64,8 +64,9 @@ export const getPostByUserId = async (uid: string) => {
     orderBy("date", "desc"),
     where("userId", "==", uid)
   );
-  const postsSnapshot = await getDocs(q);
-  return postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return await getDocs(q);
+  // const postsSnapshot =
+  // return postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
 export const searchPosts = async (searchTerm: string) => {

@@ -1,8 +1,10 @@
 import { auth, db } from "@/firebase/firebaseConfig";
+import { getUserProfile } from "@/repository/user.service";
 import { UserProfileInfo } from "@/types";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { MouseEventHandler, SetStateAction, useEffect } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
+import { useParams } from "react-router-dom";
 
 interface UserProfileData {
   userProfile: UserProfileInfo | null;
@@ -46,9 +48,8 @@ const getInitials = (name?: string): string => {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
+  const [userProfile, setUserProfile] = useState<any | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""
@@ -56,6 +57,7 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
+  const { uid } = useParams<{ uid: string }>();
 
   const handleOpenEdit = () => {
     setEdit(true);
@@ -77,22 +79,19 @@ export const UserProfileProvider: React.FunctionComponent<{
         }
       }
     });
+    setUserProfile(userProfile);
 
     return () => unsubscribe();
+
+    // const fetchProfileData = async () => {
+    //   if (uid) {
+    //     const userPage = await getUserProfile(uid);
+    //     setUserProfile(userPage);
+    //   }
+    // };
+
+    // fetchProfileData();
   }, []);
-
-  // CHANGE DISPLAY NAME
-  //  if (user) {
-
-  //       await updateDoc(userDocRef, {
-  //         username,
-  //       });
-
-  //       navigate("/");
-  //     } else {
-  //       setError("user not authenticated");
-  //       alert("user not authenticated");
-  //  }
 
   const changeDisplayName = async (displayName: string) => {
     try {
