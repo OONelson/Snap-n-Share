@@ -95,6 +95,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
 
   const {
     userPosts,
+    posts,
     loading,
     error,
     bookmarked,
@@ -132,9 +133,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     }
   };
 
-  const bookmarkedPosts = userPosts.filter((userPost) =>
-    bookmarked.includes(userPost.id)
-  );
+  const bookmarkedPosts = posts.filter((post) => bookmarked.includes(post.id));
 
   const renderPost = () => {
     return (
@@ -169,7 +168,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                   />
                 </div>
                 {openDeleteModal && <DeleteModal />}
-                <CardDescription className="ml-8">
+                <CardDescription className="ml-3">
                   <p>{post.caption}</p>
                 </CardDescription>
 
@@ -312,13 +311,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                     <p>No bookmarked posts found.</p>
                   ) : (
                     <>
-                      {bookmarkedPosts.map((userPost) => (
+                      {bookmarkedPosts.map((post) => (
                         <Card
-                          key={userPost.id}
-                          className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
+                          key={post.id}
+                          className=" mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw] p-0"
                         >
                           <CardHeader>
-                            <div className="flex justify-between items-center w-full md:w-full ">
+                            <div className="flex w-full md:w-full">
                               <Link to="/profile">
                                 <div className="flex items-center justify-between w-full">
                                   {userProfile?.photoURL ? (
@@ -331,23 +330,27 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                                       {initials}
                                     </div>
                                   )}
-
                                   <span className="pl-2">
-                                    {userProfile?.username}
+                                    {post.displayName}
+                                  </span>
+                                  <span className="pl-1 text-slate-400 text-sm">
+                                    @{post.username}
                                   </span>
                                 </div>
                               </Link>
-                              <FontAwesomeIcon
-                                icon={faEllipsisV}
-                                className="text-gray-700 cursor-pointer hover:text-gray-950"
-                                onClick={toggleDeleteModal}
-                              />
+                              {post.userId === user.uid && (
+                                <FontAwesomeIcon
+                                  icon={faEllipsisV}
+                                  className="text-gray-700 cursor-pointer hover:text-gray-950"
+                                  onClick={toggleDeleteModal}
+                                />
+                              )}
                             </div>
                             {openDeleteModal && (
                               <article onClick={closeDeleteModal}>
                                 <div className="dark:bg-darkBg relative -mt-3">
                                   <Button
-                                    onClick={() => deletePost(userPosts.id)}
+                                    onClick={() => deletePost(post.id)}
                                     className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200 dark:bg-slate-900 border"
                                   >
                                     <span className="pr-1">Delete</span>
@@ -356,15 +359,15 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                                 </div>
                               </article>
                             )}
-                            <CardDescription className="ml-8">
-                              <p>{userPost.caption}</p>
+                            <CardDescription className="ml-3">
+                              <p>{post.caption}</p>
                             </CardDescription>
 
                             <CardContent>
                               <img
-                                src={userPost.photos ? userPost.photos : ""}
-                                alt={userPost.caption}
-                                className="w-[400px] h-[300px] "
+                                src={post.photos ? post.photos : ""}
+                                alt={post.caption}
+                                className="w-[300px] h-[300px] "
                               />
                             </CardContent>
                             <CardFooter className="flex justify-between items-center">
@@ -386,9 +389,9 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
 
                               <FontAwesomeIcon
                                 className="cursor-pointer"
-                                onClick={() => toggleBookmark(userPost.id)}
+                                onClick={() => toggleBookmark(post.id)}
                                 icon={
-                                  bookmarked.includes(userPost.id)
+                                  bookmarked.includes(post.id)
                                     ? regularBookmark
                                     : solidBookmark
                                 }

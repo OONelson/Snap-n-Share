@@ -72,6 +72,7 @@ export const getPostByUserId = async (uid: string) => {
 export const searchPosts = async (searchTerm: string) => {
   const q = query(
     collection(db, COLLECTION_NAME),
+    orderBy("caption"),
     where("caption", ">=", searchTerm),
     where("caption", "<=", searchTerm + "\uf8ff")
   );

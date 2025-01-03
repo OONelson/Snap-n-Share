@@ -21,12 +21,14 @@ import {
 import { db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+// import { setTimeout } from "timers/promises";
 
 export const usePosts = () => {
   const { user } = useUserAuth();
 
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
+    // id: "",
     caption: "",
     photos: "",
     likes: 0,
@@ -41,7 +43,7 @@ export const usePosts = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<DocumentResponse[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
 
@@ -143,7 +145,7 @@ export const usePosts = () => {
           tempArr.push(responseObj);
         });
         setUserPosts(tempArr);
-        console.log(userPosts);
+        // console.log(userPosts);
       } else {
         console.log("No posts found for this user.");
       }
@@ -215,6 +217,7 @@ export const usePosts = () => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setBookmarked(data.bookmarks || []);
+        console.log(data.bookmarks);
       } else {
         console.log("No bookmarks found for this user.");
       }
@@ -241,18 +244,27 @@ export const usePosts = () => {
     }
   }, [user]);
 
-  const fetchFilteredPosts = async () => {
-    if (searchTerm.trim() !== "") {
-      await searchPosts(searchTerm.trim());
-      console.log("fetched");
-    } else {
-      console.log("no fetched");
-
-      setFilteredPosts([]);
+  const fetchFilteredPosts = async (term: string) => {
+    setLoading(true);
+    try {
+      const results = await searchPosts(term);
+      setFilteredPosts(results);
+    } catch (error) {
+      console.error("error searching posts", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
-    fetchFilteredPosts();
+    if (searchTerm.trim() === "") {
+      setFilteredPosts([]);
+      return;
+    }
+    const debounce = setTimeout(() => {
+      fetchFilteredPosts(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(debounce);
   }, [searchTerm]);
 
   return {

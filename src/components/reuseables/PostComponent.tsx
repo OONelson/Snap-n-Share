@@ -24,12 +24,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "@/firebase/firebaseConfig";
 import { updateLikesOnPost } from "../../repository/post.service";
-import { DocumentResponse } from "@/types";
+import { DocumentResponse, Post } from "@/types";
 import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
 
 interface IPostComponentProps {
   data: DocumentResponse;
+  // filteredPosts: Post[]; // Add
 }
 
 const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
@@ -97,16 +98,19 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                     )}
 
                     <span className="pl-2">{post.displayName}</span>
-                    <span className="pl-2 text-slate-400 text-sm">
+                    <span className="pl-1 text-slate-400 text-sm">
                       @{post.username}
                     </span>
                   </div>
                 </Link>
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
-                  className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
-                  onClick={() => toggleDeleteModal(post.id)}
-                />
+
+                {post.userId === user?.uid && (
+                  <FontAwesomeIcon
+                    icon={faEllipsisV}
+                    className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
+                    onClick={() => toggleDeleteModal(post.id)}
+                  />
+                )}
               </div>
               {/* DELETE MODAL */}
               {selectedPost === post.id && (
@@ -122,7 +126,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                   </div>
                 </article>
               )}
-              <CardDescription className="ml-8">
+              <CardDescription className="ml-3">
                 <p>{post.caption}</p>
               </CardDescription>
               <CardContent>
