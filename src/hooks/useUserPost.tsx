@@ -32,6 +32,7 @@ export const usePosts = () => {
     date: new Date(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
+  const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
 
@@ -138,7 +139,7 @@ export const usePosts = () => {
           };
           tempArr.push(responseObj);
         });
-        setPosts(tempArr);
+        setUserPosts(tempArr);
       } else {
         console.log("No posts found for this user.");
       }
@@ -221,6 +222,7 @@ export const usePosts = () => {
   }, [searchTerm]);
 
   return {
+    userPosts,
     posts,
     loading,
     error,

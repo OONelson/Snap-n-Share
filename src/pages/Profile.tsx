@@ -94,7 +94,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
   } = useUserProfile();
 
   const {
-    posts,
+    userPosts,
     loading,
     error,
     bookmarked,
@@ -132,15 +132,17 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     }
   };
 
-  const bookmarkedPosts = posts.filter((post) => bookmarked.includes(post.id));
+  const bookmarkedPosts = userPosts.filter((userPost) =>
+    bookmarked.includes(userPost.id)
+  );
 
   const renderPost = () => {
     return (
       <article className="flex flex-col justify-center items-center">
-        {posts.length === 0 ? (
+        {userPosts.length === 0 ? (
           <p>No post available</p>
         ) : (
-          posts.map((post) => (
+          userPosts.map((post) => (
             <Card
               key={post.id}
               className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
@@ -250,7 +252,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
               {/* </div> */}
               <p className="text-lg font-normal col-start-2 col-end-3 row-start-2 row-end-3 mt-6">
                 {/* {user.email} */}
-                <span className="font-bold pr-2">{posts.length}</span>
+                <span className="font-bold pr-2">{userPosts.length}</span>
                 Posts
               </p>
               <div className="col-start-3 col-end-4 row-start-2 row-end-3 mt-6">
@@ -301,7 +303,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
             </div>
             <article className="h-min-[60vh] flex justify-center items-center pt-10 bg-slate-100 dark:bg-slate-900">
               {activeTab === "Tab1" && (
-                <div>{posts ? renderPost() : <SmallSpinner />}</div>
+                <div>{userPosts ? renderPost() : <SmallSpinner />}</div>
               )}
 
               {activeTab === "Tab2" && (
@@ -310,9 +312,9 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                     <p>No bookmarked posts found.</p>
                   ) : (
                     <>
-                      {bookmarkedPosts.map((post) => (
+                      {bookmarkedPosts.map((userPost) => (
                         <Card
-                          key={post.id}
+                          key={userPost.id}
                           className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
                         >
                           <CardHeader>
@@ -345,7 +347,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                               <article onClick={closeDeleteModal}>
                                 <div className="dark:bg-darkBg relative -mt-3">
                                   <Button
-                                    onClick={() => deletePost(post.id)}
+                                    onClick={() => deletePost(userPosts.id)}
                                     className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200 dark:bg-slate-900 border"
                                   >
                                     <span className="pr-1">Delete</span>
@@ -355,13 +357,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                               </article>
                             )}
                             <CardDescription className="ml-8">
-                              <p>{post.caption}</p>
+                              <p>{userPost.caption}</p>
                             </CardDescription>
 
                             <CardContent>
                               <img
-                                src={post.photos ? post.photos : ""}
-                                alt={post.caption}
+                                src={userPost.photos ? userPost.photos : ""}
+                                alt={userPost.caption}
                                 className="w-[400px] h-[300px] "
                               />
                             </CardContent>
@@ -384,9 +386,9 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
 
                               <FontAwesomeIcon
                                 className="cursor-pointer"
-                                onClick={() => toggleBookmark(post.id)}
+                                onClick={() => toggleBookmark(userPost.id)}
                                 icon={
-                                  bookmarked.includes(post.id)
+                                  bookmarked.includes(userPost.id)
                                     ? regularBookmark
                                     : solidBookmark
                                 }

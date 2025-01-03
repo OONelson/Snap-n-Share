@@ -11,8 +11,8 @@ import {
   MessageList,
   MessageInput,
   TypingIndicator,
-  ChannelSearch,
-  UnreadMessagesNotification,
+  // ChannelSearch,
+  // UnreadMessagesNotification,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -42,8 +42,8 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
 
   const [client, setClient] = useState<StreamChat | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<any>([]);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
 
   console.log("user");
@@ -79,9 +79,8 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
           // );
 
           // await channelInstance.watch();
-        } else {
-          if (client) return () => client.disconnectUser();
         }
+
         console.log("user", user);
 
         // setFirebaseUser(streamUser);
@@ -95,6 +94,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
 
   const handleSearchUser = async () => {
     await searchUsers(searchTerm);
+    console.log("done");
 
     setSearchResults(searchResults);
   };
@@ -116,6 +116,8 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   `;
 
   const SearchContainer = styled.div`
+    display: flex;
+    background: none;
     width: 300px;
     padding: 10px;
   `;
@@ -125,31 +127,40 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
       <Container>
         <SearchContainer>
           <Input
+            className="bg-slate-100"
             type="search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="search user"
           />
-          <Button onClick={handleSearchUser}>
+          <Button className="bg-transparent" onClick={handleSearchUser}>
             <FontAwesomeIcon icon={faSearch} />
           </Button>
 
           <ul>
-            {searchResults.map((user) => (
-              <li key={user?.uid}>{user.name}</li>
+            {searchResults.map((user: any) => (
+              <li key={user.id} onClick={() => startChat(user.id)}>
+                {username},{user.name}
+              </li>
             ))}
           </ul>
         </SearchContainer>
-        <ChannelList filters={filters} sort={sort} />
-        <StreamChannel channel={selectedChannel}>
-          <Window>
-            <ChannelHeader />
-            <MessageList />
-            <MessageInput />
-          </Window>
-          <Thread />
-          <TypingIndicator />
-        </StreamChannel>
+        {/* <ChannelList filters={filters} sort={sort} /> */}
+        <div>
+          {selectedChannel ? (
+            <StreamChannel channel={selectedChannel}>
+              <Window>
+                <ChannelHeader />
+                <MessageList />
+                <MessageInput />
+              </Window>
+              <Thread />
+              <TypingIndicator />
+            </StreamChannel>
+          ) : (
+            <div>select a user to start chat</div>
+          )}
+        </div>
       </Container>
     </Chat>
   );

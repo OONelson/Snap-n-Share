@@ -50,7 +50,7 @@ export const getAllUsers = async (id: string) => {
 };
 
 export const searchUsers = async (searchTerm: string) => {
-  const usersRef = collection(db, "users");
+  const usersRef = collection(db, COLLECTION_NAME);
   const q = query(
     usersRef,
     where("displayName", ">=", searchTerm),
