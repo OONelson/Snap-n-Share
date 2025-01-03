@@ -33,6 +33,22 @@ export const getPosts = async () => {
         };
         tempArr.push(responseObj);
       });
+
+      // const enrichedPosts = await Promise.all(
+      //   tempArr.map(async (post) => {
+      //     const userDoc = await getDoc(doc(db, "users", post.id));
+      //     if (userDoc.exists()) {
+      //       const userData = userDoc.data();
+      //       return {
+      //         ...post,
+      //         username: userData?.username,
+      //         displayName: userData?.displayName,
+      //       };
+      //     }
+      //     return post;
+      //   })
+      // );
+
       return tempArr;
     } else {
       console.log("No such document");
@@ -42,13 +58,14 @@ export const getPosts = async () => {
   }
 };
 
-export const getPostByUserId = (id: string) => {
+export const getPostByUserId = async (uid: string) => {
   const q = query(
     collection(db, COLLECTION_NAME),
     orderBy("date", "desc"),
-    where("userId", "==", id)
+    where("userId", "==", uid)
   );
-  return getDocs(q);
+  const postsSnapshot = await getDocs(q);
+  return postsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
 export const searchPosts = async (searchTerm: string) => {

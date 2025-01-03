@@ -14,6 +14,9 @@ import {
   collection,
   deleteDoc,
   addDoc,
+  getDocs,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -152,10 +155,40 @@ export const usePosts = () => {
   };
 
   const getAllPosts = async () => {
-    const response: DocumentResponse[] = (await getPosts()) || [];
+    // const response: DocumentResponse[] = (await getPosts()) || [];
 
-    console.log(response);
-    setPosts(response);
+    const q = query(collection(db, "posts"), orderBy("date", "desc"));
+
+    const querySnapshot = await getDocs(q);
+    const tempArr: DocumentResponse[] = [];
+    if (querySnapshot.size > 0) {
+      querySnapshot.forEach((doc) => {
+        const data = doc.data() as Post;
+        const responseObj: DocumentResponse = {
+          id: doc.id,
+          ...data,
+        };
+        tempArr.push(responseObj);
+      });
+
+      const enrichedPosts = await Promise.all(
+        tempArr.map(async (post) => {
+          const userDoc = await getDoc(doc(db, "users", post.userId));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            return {
+              ...post,
+              username: userData?.username,
+              displayName: userData?.displayName,
+            };
+          }
+          return post;
+        })
+      );
+
+      console.log(enrichedPosts);
+      setPosts(enrichedPosts);
+    }
   };
 
   const deletePost = async () => {

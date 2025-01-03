@@ -96,7 +96,8 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                       </div>
                     )}
 
-                    <span className="pl-2">{userProfile?.username}</span>
+                    <span className="pl-2">{post.username}</span>
+                    <span>{post.displayName}</span>
                   </div>
                 </Link>
                 <FontAwesomeIcon
@@ -148,6 +149,10 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                       : solidBookmark
                   }
                 />
+                {/* <span>
+                  {new Date(post.date.seconds * 1000).toLocaleDateString()}
+                </span> */}
+                {/* <span>by : {post.username}</span> */}
               </CardFooter>
             </CardHeader>
           </Card>

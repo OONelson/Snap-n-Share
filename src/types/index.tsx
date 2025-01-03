@@ -26,6 +26,7 @@ export interface Post {
   userlikes: string[];
   userbookmarks?: string[];
   username?: string;
+  displayName?: string;
   userId?: string;
   date: Date;
 }
@@ -63,6 +64,7 @@ export interface DocumentResponse {
   userlikes: string[];
   userbookmarks?: string[];
   username?: string;
+  displayName?: string;
   userId?: string;
   date?: Date;
 }
