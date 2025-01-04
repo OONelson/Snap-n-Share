@@ -32,7 +32,6 @@ interface IHomePostsProps {
 
 const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const {
-    posts,
     loading,
     bookmarked,
     toggleBookmark,
