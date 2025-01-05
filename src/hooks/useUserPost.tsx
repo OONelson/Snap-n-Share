@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DocumentResponse, Post } from "../types/index";
+import { DocumentResponse, Pos, Comment, Post } from "../types/index";
 import {
   getPostByUserId,
   getPosts,
@@ -17,24 +17,24 @@ import {
   getDocs,
   query,
   orderBy,
+  Timestamp,
 } from "firebase/firestore";
 import { db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
-// import { setTimeout } from "timers/promises";
 
 export const usePosts = () => {
   const { user } = useUserAuth();
 
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
-    // id: "",
+    id: "",
     caption: "",
     photos: "",
     likes: 0,
     userlikes: [],
     userId: "",
-    date: new Date(),
+    createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
@@ -46,6 +46,8 @@ export const usePosts = () => {
   const [filteredPosts, setFilteredPosts] = useState<DocumentResponse[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
 
   const navigate = useNavigate();
 
@@ -98,12 +100,13 @@ export const usePosts = () => {
           console.log("File available at:", photoURL);
 
           const newPost: Post = {
+            id: post.id,
             caption: post.caption,
             photos: photoURL,
             likes: 0,
             userlikes: [],
             userId: user?.uid,
-            date: new Date(),
+            createdAt: new Date().toISOString(),
           };
 
           console.log(newPost);
@@ -113,12 +116,13 @@ export const usePosts = () => {
           // Reset form state
           setFile(null);
           setPost({
+            id: "",
             caption: "",
             photos: "",
             likes: 0,
             userlikes: [],
             userId: "",
-            date: new Date(),
+            createdAt: new Date().toISOString(),
           });
           alert("Post created successfully!");
           navigate("/");
@@ -267,6 +271,42 @@ export const usePosts = () => {
     return () => clearTimeout(debounce);
   }, [searchTerm]);
 
+  useEffect(() => {
+    const fetchComments = async () => {
+      const querySnapshot = await getDocs(
+        collection(db, `posts/${post.id}/comments`)
+      );
+      const commentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as unknown as Comment[];
+      setComments(commentsData);
+    };
+
+    fetchComments();
+  }, [post.id]);
+
+  const addComment = async () => {
+    if (newComment.trim()) {
+      await addDoc(collection(db, `posts/${post.id}/comments`), {
+        id: post.id,
+        author: post.displayName,
+        text: newComment,
+        createdAt: new Date().toISOString(),
+      });
+      setNewComment("");
+      // Re-fetch comments after adding
+      const querySnapshot = await getDocs(
+        collection(db, `posts/${post.id}/comments`)
+      );
+      const commentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as unknown as Comment[];
+      setComments(commentsData);
+    }
+  };
+
   return {
     userPosts,
     posts,
@@ -287,5 +327,10 @@ export const usePosts = () => {
     selectedPost,
     setSelectedPost,
     handleSubmit,
+    comments,
+    setComments,
+    addComment,
+    newComment,
+    setNewComment,
   };
 };

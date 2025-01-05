@@ -10,6 +10,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { usePosts } from "@/hooks/useUserPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faComment,
   faHeart as regularHeart,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
@@ -27,6 +28,7 @@ import { updateLikesOnPost } from "../../repository/post.service";
 import { DocumentResponse, Post } from "@/types";
 import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
+import CommentList from "./Commentlist";
 
 interface IPostComponentProps {
   data: DocumentResponse;
@@ -50,6 +52,8 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   } = usePosts();
 
   const user = auth.currentUser;
+
+  const [displayComments, setDisplayComments] = useState<boolean>(false);
 
   const [likesInfo, setLikesInfo] = useState<{
     likes: number;
@@ -137,17 +141,24 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 />
               </CardContent>
               <CardFooter className="flex justify-between items-center">
-                <div>
+                <div className="flex justify-between items-center w-[70px]">
+                  <div className="flex justify-between items-center w-[30px]">
+                    <FontAwesomeIcon
+                      className="cursor-pointer transition-all dark:hover:text-slate-400 "
+                      onClick={() => toggleLike(!likesInfo.isLike)}
+                      icon={likesInfo.isLike ? solidHeart : regularHeart}
+                    />
+                    <span>{likesInfo.likes} </span>
+                  </div>
                   <FontAwesomeIcon
-                    className="cursor-pointer"
-                    onClick={() => toggleLike(!likesInfo.isLike)}
-                    icon={likesInfo.isLike ? solidHeart : regularHeart}
+                    className="cursor-pointer transition-all dark:hover:text-slate-400"
+                    onClick={() => setDisplayComments(!displayComments)}
+                    icon={faComment}
                   />
-                  <span>{likesInfo.likes} </span>
                 </div>
 
                 <FontAwesomeIcon
-                  className="cursor-pointer"
+                  className="cursor-pointer transition-all dark:hover:text-slate-400"
                   onClick={() => toggleBookmark(post.id)}
                   icon={
                     bookmarked.includes(post.id)
@@ -160,6 +171,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 </span> */}
                 {/* <span>by : {post.username}</span> */}
               </CardFooter>
+              {displayComments && <CommentList postId={post.id} />}
             </CardHeader>
           </Card>
         ))

@@ -200,6 +200,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     };
 
     loadBio();
+    handleUpdateProfile();
   }, []);
 
   return (
