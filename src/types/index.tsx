@@ -49,7 +49,7 @@ export interface UserProfileInfo {
 }
 
 export interface ProfileResponse {
-  id?: string;
+  id: string;
   bio?: string;
   username?: string;
   displayName?: string;
@@ -75,9 +75,22 @@ export interface Bookmark {
   userId: string;
 }
 
-export interface Comment {
-  id: string;
+export interface CommentResponse {
+  id?: string;
+  author: string | undefined;
   text: string;
-  author: string;
+  authorUserId: string | undefined;
+  likes: number;
+  userlikes: string[];
+  createdAt: string | Date;
+}
+
+export interface Comment {
+  id?: string;
+  author: string | undefined;
+  text: string;
+  authorUserId: string | undefined;
+  likes: number;
+  userlikes: string[];
   createdAt: string | Date;
 }

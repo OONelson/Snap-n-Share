@@ -47,14 +47,14 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
-    selectedPost,
-    setSelectedPost,
+    selectedPostToDelete,
+    setSelectedPostToDelete,
   } = usePosts();
 
   const user = auth.currentUser;
 
   const [displayComments, setDisplayComments] = useState<boolean>(false);
-
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [likesInfo, setLikesInfo] = useState<{
     likes: number;
     isLike: boolean;
@@ -62,6 +62,13 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     likes: data?.likes ?? 0,
     isLike: data?.userlikes?.includes(user!.uid) ? true : false,
   });
+
+  const toggleCommentSection = (postId: string) => {
+    // console.log("done", postId);
+
+    setSelectedPost((prev) => (prev === postId ? null : postId));
+    setDisplayComments(true);
+  };
 
   const toggleLike = async (isVal: boolean) => {
     setLikesInfo({
@@ -117,7 +124,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 )}
               </div>
               {/* DELETE MODAL */}
-              {selectedPost === post.id && (
+              {selectedPostToDelete === post.id && (
                 <article onClick={closeDeleteModal}>
                   <div className="dark:bg-darkBg relative -mt-3">
                     <Button
@@ -150,11 +157,15 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                     />
                     <span>{likesInfo.likes} </span>
                   </div>
-                  <FontAwesomeIcon
-                    className="cursor-pointer transition-all dark:hover:text-slate-400"
-                    onClick={() => setDisplayComments(!displayComments)}
-                    icon={faComment}
-                  />
+
+                  <div className="flex justify-between items-center w-[30px]">
+                    <FontAwesomeIcon
+                      className="cursor-pointer transition-all dark:hover:text-slate-400"
+                      onClick={() => toggleCommentSection(post.id)}
+                      icon={faComment}
+                    />
+                    {Comment.length > 0 && <span>{Comment.length}</span>}
+                  </div>
                 </div>
 
                 <FontAwesomeIcon
@@ -171,7 +182,9 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 </span> */}
                 {/* <span>by : {post.username}</span> */}
               </CardFooter>
-              {displayComments && <CommentList postId={post.id} />}
+              {selectedPost === post.id && displayComments && (
+                <CommentList postId={post.id} />
+              )}
             </CardHeader>
           </Card>
         ))

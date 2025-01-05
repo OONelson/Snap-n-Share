@@ -16,16 +16,18 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
     comments,
     // setComments,
     addComment,
-    newComment,
-    setNewComment,
+    commentText,
+    setCommentText,
+    // newComment,
+    // setNewComment,
     // posts,
   } = usePosts();
   const { userProfile, displayName, initials } = useUserProfile();
 
   return (
-    <article>
+    <article className="transition-all">
       <ul>
-        {comments.map((comment) => (
+        {comments?.map((comment) => (
           <li key={comment.id}>
             <div>
               {" "}
@@ -59,12 +61,12 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
       <section className="flex justify-between items-center">
         <Input
           type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
           placeholder="Add a comment"
           className="w-[90%]"
         />
-        <button disabled={!newComment.trim()}>
+        <button disabled={!commentText}>
           <FontAwesomeIcon onClick={addComment} icon={faPaperPlane} />
         </button>
       </section>

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { DocumentResponse, Pos, Comment, Post } from "../types/index";
+import {
+  DocumentResponse,
+  Pos,
+  Comment,
+  Post,
+  CommentResponse,
+} from "../types/index";
 import {
   getPostByUserId,
   getPosts,
@@ -23,7 +29,7 @@ import { db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
-export const usePosts = () => {
+export const usePosts = (postId: string) => {
   const { user } = useUserAuth();
 
   const [file, setFile] = useState<File | null>(null);
@@ -45,19 +51,30 @@ export const usePosts = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<DocumentResponse[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
+  const [selectedPostToDelete, setSelectedPostToDelete] = useState<
+    string | null
+  >(null);
+  const [comments, setComments] = useState<CommentResponse[]>();
+  // const [newComment, setNewComment] = useState<Comment>({
+  //   // id: "",
+  //   author: "",
+  //   text: "",
+  //   authorUserId: "",
+  //   likes: 0,
+  //   userlikes: [],
+  //   createdAt: new Date().toISOString(),
+  // });
+  const [commentText, setCommentText] = useState<string>("");
 
   const navigate = useNavigate();
 
   const toggleDeleteModal = (postId: string) => {
     // setOpenDeleteModal((prev) => (prev === postId ? null : postId));
-    setSelectedPost((prev) => (prev === postId ? null : postId));
+    setSelectedPostToDelete((prev) => (prev === postId ? null : postId));
   };
 
   const closeDeleteModal = () => {
-    setSelectedPost(null);
+    setSelectedPostToDelete(null);
     setOpenDeleteModal(false);
   };
 
@@ -199,14 +216,14 @@ export const usePosts = () => {
   };
 
   const deletePost = async () => {
-    !selectedPost && alert("please select a post to be deleted");
+    !selectedPostToDelete && alert("please select a post to be deleted");
 
     try {
-      await deleteDoc(doc(db, "posts", selectedPost));
+      await deleteDoc(doc(db, "posts", selectedPostToDelete));
       setPosts((prevPosts) =>
-        prevPosts.filter((post) => post.id !== selectedPost)
+        prevPosts.filter((post) => post.id !== selectedPostToDelete)
       );
-      setSelectedPost(null);
+      setSelectedPostToDelete(null);
       alert("post deleted successfully");
     } catch (error) {
       console.error("error deleting post", error);
@@ -272,32 +289,63 @@ export const usePosts = () => {
   }, [searchTerm]);
 
   useEffect(() => {
+    // postId == posts.id;
     const fetchComments = async () => {
-      const querySnapshot = await getDocs(
-        collection(db, `posts/${post.id}/comments`)
-      );
-      const commentsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as unknown as Comment[];
-      setComments(commentsData);
+      if (!postId) {
+        console.error("Post ID is not provided. Cannot add comment.");
+        return;
+      }
+      if (postId) {
+        const querySnapshot = await getDocs(
+          collection(db, `posts/${postId}/comments`)
+        );
+        const commentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as unknown as Comment[];
+        setComments(commentsData);
+      }
     };
-
     fetchComments();
-  }, [post.id]);
+  }, [postId]);
 
   const addComment = async () => {
-    if (newComment.trim()) {
-      await addDoc(collection(db, `posts/${post.id}/comments`), {
-        id: post.id,
+    if (!postId) {
+      console.error("Post ID is not provided. Cannot add comment.");
+      console.log("not done");
+
+      return;
+    }
+    if (user && commentText) {
+      const newCommentByUser: Comment = {
+        // id: comment.id,
         author: post.displayName,
-        text: newComment,
+        authorUserId: user?.uid,
+        text: commentText,
+        likes: 0,
+        userlikes: [],
         createdAt: new Date().toISOString(),
-      });
-      setNewComment("");
+      };
+      await addDoc(
+        collection(db, `posts/${postId}/comments`),
+        newCommentByUser
+      );
+      console.log("done", newCommentByUser);
+
+      // setNewComment({
+      //   // id: "",
+      //   author: "",
+      //   text: "",
+      //   authorUserId: "",
+      //   likes: 0,
+      //   userlikes: [],
+      //   createdAt: new Date().toISOString(),
+      // });
       // Re-fetch comments after adding
+
+      setCommentText("");
       const querySnapshot = await getDocs(
-        collection(db, `posts/${post.id}/comments`)
+        collection(db, `posts/${postId}/comments`)
       );
       const commentsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -324,13 +372,15 @@ export const usePosts = () => {
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
-    selectedPost,
-    setSelectedPost,
+    selectedPostToDelete,
+    setSelectedPostToDelete,
     handleSubmit,
     comments,
     setComments,
     addComment,
-    newComment,
-    setNewComment,
+    commentText,
+    setCommentText,
+    // newComment,
+    // setNewComment,
   };
 };
