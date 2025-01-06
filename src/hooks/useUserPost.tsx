@@ -289,21 +289,24 @@ export const usePosts = (postId: string) => {
   }, [searchTerm]);
 
   useEffect(() => {
-    // postId == posts.id;
     const fetchComments = async () => {
-      if (!postId) {
-        console.error("Post ID is not provided. Cannot add comment.");
-        return;
-      }
-      if (postId) {
-        const querySnapshot = await getDocs(
-          collection(db, `posts/${postId}/comments`)
-        );
-        const commentsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as unknown as Comment[];
-        setComments(commentsData);
+      // if (!postId) {
+      //   console.error("Post ID is not provided. Cannot add comment.");
+      //   return;
+      // }
+      try {
+        if (postId) {
+          const querySnapshot = await getDocs(
+            collection(db, `posts/${postId}/comments`)
+          );
+          const commentsData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as unknown as Comment[];
+          setComments(commentsData);
+        }
+      } catch (error) {
+        console.error("error adding comm");
       }
     };
     fetchComments();

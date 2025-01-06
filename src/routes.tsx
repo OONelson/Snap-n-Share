@@ -11,6 +11,7 @@ import CreateUsername from "./pages/CreateUsername";
 import Settings from "./pages/Settings";
 import SearchPage from "./pages/SearchPage";
 import Messenger from "./pages/Messenger";
+import SinglePost from "./pages/SinglePost";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,11 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/posts/:postId",
+        element: <SinglePost />,
         errorElement: <Error />,
       },
       {

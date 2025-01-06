@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/firebase/firebaseConfig";
 import { updateLikesOnPost } from "../../repository/post.service";
 import { DocumentResponse, Post } from "@/types";
@@ -52,6 +52,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   } = usePosts();
 
   const user = auth.currentUser;
+  const navigate = useNavigate();
 
   const [displayComments, setDisplayComments] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
@@ -68,6 +69,9 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
 
     setSelectedPost((prev) => (prev === postId ? null : postId));
     setDisplayComments(true);
+
+    navigate(`/post/${postId}`);
+    console.error(Error);
   };
 
   const toggleLike = async (isVal: boolean) => {

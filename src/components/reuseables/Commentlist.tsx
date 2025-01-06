@@ -4,7 +4,6 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Input } from "../ui/input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMailReply } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 
 interface ICommentListProps {
