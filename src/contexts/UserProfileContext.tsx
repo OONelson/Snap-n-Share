@@ -167,6 +167,8 @@ export const UserProfileProvider: React.FunctionComponent<{
       }
     };
     loadDisplayName();
+    fetchDisplayName();
+    fetchBio();
   }, []);
 
   // FETCH BIO
@@ -200,7 +202,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     };
 
     loadBio();
-    handleUpdateProfile();
+    // handleUpdateProfile();
   }, []);
 
   return (

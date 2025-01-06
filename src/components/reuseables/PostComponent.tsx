@@ -21,23 +21,16 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { auth } from "@/firebase/firebaseConfig";
-import { updateLikesOnPost } from "../../repository/post.service";
-import { DocumentResponse, Post } from "@/types";
+import { Link } from "react-router-dom";
 import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
 import CommentList from "./Commentlist";
+import { auth } from "@/firebase/firebaseConfig";
 
-interface IPostComponentProps {
-  data: DocumentResponse;
-  // filteredPosts: Post[]; // Add
-}
+interface IPostComponentProps {}
 
-const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
-  data,
-}) => {
+const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
+  const user = auth.currentUser;
   const { userProfile, displayName, initials } = useUserProfile();
   const {
     posts,
@@ -48,48 +41,12 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    setSelectedPostToDelete,
+    displayComments,
+    selectedPost,
+    likesInfo,
+    toggleCommentSection,
+    toggleLike,
   } = usePosts();
-
-  const user = auth.currentUser;
-  const navigate = useNavigate();
-
-  const [displayComments, setDisplayComments] = useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [likesInfo, setLikesInfo] = useState<{
-    likes: number;
-    isLike: boolean;
-  }>({
-    likes: data?.likes ?? 0,
-    isLike: data?.userlikes?.includes(user!.uid) ? true : false,
-  });
-
-  const toggleCommentSection = (postId: string) => {
-    // console.log("done", postId);
-
-    setSelectedPost((prev) => (prev === postId ? null : postId));
-    setDisplayComments(true);
-
-    navigate(`/post/${postId}`);
-    console.error(Error);
-  };
-
-  const toggleLike = async (isVal: boolean) => {
-    setLikesInfo({
-      likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
-      isLike: !likesInfo.isLike,
-    });
-    isVal
-      ? data.userlikes?.push(user!.uid)
-      : data.userlikes?.splice(data.userlikes.indexOf(user!.uid), 1);
-
-    await updateLikesOnPost(
-      data.id!,
-      data.userlikes!,
-      isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
-    );
-  };
-
   return (
     <article className="flex flex-col justify-center items-center lg:w-max">
       {posts.length === 0 ? (

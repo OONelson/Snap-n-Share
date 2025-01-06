@@ -65,7 +65,7 @@ export interface DocumentResponse {
   userlikes: string[];
   userbookmarks?: string[];
   username?: string;
-  displayName?: string;
+  displayName: string;
   userId?: string;
   createdAt?: string | Date;
 }

@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import {
   DocumentResponse,
-  Pos,
   Comment,
   Post,
   CommentResponse,
 } from "../types/index";
 import {
   getPostByUserId,
-  getPosts,
+  // getPosts,
   searchPosts,
-  deleteSinglePost,
+  updateLikesOnPost,
+  // deleteSinglePost,
 } from "@/repository/post.service";
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
@@ -23,15 +23,14 @@ import {
   getDocs,
   query,
   orderBy,
-  Timestamp,
 } from "firebase/firestore";
-import { db, storage } from "@/firebase/firebaseConfig";
+import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
 export const usePosts = (postId: string) => {
-  const { user } = useUserAuth();
-
+  // const { user } = useUserAuth();
+  const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
     id: "",
@@ -55,27 +54,54 @@ export const usePosts = (postId: string) => {
     string | null
   >(null);
   const [comments, setComments] = useState<CommentResponse[]>();
-  // const [newComment, setNewComment] = useState<Comment>({
-  //   // id: "",
-  //   author: "",
-  //   text: "",
-  //   authorUserId: "",
-  //   likes: 0,
-  //   userlikes: [],
-  //   createdAt: new Date().toISOString(),
-  // });
+
   const [commentText, setCommentText] = useState<string>("");
+
+  const [displayComments, setDisplayComments] = useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [likesInfo, setLikesInfo] = useState<{
+    likes: number;
+    isLike: boolean;
+  }>({
+    likes: post.likes ?? 0,
+    isLike: post.userlikes?.includes(user!.uid) ? true : false,
+  });
 
   const navigate = useNavigate();
 
   const toggleDeleteModal = (postId: string) => {
-    // setOpenDeleteModal((prev) => (prev === postId ? null : postId));
     setSelectedPostToDelete((prev) => (prev === postId ? null : postId));
   };
 
   const closeDeleteModal = () => {
     setSelectedPostToDelete(null);
     setOpenDeleteModal(false);
+  };
+
+  const toggleCommentSection = (postId: string) => {
+    // console.log("done", postId);
+
+    setSelectedPost((prev) => (prev === postId ? null : postId));
+    setDisplayComments(true);
+
+    navigate(`/post/${postId}`);
+    console.error(Error);
+  };
+
+  const toggleLike = async (isVal: boolean) => {
+    setLikesInfo({
+      likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
+      isLike: !likesInfo.isLike,
+    });
+    isVal
+      ? post.userlikes?.push(user!.uid)
+      : post.userlikes?.splice(post.userlikes.indexOf(user!.uid), 1);
+
+    await updateLikesOnPost(
+      post.id!,
+      post.userlikes!,
+      isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
+    );
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,7 +264,7 @@ export const usePosts = (postId: string) => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setBookmarked(data.bookmarks || []);
-        console.log(data.bookmarks);
+        // console.log(data.bookmarks);
       } else {
         console.log("No bookmarks found for this user.");
       }
@@ -301,7 +327,7 @@ export const usePosts = (postId: string) => {
           );
           const commentsData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data(),
+            ...(doc.data() as Omit<Comment, "id">),
           })) as unknown as Comment[];
           setComments(commentsData);
         }
@@ -335,15 +361,6 @@ export const usePosts = (postId: string) => {
       );
       console.log("done", newCommentByUser);
 
-      // setNewComment({
-      //   // id: "",
-      //   author: "",
-      //   text: "",
-      //   authorUserId: "",
-      //   likes: 0,
-      //   userlikes: [],
-      //   createdAt: new Date().toISOString(),
-      // });
       // Re-fetch comments after adding
 
       setCommentText("");
@@ -352,7 +369,7 @@ export const usePosts = (postId: string) => {
       );
       const commentsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...(doc.data() as Omit<Comment, "id">),
       })) as unknown as Comment[];
       setComments(commentsData);
     }
@@ -383,7 +400,13 @@ export const usePosts = (postId: string) => {
     addComment,
     commentText,
     setCommentText,
-    // newComment,
-    // setNewComment,
+    displayComments,
+    setDisplayComments,
+    selectedPost,
+    setSelectedPost,
+    likesInfo,
+    setLikesInfo,
+    toggleCommentSection,
+    toggleLike,
   };
 };
