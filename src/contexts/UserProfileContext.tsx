@@ -139,7 +139,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     setEdit(false);
   };
 
-  const fetchDisplayName = async (): Promise<string> => {
+  const fetchDisplayName = async () => {
     try {
       const displayNameRef = doc(db, "users", userProfile?.uid);
 

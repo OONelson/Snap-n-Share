@@ -1,5 +1,4 @@
 import CommentList from "@/components/reuseables/Commentlist";
-import PostComponent from "@/components/reuseables/PostComponent";
 import { Button } from "@/components/ui/button";
 import {
   CardHeader,
@@ -7,11 +6,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { db } from "@/firebase/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
 import * as React from "react";
-import { useEffect, useState, useNavigate } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card } from "stream-chat-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { usePosts } from "@/hooks/useUserPost";
@@ -29,7 +25,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { auth } from "@/firebase/firebaseConfig";
-import { DocumentResponse } from "@/types";
 import SmallSpinner from "./SmallSpinner";
 
 interface ISinglePostProps {}
@@ -37,38 +32,45 @@ interface ISinglePostProps {}
 const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
   const { userProfile, displayName, initials } = useUserProfile();
   const {
-    posts,
     bookmarked,
     toggleBookmark,
-    openDeleteModal,
+    // openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    setSelectedPostToDelete,
+    // setSelectedPostToDelete,
+    toggleLike,
+    selectedPost,
+    displayComments,
+    likesInfo,
+    toggleCommentSection,
+    loading,
+    post,
+    // singlePost,
   } = usePosts();
 
   const user = auth.currentUser;
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const { postId } = useParams<{ postId: string }>();
-  const [post, setPost] = useState<DocumentResponse | null>(null);
+  // const { postId } = useParams<{ postId: string }>();
+  // const [post, setPost] = useState<DocumentResponse | null>(null);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      console.log("starting");
+  // useEffect(() => {
+  //   const fetchPost = async () => {
+  //     console.log("starting");
 
-      if (postId) {
-        const postDoc = await getDoc(doc(db, "posts", postId));
-        if (postDoc.exists()) {
-          setPost({ id: postDoc.id, ...postDoc.data() } as DocumentResponse);
-        }
-        console.log("done");
-      }
-    };
+  //     if (postId) {
+  //       const postDoc = await getDoc(doc(db, "posts", postId));
+  //       if (postDoc.exists()) {
+  //         setPost({ id: postDoc.id, ...postDoc.data() } as DocumentResponse);
+  //       }
+  //       console.log("done");
+  //     }
+  //   };
 
-    fetchPost();
-  }, [postId]);
+  //   fetchPost();
+  // }, [postId]);
 
   if (!post) return <p>trying to fetch posts...</p>;
   return (

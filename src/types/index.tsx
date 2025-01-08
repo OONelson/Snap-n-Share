@@ -58,7 +58,7 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
-  id: string;
+  id?: string;
   caption?: string;
   photos: string;
   likes?: number;

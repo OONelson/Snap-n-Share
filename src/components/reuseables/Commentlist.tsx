@@ -30,7 +30,7 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
           <li key={comment.id}>
             <div>
               {" "}
-              <Link to={`/profile`}>
+              <Link to={`/profile/${comment.authorUserId}`}>
                 <div className="flex items-center justify-between w-full">
                   {userProfile?.photoURL ? (
                     <img src={userProfile.photoURL} alt={displayName} />
@@ -42,7 +42,7 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
 
                   <span className="pl-2">
                     {/* {post.displayName} */}
-                    {/* {comment.author} */}
+                    {comment.author}
                     user
                   </span>
                   <span className="pl-1 text-slate-400 text-sm">

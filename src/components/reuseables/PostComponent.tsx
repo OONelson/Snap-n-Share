@@ -120,11 +120,13 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                   </div>
 
                   <div className="flex justify-between items-center w-[30px]">
-                    <FontAwesomeIcon
-                      className="cursor-pointer transition-all dark:hover:text-slate-400"
-                      onClick={() => toggleCommentSection(post.id)}
-                      icon={faComment}
-                    />
+                    <Link to={`/post/${post.id}`}>
+                      <FontAwesomeIcon
+                        className="cursor-pointer transition-all dark:hover:text-slate-400"
+                        onClick={() => toggleCommentSection(post.id)}
+                        icon={faComment}
+                      />
+                    </Link>
                     {Comment.length > 0 && <span>{Comment.length}</span>}
                   </div>
                 </div>

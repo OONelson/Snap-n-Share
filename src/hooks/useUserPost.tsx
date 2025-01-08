@@ -6,6 +6,7 @@ import {
   CommentResponse,
 } from "../types/index";
 import {
+  getPost,
   getPostByUserId,
   // getPosts,
   searchPosts,
@@ -26,9 +27,11 @@ import {
 } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const usePosts = (postId: string) => {
+  const { id } = useParams<{ id: string }>();
+
   // const { user } = useUserAuth();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
@@ -42,6 +45,7 @@ export const usePosts = (postId: string) => {
     createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
+  // const [singlePost, setSinglePost] = useState<DocumentResponse[]>([]);
   const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
@@ -84,8 +88,8 @@ export const usePosts = (postId: string) => {
     setSelectedPost((prev) => (prev === postId ? null : postId));
     setDisplayComments(true);
 
-    navigate(`/post/${postId}`);
-    console.error(Error);
+    // navigate(`/post/${postId}`);
+    // console.error(Error);
   };
 
   const toggleLike = async (isVal: boolean) => {
@@ -241,6 +245,26 @@ export const usePosts = (postId: string) => {
     }
   };
 
+  const getSinglePost = async () => {
+    setLoading(true);
+    try {
+      if (!id) return;
+      const postDoc = await getDoc(doc(db, "posts", id));
+      console.log(postDoc.id, postDoc.data());
+      if (postDoc.exists()) {
+        setPosts({ id: postDoc.id, ...postDoc.data() });
+
+        console.log("found");
+      } else {
+        console.log("post not found");
+      }
+    } catch (error) {
+      console.error("error fecthing post", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const deletePost = async () => {
     !selectedPostToDelete && alert("please select a post to be deleted");
 
@@ -316,10 +340,6 @@ export const usePosts = (postId: string) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      // if (!postId) {
-      //   console.error("Post ID is not provided. Cannot add comment.");
-      //   return;
-      // }
       try {
         if (postId) {
           const querySnapshot = await getDocs(
@@ -335,6 +355,8 @@ export const usePosts = (postId: string) => {
         console.error("error adding comm");
       }
     };
+
+    getSinglePost();
     fetchComments();
   }, [postId]);
 
@@ -408,5 +430,6 @@ export const usePosts = (postId: string) => {
     setLikesInfo,
     toggleCommentSection,
     toggleLike,
+    // singlePost,
   };
 };

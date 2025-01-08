@@ -86,10 +86,10 @@ export const searchPosts = async (searchTerm: string) => {
   return postsData;
 };
 
-export const getPost = (id: string) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
-  return getDoc(docRef);
-};
+// export const getPost = (id: string) => {
+//   const docRef = doc(db, COLLECTION_NAME, id);
+//   return getDoc(docRef);
+// };
 
 export const deleteSinglePost = (id: string) => {
   return deleteDoc(doc(db, COLLECTION_NAME, id));
