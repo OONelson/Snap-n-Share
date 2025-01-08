@@ -91,6 +91,5 @@ export interface Comment {
   text: string;
   authorUserId: string | undefined;
   likes: number;
-  userlikes: string[];
   createdAt: string | Date;
 }

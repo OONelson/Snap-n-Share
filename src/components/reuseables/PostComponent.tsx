@@ -123,7 +123,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                     <Link to={`/post/${post.id}`}>
                       <FontAwesomeIcon
                         className="cursor-pointer transition-all dark:hover:text-slate-400"
-                        onClick={() => toggleCommentSection(post.id)}
+                        onClick={() => toggleCommentSection(postId)}
                         icon={faComment}
                       />
                     </Link>

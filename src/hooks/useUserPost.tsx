@@ -29,8 +29,8 @@ import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
 
-export const usePosts = (postId: string) => {
-  const { id } = useParams<{ id: string }>();
+export const usePosts = () => {
+  const { postId } = useParams<{ postId: string }>();
 
   // const { user } = useUserAuth();
   const user = auth.currentUser;
@@ -248,11 +248,11 @@ export const usePosts = (postId: string) => {
   const getSinglePost = async () => {
     setLoading(true);
     try {
-      if (!id) return;
-      const postDoc = await getDoc(doc(db, "posts", id));
-      console.log(postDoc.id, postDoc.data());
+      if (!postId) return;
+      const postDoc = await getDoc(doc(db, "posts", postId));
       if (postDoc.exists()) {
-        setPosts({ id: postDoc.id, ...postDoc.data() });
+        setPost({ id: postDoc.id, ...(postDoc.data() as Post) });
+        console.log(postDoc.id, postDoc.data());
 
         console.log("found");
       } else {
@@ -342,9 +342,9 @@ export const usePosts = (postId: string) => {
     const fetchComments = async () => {
       try {
         if (postId) {
-          const querySnapshot = await getDocs(
-            collection(db, `posts/${postId}/comments`)
-          );
+          const commentsRef = collection(db, `posts/${postId}/comments`);
+          const commentsQuery = query(commentsRef, orderBy("createdAt", "asc"));
+          const querySnapshot = await getDocs(commentsQuery);
           const commentsData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...(doc.data() as Omit<Comment, "id">),
@@ -374,7 +374,6 @@ export const usePosts = (postId: string) => {
         authorUserId: user?.uid,
         text: commentText,
         likes: 0,
-        userlikes: [],
         createdAt: new Date().toISOString(),
       };
       await addDoc(
@@ -387,7 +386,10 @@ export const usePosts = (postId: string) => {
 
       setCommentText("");
       const querySnapshot = await getDocs(
-        collection(db, `posts/${postId}/comments`)
+        query(
+          collection(db, `posts/${postId}/comments`),
+          orderBy("createdAt", "asc")
+        )
       );
       const commentsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
