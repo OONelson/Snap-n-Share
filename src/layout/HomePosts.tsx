@@ -10,6 +10,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { usePosts } from "@/hooks/useUserPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBell,
   faHeart as regularHeart,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
@@ -72,7 +73,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
           <h2 className="text-xl font-medium hidden md:block dark:text-slate-200">
             Feeds
           </h2>
-          <div className="">
+          <div className="flex justify-between items-start">
             <div className="flex">
               <Link to="/profile">
                 <div className="flex mr-2 border-2 rounded-full">
@@ -94,6 +95,12 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                 className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4"
               />
             </div>
+            <Link to={"/notifications"}>
+              <FontAwesomeIcon
+                icon={faBell}
+                className="dark:text-slate-300 text-slate-500 text-xl cursor-pointer transition-all"
+              />
+            </Link>
           </div>
         </header>
         {loading && <SmallSpinner />}

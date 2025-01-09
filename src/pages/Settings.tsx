@@ -57,7 +57,7 @@ const tabs: Tab[] = [
 
 const Settings: React.FunctionComponent<ISettingsProps> = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<number>(0);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
   const [openLogout, setOpenLogout] = useState<boolean>(false);

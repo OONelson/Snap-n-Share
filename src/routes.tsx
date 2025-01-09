@@ -12,6 +12,7 @@ import Settings from "./pages/Settings";
 import SearchPage from "./pages/SearchPage";
 import Messenger from "./pages/Messenger";
 import SinglePost from "./pages/SinglePost";
+import Notifications from "./pages/Notifications";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,11 @@ export const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/notifications",
+        element: <Notifications />,
         errorElement: <Error />,
       },
       {
