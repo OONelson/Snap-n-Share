@@ -7,11 +7,11 @@ interface IHomeProps {}
 
 const Home: React.FunctionComponent<IHomeProps> = () => {
   return (
-    <main className="sm:grid lg:grid-cols-[210px,500px,300px] gap-0  md:grid-cols-[90px,500px,300px]">
+    <main className="sm:grid lg:grid-cols-[210px,600px,300px] gap-0  md:grid-cols-[90px,500px,300px] ">
       <div className="md:block hidden ">
         <SideBar />
       </div>
-      <div className="-mt-4">
+      <div className="">
         <HomePosts />
       </div>
       <div className="md:hidden block ">

@@ -10,7 +10,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Card } from "stream-chat-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { usePosts } from "@/hooks/useUserPost";
+import { singlePost, usePosts } from "@/hooks/useUserPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,
@@ -46,36 +46,16 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
     likesInfo,
     toggleCommentSection,
     loading,
-    post,
-    // singlePost,
+    // posts,
+    singlePost,
   } = usePosts();
 
   const user = auth.currentUser;
-  // const navigate = useNavigate();
 
-  // const { postId } = useParams<{ postId: string }>();
-  // const [post, setPost] = useState<DocumentResponse | null>(null);
-
-  // useEffect(() => {
-  //   const fetchPost = async () => {
-  //     console.log("starting");
-
-  //     if (postId) {
-  //       const postDoc = await getDoc(doc(db, "posts", postId));
-  //       if (postDoc.exists()) {
-  //         setPost({ id: postDoc.id, ...postDoc.data() } as DocumentResponse);
-  //       }
-  //       console.log("done");
-  //     }
-  //   };
-
-  //   fetchPost();
-  // }, [postId]);
-
-  if (!post) return <p>trying to fetch posts...</p>;
+  if (!singlePost) return <p>trying to fetch posts...</p>;
   return (
     <Card
-      key={post.id}
+      key={singlePost.id}
       className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
     >
       <CardHeader>
@@ -90,23 +70,23 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
                 </div>
               )}
 
-              <span className="pl-2">{post.displayName}</span>
+              <span className="pl-2">{singlePost.displayName}</span>
               <span className="pl-1 text-slate-400 text-sm">
-                @{post.username}
+                @{singlePost.username}
               </span>
             </div>
           </Link>
 
-          {post.userId === user?.uid && (
+          {singlePost.userId === user?.uid && (
             <FontAwesomeIcon
               icon={faEllipsisV}
               className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
-              onClick={() => toggleDeleteModal(post.id)}
+              onClick={() => toggleDeleteModal(singlePost.id)}
             />
           )}
         </div>
         {/* DELETE MODAL */}
-        {selectedPostToDelete === post.id && (
+        {selectedPostToDelete === singlePost.id && (
           <article onClick={closeDeleteModal}>
             <div className="dark:bg-darkBg relative -mt-3">
               <Button
@@ -120,12 +100,12 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
           </article>
         )}
         <CardDescription className="ml-3">
-          <p>{post.caption}</p>
+          <p>{singlePost.caption}</p>
         </CardDescription>
         <CardContent>
           <img
-            src={post.photos ? post.photos : ""}
-            alt={post.caption}
+            src={singlePost.photos ? singlePost.photos : ""}
+            alt={singlePost.caption}
             className="w-[400px] h-[300px] "
           />
         </CardContent>
@@ -143,7 +123,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
             <div className="flex justify-between items-center w-[30px]">
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400"
-                onClick={() => toggleCommentSection(post.id)}
+                onClick={() => toggleCommentSection(singlePost.id)}
                 icon={faComment}
               />
               {Comment.length > 0 && <span>{Comment.length}</span>}
@@ -152,9 +132,11 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
 
           <FontAwesomeIcon
             className="cursor-pointer transition-all dark:hover:text-slate-400"
-            onClick={() => toggleBookmark(post.id)}
+            onClick={() => toggleBookmark(singlePost.id)}
             icon={
-              bookmarked.includes(post.id) ? regularBookmark : solidBookmark
+              bookmarked.includes(singlePost.id)
+                ? regularBookmark
+                : solidBookmark
             }
           />
           {/* <span>
@@ -162,8 +144,8 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
                 </span> */}
           {/* <span>by : {post.username}</span> */}
         </CardFooter>
-        {selectedPost === post.id && displayComments && (
-          <CommentList postId={post.id} />
+        {selectedPost === singlePost.id && displayComments && (
+          <CommentList postId={singlePost.id} />
         )}
       </CardHeader>
     </Card>

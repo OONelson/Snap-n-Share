@@ -45,7 +45,7 @@ export const usePosts = () => {
     createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
-  // const [singlePost, setSinglePost] = useState<DocumentResponse[]>([]);
+  const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
   const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
@@ -57,7 +57,7 @@ export const usePosts = () => {
   const [selectedPostToDelete, setSelectedPostToDelete] = useState<
     string | null
   >(null);
-  const [comments, setComments] = useState<CommentResponse[]>();
+  const [comments, setComments] = useState<CommentResponse[]>([]);
 
   const [commentText, setCommentText] = useState<string>("");
 
@@ -188,11 +188,11 @@ export const usePosts = () => {
         querySnapshot.forEach((doc) => {
           const data = doc.data() as Post;
           const responseObj: DocumentResponse = {
-            id: doc.id,
             ...data,
+            id: doc.id,
             userbookmarks: [],
             userlikes: [],
-          };
+          } as DocumentResponse;
           tempArr.push(responseObj);
         });
         setUserPosts(tempArr);
@@ -217,10 +217,10 @@ export const usePosts = () => {
     const tempArr: DocumentResponse[] = [];
     if (querySnapshot.size > 0) {
       querySnapshot.forEach((doc) => {
-        const data = doc.data() as Post;
+        const data = doc.data() as DocumentResponse;
         const responseObj: DocumentResponse = {
-          id: doc.id,
           ...data,
+          id: doc.id,
         };
         tempArr.push(responseObj);
       });
@@ -251,7 +251,10 @@ export const usePosts = () => {
       if (!postId) return;
       const postDoc = await getDoc(doc(db, "posts", postId));
       if (postDoc.exists()) {
-        setPost({ id: postDoc.id, ...(postDoc.data() as Post) });
+        setSinglePost({
+          id: postDoc.id,
+          ...(postDoc.data() as DocumentResponse),
+        });
         console.log(postDoc.id, postDoc.data());
 
         console.log("found");
@@ -432,6 +435,6 @@ export const usePosts = () => {
     setLikesInfo,
     toggleCommentSection,
     toggleLike,
-    // singlePost,
+    singlePost,
   };
 };

@@ -1,6 +1,8 @@
 import SideBar from "@/layout/SideBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface INotificationsProps {}
 
@@ -48,29 +50,40 @@ const Notifications: React.FunctionComponent<INotificationsProps> = () => {
     },
   ];
   return (
-    <main className="h-screen w-screen bg-slate-100">
-      <header
-        className={`sticky top-0 md:my-4 mb-5 my-0 px-2 py-1 transition-all dark:bg-darkBg border-b ${
-          isScrolled
-            ? "backdrop-blur-md bg-white/70 shadow-md dark:bg-darkBg/70"
-            : "bg-white/100 shadow-none"
-        }`}
-      >
-        <h2>Notifications</h2>
-      </header>
-      <section className="w-screen">
-        {notifications.map((notification) => (
-          <article>
-            <img src={notification.image} alt={notification.name} />
+    <main className="sm:grid grid-cols-8  w-full h-screen ">
+      <div className="col-span-1">
+        <SideBar />
+      </div>
+      <section className="flex flex-col md:col-span-7 col-span-8 ">
+        <header
+          className={`sticky top-0 md:my-4 mb-5 my-0 px-2 py-1 transition-all dark:bg-darkBg border-b ${
+            isScrolled
+              ? "backdrop-blur-md bg-white/70 shadow-md dark:bg-darkBg/70"
+              : "bg-white/100 shadow-none"
+          }`}
+        >
+          <h2>Notifications</h2>
+        </header>
+        <div className="px-2 md:px-4 pb-16">
+          {notifications.map((notification) => (
+            <article className="flex justify-start items-center py-5 border-t bg-slate-50/70">
+              <img
+                src={notification.image}
+                alt={notification.name}
+                className="w-20 rounded-full "
+              />
 
-            <div>
-              <h3>{notification.name}</h3>
-              <p>{notification.content}</p>
-            </div>
-          </article>
-        ))}
+              <div>
+                <Link>
+                  <h3 className="cursor-pointer">{notification.name}</h3>
+                </Link>
+                <p className="font-semibold">{notification.content}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
-      <SideBar />
+      {/* <SideBar /> */}
     </main>
   );
 };

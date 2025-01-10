@@ -77,19 +77,10 @@ export interface Bookmark {
 
 export interface CommentResponse {
   id?: string;
-  author: string | undefined;
+  author: string;
   text: string;
-  authorUserId: string | undefined;
+  authorUserId: string;
   likes: number;
   userlikes: string[];
-  createdAt: string | Date;
-}
-
-export interface Comment {
-  id?: string;
-  author: string | undefined;
-  text: string;
-  authorUserId: string | undefined;
-  likes: number;
   createdAt: string | Date;
 }

@@ -58,8 +58,8 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
   const { searchTerm, setSearchTerm, filteredPosts } = usePosts();
 
   return (
-    <main className=" dark:bg-darkBg h-screen lg:w-[58vw] md:w-[88vw] ">
-      <section className="dark:bg-slate-900 lg:w-[58vw]  bg-slate-100">
+    <main className=" dark:bg-darkBg h-screen lg:w-[58vw] md:w-[88vw]  ">
+      <section className="dark:bg-slate-900 lg:w-[58vw]  bg-slate-100 ">
         <header
           className={`sticky top-0 md:my-4 mb-5 my-0 px-2 py-1 transition-all dark:bg-darkBg border-b ${
             isScrolled
@@ -92,7 +92,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search posts..."
-                className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4"
+                className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4 bg-white "
               />
             </div>
             <Link to={"/notifications"}>
@@ -195,9 +195,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
             ))}
           {/* )} */}
         </article>
-        <article className="h-full flex justify-center items-center">
-          <PostComponent data={data} />
-        </article>
+        <PostComponent data={data} />
       </section>
     </main>
   );

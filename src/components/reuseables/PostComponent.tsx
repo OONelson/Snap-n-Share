@@ -48,7 +48,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
     toggleLike,
   } = usePosts();
   return (
-    <article className="flex flex-col justify-center items-center lg:w-max">
+    <article className="flex flex-col justify-center items-center lg:w-[58vw] w-full">
       {posts.length === 0 ? (
         <SmallSpinner />
       ) : (
@@ -123,7 +123,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                     <Link to={`/post/${post.id}`}>
                       <FontAwesomeIcon
                         className="cursor-pointer transition-all dark:hover:text-slate-400"
-                        onClick={() => toggleCommentSection(postId)}
+                        onClick={() => toggleCommentSection(post.id)}
                         icon={faComment}
                       />
                     </Link>

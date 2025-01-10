@@ -4,18 +4,25 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { auth } from "@/firebase/firebaseConfig";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
 interface IAccountSettingsProps {}
 
 const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
-  const { userProfile, displayName, setDisplayName, initials } =
-    useUserProfile();
+  const {
+    userProfile,
+    displayName,
+    setDisplayName,
+    initials,
+    handleUpdateProfile,
+  } = useUserProfile();
 
   const user = auth.currentUser;
   return (
-    <main className="bg-white md:w-full px-5 dark:bg-darkBg dark:text-slate-300">
+    <main className="bg-white md:w-full px-5 dark:bg-darkBg dark:text-slate-300 flex flex-col justify-center items-center md:block">
       <h1 className="font-semibold text-xl py-3">Account Settings</h1>
-      <section className="bg-stone-50 md:w-[50vw] p-5 rounded-xl dark:bg-darkBg border">
+      <section className="bg-stone-50 md:w-[50vw] w-[85vw] p-5 rounded-xl dark:bg-darkBg border flex flex-col justify-center items-center md:block px-3">
         <article className=" flex justify-start items-center">
           <picture>
             {userProfile?.photoURL ? (
@@ -36,9 +43,15 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
             {userProfile?.displayName}
           </span>
           <span className="text-md">@{userProfile?.username}</span>
-          <span className="text-slate-500 font-mono text-md">
-            {user?.email}
-          </span>
+          <div className="flex items-center ">
+            <span className="text-slate-500 font-mono text-md text-wrap flex-wrap pr-2">
+              {user?.email}
+            </span>
+            <FontAwesomeIcon
+              icon={faCopy}
+              className="cursor-pointer hover:text-slate-500"
+            />
+          </div>
         </div>
       </section>
 
@@ -79,7 +92,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
 
         <div>
           <Label
-            className="text-slate-700 dark:text-slate-400"
+            className="text-slate-700 dark:text-slate-400 "
             htmlFor="password"
           >
             Password
@@ -94,6 +107,9 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
             }
           />
         </div>
+        <Button onClick={handleUpdateProfile} className="mt-3 h-9 w-20">
+          Done
+        </Button>
       </section>
     </main>
   );

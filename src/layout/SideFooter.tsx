@@ -8,7 +8,7 @@ import {
 
 const SideFooter: React.FC = () => {
   return (
-    <nav className="bg-white w-[30vw] flex flex-col justify-start items-center sm:fixed sm:top-0 sm:right-0 sm:h-screen border md:block hidden dark:bg-darkBg px-3">
+    <nav className="bg-white  flex flex-col justify-center items-center sm:fixed sm:top-0 sm:right-0 sm:h-screen md:block  dark:bg-darkBg px-3">
       <div className="h-screen flex  items-center flex-col">
         <div className="flex justify-center  space-x-4 my-10">
           <a
