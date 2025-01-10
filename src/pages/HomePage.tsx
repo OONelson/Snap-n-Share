@@ -17,7 +17,7 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
       <div className="md:hidden block ">
         <SideBar />
       </div>
-      <div className="md:hidden lg:block">
+      <div className="hidden md:hidden lg:block">
         <SideFooter />
       </div>
     </main>

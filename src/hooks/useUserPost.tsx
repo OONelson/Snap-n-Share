@@ -88,7 +88,7 @@ export const usePosts = () => {
     setSelectedPost((prev) => (prev === postId ? null : postId));
     setDisplayComments(true);
 
-    // navigate(`/post/${postId}`);
+    navigate(`/post/${postId}`);
     // console.error(Error);
   };
 
@@ -251,10 +251,12 @@ export const usePosts = () => {
       if (!postId) return;
       const postDoc = await getDoc(doc(db, "posts", postId));
       if (postDoc.exists()) {
-        setSinglePost({
+        const singlePostDoc: DocumentResponse = {
           id: postDoc.id,
-          ...(postDoc.data() as DocumentResponse),
-        });
+          ...postDoc.data(),
+        };
+        setSinglePost(singlePostDoc);
+
         console.log(postDoc.id, postDoc.data());
 
         console.log("found");
