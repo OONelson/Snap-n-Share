@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { usePosts } from "@/hooks/useUserPost";
+import { usePosts } from "@/hooks/usePost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,

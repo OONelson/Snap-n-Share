@@ -1,5 +1,5 @@
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { usePosts } from "@/hooks/useUserPost";
+import { usePosts } from "@/hooks/usePost";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Input } from "../ui/input";

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { usePosts } from "@/hooks/useUserPost";
+import { usePosts } from "@/hooks/usePost";
 import SideBar from "@/layout/SideBar";
 
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";

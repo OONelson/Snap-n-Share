@@ -10,7 +10,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Card } from "stream-chat-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { singlePost, usePosts } from "@/hooks/useUserPost";
+import { singlePost, usePosts } from "@/hooks/usePost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,

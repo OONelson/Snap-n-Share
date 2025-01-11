@@ -30,13 +30,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
-import { usePosts } from "@/hooks/useUserPost";
+import { usePosts } from "@/hooks/usePost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
 import { DocumentResponse } from "@/types";
 import { updateLikesOnPost } from "@/repository/post.service";
 import PostComponent from "@/components/reuseables/PostComponent";
+import { useUser } from "@/hooks/useUser";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
@@ -92,6 +93,8 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     handleCloseEdit,
     initials,
   } = useUserProfile();
+
+  // const { userProfile } = useUser();
 
   const {
     userPosts,
@@ -214,7 +217,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
         <SideBar />
       </div>
 
-      {user ? (
+      {userProfile ? (
         <Card className=" w-full px-2 border-none h-full ">
           <div className=" flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />

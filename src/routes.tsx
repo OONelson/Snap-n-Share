@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
         errorElement: <Error />,
       },
       {
-        path: "/profile",
+        path: "/profile/:userId",
         element: <Profile />,
         errorElement: <Error />,
       },

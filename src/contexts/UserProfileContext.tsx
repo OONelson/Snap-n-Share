@@ -1,5 +1,4 @@
 import { auth, db } from "@/firebase/firebaseConfig";
-import { getUserProfile } from "@/repository/user.service";
 import { UserProfileInfo } from "@/types";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { MouseEventHandler, SetStateAction, useEffect } from "react";
@@ -48,7 +47,7 @@ const getInitials = (name?: string): string => {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [userProfile, setUserProfile] = useState<any | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
 
   const [displayName, setDisplayName] = useState(
@@ -79,18 +78,10 @@ export const UserProfileProvider: React.FunctionComponent<{
         }
       }
     });
+
     setUserProfile(userProfile);
 
     return () => unsubscribe();
-
-    // const fetchProfileData = async () => {
-    //   if (uid) {
-    //     const userPage = await getUserProfile(uid);
-    //     setUserProfile(userPage);
-    //   }
-    // };
-
-    // fetchProfileData();
   }, []);
 
   const changeDisplayName = async (displayName: string) => {
