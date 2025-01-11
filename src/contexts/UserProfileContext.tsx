@@ -75,6 +75,8 @@ export const UserProfileProvider: React.FunctionComponent<{
 
         if (userSnap.exists()) {
           setUserProfile(userSnap.data() as UserProfileInfo);
+        } else {
+          console.log("not found");
         }
       }
     });

@@ -4,20 +4,27 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export const useUser = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const [userProfile, setUserProfile] = useState<ProfileResponse | null>(null);
+  // const { userId } = useParams<{ userId: string }>();
+  const [userInfo, setUserInfo] = useState<ProfileResponse | null>(null);
 
   useEffect(() => {
-    const FetchUserProfile = async () => {
-      if (!userId) return;
-      const userRef = await getUserProfile;
-      setUserProfile(userRef);
+    const FetchUserProfile = async (uid: string) => {
+      try {
+        const userRef = await getUserProfile(uid);
+        if (userRef) {
+          console.log("user profile", userRef);
+          setUserInfo(userInfo);
+        } else {
+          console.log("user not found");
+        }
+      } catch (error) {
+        console.error("error fecthing user", error);
+      }
     };
-
     FetchUserProfile();
   }, []);
 
   return {
-    userProfile,
+    userInfo,
   };
 };

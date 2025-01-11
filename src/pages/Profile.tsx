@@ -94,7 +94,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     initials,
   } = useUserProfile();
 
-  // const { userProfile } = useUser();
+  const { userInfo } = useUser();
 
   const {
     userPosts,
@@ -217,7 +217,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
         <SideBar />
       </div>
 
-      {userProfile ? (
+      {userInfo ? (
         <Card className=" w-full px-2 border-none h-full ">
           <div className=" flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />

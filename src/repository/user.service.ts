@@ -4,9 +4,12 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 const COLLECTION_NAME = "users";
 
-export const getUserProfile = async (uid: string) => {
+export const getUserProfile = async (userId: string) => {
   try {
-    const q = query(collection(db, COLLECTION_NAME), where("uid", "==", uid));
+    const q = query(
+      collection(db, COLLECTION_NAME),
+      where("userId", "==", userId)
+    );
     const querySnapshot = await getDocs(q);
     let tempData: ProfileResponse = {};
     if (querySnapshot.size > 0) {
