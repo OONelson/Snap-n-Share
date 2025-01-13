@@ -1,5 +1,5 @@
+import { UserProfileInfo } from "./../types/index";
 import { db } from "@/firebase/firebaseConfig";
-import { ProfileResponse, UserProfileInfo } from "@/types";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const COLLECTION_NAME = "users";
@@ -11,12 +11,12 @@ export const getUserProfile = async (userId: string) => {
       where("userId", "==", userId)
     );
     const querySnapshot = await getDocs(q);
-    let tempData: ProfileResponse = {};
     if (querySnapshot.size > 0) {
+      let tempData: UserProfileInfo | null = null;
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as UserProfileInfo;
         tempData = {
-          id: doc.id,
+          uid: doc.id,
           ...userData,
         };
       });
@@ -30,20 +30,20 @@ export const getUserProfile = async (userId: string) => {
   }
 };
 
-export const getAllUsers = async (id: string) => {
+export const getAllUsers = async (uid: string) => {
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
-    const tempArr: ProfileResponse[] = [];
+    const tempArr: UserProfileInfo[] = [];
     if (querySnapshot.size > 0) {
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as UserProfileInfo;
-        const responeObj: ProfileResponse = {
-          id: doc.id,
+        const responeObj: UserProfileInfo = {
           ...userData,
+          uid: doc.id,
         };
         tempArr.push(responeObj);
       });
-      return tempArr.filter((item) => item.id != id);
+      return tempArr.filter((item) => item.uid != uid);
     } else {
       console.log("No such documents");
     }

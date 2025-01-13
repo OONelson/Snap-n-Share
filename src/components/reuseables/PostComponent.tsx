@@ -47,6 +47,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
     toggleCommentSection,
     toggleLike,
   } = usePosts();
+
   return (
     <article className="flex flex-col justify-center items-center lg:w-[58vw] w-full">
       {posts.length === 0 ? (
@@ -70,9 +71,15 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                     )}
 
                     <span className="pl-2">{post.displayName}</span>
-                    <span className="pl-1 text-slate-400 text-sm">
-                      @{post.username}
-                    </span>
+                    {post.username?.length > 10 ? (
+                      <span className="pl-1 text-slate-400 text-sm">
+                        @{post.username?.substring(0, 10)}...
+                      </span>
+                    ) : (
+                      <span className="pl-1 text-slate-400 text-sm">
+                        @ {post.username}
+                      </span>
+                    )}
                   </div>
                 </Link>
 
@@ -80,7 +87,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                   <FontAwesomeIcon
                     icon={faEllipsisV}
                     className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
-                    onClick={() => toggleDeleteModal(post.id)}
+                    onClick={() => toggleDeleteModal(post.id!)}
                   />
                 )}
               </div>
@@ -123,7 +130,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                     {/* <Link to={`/post/${post.id}`}> */}
                     <FontAwesomeIcon
                       className="cursor-pointer transition-all dark:hover:text-slate-400"
-                      onClick={() => toggleCommentSection(post.id)}
+                      onClick={() => toggleCommentSection(post.id!)}
                       icon={faComment}
                     />
                     {/* </Link> */}
@@ -133,9 +140,9 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
 
                 <FontAwesomeIcon
                   className="cursor-pointer transition-all dark:hover:text-slate-400"
-                  onClick={() => toggleBookmark(post.id)}
+                  onClick={() => toggleBookmark(post.id!)}
                   icon={
-                    bookmarked.includes(post.id)
+                    bookmarked.includes(post.id!)
                       ? regularBookmark
                       : solidBookmark
                   }

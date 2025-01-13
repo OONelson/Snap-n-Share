@@ -40,7 +40,7 @@ export interface Post {
 
 export interface UserProfileInfo {
   user: User;
-  email: string;
+  email?: string;
   uid?: string;
   bio?: string;
   username?: string;
@@ -62,10 +62,10 @@ export interface DocumentResponse {
   caption?: string;
   photos: string;
   likes?: number;
-  userlikes: string[];
+  userlikes?: string[];
   userbookmarks?: string[];
   username?: string;
-  displayName: string;
+  displayName?: string;
   userId?: string;
   createdAt?: string | Date;
 }

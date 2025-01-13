@@ -254,10 +254,11 @@ export const usePosts = () => {
         const singlePostDoc: DocumentResponse = {
           id: postDoc.id,
           ...postDoc.data(),
-        };
-        setSinglePost(singlePostDoc);
+        } as DocumentResponse;
 
         console.log(postDoc.id, postDoc.data());
+
+        setSinglePost(singlePostDoc);
 
         console.log("found");
       } else {

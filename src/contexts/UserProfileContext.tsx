@@ -74,10 +74,21 @@ export const UserProfileProvider: React.FunctionComponent<{
         const userSnap = await getDoc(userDoc);
 
         if (userSnap.exists()) {
-          setUserProfile(userSnap.data() as UserProfileInfo);
+          const userData = userSnap.data();
+
+          setUserProfile({
+            user: {
+              uid: authUser.uid,
+              displayName: userData.displayName || "unknown",
+              email: userData.email || "no email",
+            },
+            ...userData,
+          } as UserProfileInfo);
         } else {
           console.log("not found");
         }
+      } else {
+        setUserProfile(null);
       }
     });
 

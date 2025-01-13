@@ -10,7 +10,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Card } from "stream-chat-react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { singlePost, usePosts } from "@/hooks/usePost";
+import { usePosts } from "@/hooks/usePost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,
@@ -25,7 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { auth } from "@/firebase/firebaseConfig";
-import SmallSpinner from "./SmallSpinner";
+// import SmallSpinner from "./SmallSpinner";
 
 interface ISinglePostProps {}
 
@@ -34,19 +34,16 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
   const {
     bookmarked,
     toggleBookmark,
-    // openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    // setSelectedPostToDelete,
-    toggleLike,
+    // toggleLike,
     selectedPost,
     displayComments,
-    likesInfo,
+    // likesInfo,
     toggleCommentSection,
-    loading,
-    // posts,
+    // loading,
     singlePost,
   } = usePosts();
 
@@ -81,7 +78,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
             <FontAwesomeIcon
               icon={faEllipsisV}
               className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
-              onClick={() => toggleDeleteModal(singlePost.id)}
+              onClick={() => toggleDeleteModal(singlePost.id!)}
             />
           )}
         </div>
@@ -114,16 +111,20 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
             <div className="flex justify-between items-center w-[30px]">
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400 "
-                onClick={() => toggleLike(!likesInfo.isLike)}
-                icon={likesInfo.isLike ? solidHeart : regularHeart}
+                // onClick={() => toggleLike(!likesInfo.isLike)}
+                icon={
+                  // likesInfo.isLike ?
+                  // solidHeart:
+                  regularHeart
+                }
               />
-              <span>{likesInfo.likes} </span>
+              <span>0{/* {likesInfo.likes} */}</span>
             </div>
 
             <div className="flex justify-between items-center w-[30px]">
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400"
-                onClick={() => toggleCommentSection(singlePost.id)}
+                onClick={() => toggleCommentSection(singlePost.id!)}
                 icon={faComment}
               />
               {Comment.length > 0 && <span>{Comment.length}</span>}
@@ -132,9 +133,9 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
 
           <FontAwesomeIcon
             className="cursor-pointer transition-all dark:hover:text-slate-400"
-            onClick={() => toggleBookmark(singlePost.id)}
+            onClick={() => toggleBookmark(singlePost.id!)}
             icon={
-              bookmarked.includes(singlePost.id)
+              bookmarked.includes(singlePost.id!)
                 ? regularBookmark
                 : solidBookmark
             }

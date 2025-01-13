@@ -34,17 +34,17 @@ import { usePosts } from "@/hooks/usePost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
-import { DocumentResponse } from "@/types";
-import { updateLikesOnPost } from "@/repository/post.service";
-import PostComponent from "@/components/reuseables/PostComponent";
-import { useUser } from "@/hooks/useUser";
+// import { DocumentResponse } from "@/types";
+// import { updateLikesOnPost } from "@/repository/post.service";
+// import PostComponent from "@/components/reuseables/PostComponent";
+// import { useUser } from "@/hooks/useUser";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
-  data: DocumentResponse;
+  // data: DocumentResponse;
 }
 
-const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
+const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -92,15 +92,16 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
     handleOpenEdit,
     handleCloseEdit,
     initials,
+    // DeleteModal,
   } = useUserProfile();
 
-  const { userInfo } = useUser();
+  // const { userInfo } = useUser();
 
   const {
     userPosts,
     posts,
-    loading,
-    error,
+    // loading,
+    // error,
     bookmarked,
     toggleBookmark,
     openDeleteModal,
@@ -164,13 +165,28 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                       <span className="pl-2">{userProfile?.username}</span>
                     </div>
                   </Link>
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="text-gray-700 cursor-pointer hover:text-gray-950"
-                    onClick={toggleDeleteModal}
-                  />
+                  {post.userId === user?.uid && (
+                    <FontAwesomeIcon
+                      icon={faEllipsisV}
+                      className="text-gray-700 cursor-pointer hover:text-gray-950"
+                      onClick={toggleDeleteModal}
+                    />
+                  )}
                 </div>
-                {openDeleteModal && <DeleteModal />}
+
+                {openDeleteModal && (
+                  <article onClick={closeDeleteModal}>
+                    <div className="dark:bg-darkBg relative -mt-3">
+                      <Button
+                        onClick={() => deletePost(post.id)}
+                        className="absolute -right-2 h-8 bg-slate-100 text-red-600 hover:bg-slate-200 dark:bg-slate-900 border"
+                      >
+                        <span className="pr-1">Delete</span>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </Button>
+                    </div>
+                  </article>
+                )}
                 <CardDescription className="ml-3">
                   <p>{post.caption}</p>
                 </CardDescription>
@@ -217,7 +233,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
         <SideBar />
       </div>
 
-      {userInfo ? (
+      {userProfile ? (
         <Card className=" w-full px-2 border-none h-full ">
           <div className=" flex justify-end items-center pt-2 md:pb-10">
             <Dropdown onSelect={handleSelect} />
@@ -341,7 +357,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ data }) => {
                                   </span>
                                 </div>
                               </Link>
-                              {post.userId === user.uid && (
+                              {post.userId === user?.uid && (
                                 <FontAwesomeIcon
                                   icon={faEllipsisV}
                                   className="text-gray-700 cursor-pointer hover:text-gray-950"
