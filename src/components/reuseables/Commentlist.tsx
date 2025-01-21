@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 
 interface ICommentListProps {
-  postId: string;
+  postId: string | undefined;
 }
 
 const CommentList: React.FunctionComponent<ICommentListProps> = () => {

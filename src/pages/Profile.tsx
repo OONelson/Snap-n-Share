@@ -37,7 +37,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import { DocumentResponse } from "@/types";
 // import { updateLikesOnPost } from "@/repository/post.service";
 // import PostComponent from "@/components/reuseables/PostComponent";
-// import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/useUser";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
@@ -95,7 +95,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     // DeleteModal,
   } = useUserProfile();
 
-  // const { userInfo } = useUser();
+  const { fetchUserProfile } = useUser();
 
   const {
     userPosts,

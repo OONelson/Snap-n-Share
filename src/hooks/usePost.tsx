@@ -82,15 +82,15 @@ export const usePosts = () => {
     setOpenDeleteModal(false);
   };
 
-  const toggleCommentSection = (postId: string) => {
-    // console.log("done", postId);
+  // const toggleCommentSection = (postId: string) => {
+  //   // console.log("done", postId);
 
-    setSelectedPost((prev) => (prev === postId ? null : postId));
-    setDisplayComments(true);
+  //   setSelectedPost((prev) => (prev === postId ? null : postId));
+  //   setDisplayComments(true);
 
-    navigate(`/post/${postId}`);
-    // console.error(Error);
-  };
+  //   navigate(`/post/${postId}`);
+  //   // console.error(Error);
+  // };
 
   const toggleLike = async (isVal: boolean) => {
     setLikesInfo({
@@ -121,6 +121,7 @@ export const usePosts = () => {
       navigate("/login");
       return;
     }
+    const userId = user.uid;
 
     if (!file || !post.caption) {
       alert("Please select a file and provide a caption.");
@@ -152,7 +153,7 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             userlikes: [],
-            userId: user?.uid,
+            userId: userId,
             createdAt: new Date().toISOString(),
           };
 
@@ -436,7 +437,7 @@ export const usePosts = () => {
     setSelectedPost,
     likesInfo,
     setLikesInfo,
-    toggleCommentSection,
+    // toggleCommentSection,
     toggleLike,
     singlePost,
   };

@@ -39,10 +39,10 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
     deletePost,
     selectedPostToDelete,
     // toggleLike,
-    selectedPost,
-    displayComments,
+    // selectedPost,
+    // displayComments,
     // likesInfo,
-    toggleCommentSection,
+    // toggleCommentSection,
     // loading,
     singlePost,
   } = usePosts();
@@ -124,7 +124,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
             <div className="flex justify-between items-center w-[30px]">
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400"
-                onClick={() => toggleCommentSection(singlePost.id!)}
+                // onClick={() => toggleCommentSection(singlePost.id!)}
                 icon={faComment}
               />
               {Comment.length > 0 && <span>{Comment.length}</span>}
@@ -145,9 +145,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
                 </span> */}
           {/* <span>by : {post.username}</span> */}
         </CardFooter>
-        {selectedPost === singlePost.id && displayComments && (
-          <CommentList postId={singlePost.id} />
-        )}
+        <CommentList postId={singlePost.id} />
       </CardHeader>
     </Card>
   );

@@ -7,7 +7,7 @@ const COLLECTION_NAME = "users";
 export const getUserProfile = async (userId: string) => {
   try {
     const q = query(
-      collection(db, COLLECTION_NAME),
+      collection(db, COLLECTION_NAME, userId),
       where("userId", "==", userId)
     );
     const querySnapshot = await getDocs(q);
@@ -29,6 +29,19 @@ export const getUserProfile = async (userId: string) => {
     console.log(error);
   }
 };
+
+// export const getUserProfile = async (userId: string) => {
+//   const userDocRef =       collection(db, COLLECTION_NAME, userId),
+
+//   const userDoc = await getDoc(userDocRef);
+
+//   if (userDoc.exists()) {
+//     return { uid: userId, ...userDoc.data() };
+//   } else {
+//     console.error("User document not found");
+//     return null;
+//   }
+// };
 
 export const getAllUsers = async (uid: string) => {
   try {
@@ -61,5 +74,9 @@ export const searchUsers = async (searchTerm: string) => {
   );
   const snapshot = await getDocs(q);
   const results = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  // console.log(doc.data());
+
+  // console.log(results);
+
   return results;
 };

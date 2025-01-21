@@ -47,6 +47,8 @@ const getInitials = (name?: string): string => {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
+  const { userId } = useParams<{ userId: string }>();
+
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
 
@@ -56,7 +58,6 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
-  const { uid } = useParams<{ uid: string }>();
 
   const handleOpenEdit = () => {
     setEdit(true);
@@ -96,6 +97,22 @@ export const UserProfileProvider: React.FunctionComponent<{
 
     return () => unsubscribe();
   }, []);
+
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     if (userId) {
+  //       const userDoc = doc(db, "users", userId);
+  //       const userSnap = await getDoc(userDoc);
+  //       if (userSnap.exists()) {
+  //         setUserProfile(userSnap.data() as UserProfileInfo);
+  //       } else {
+  //         console.error("Profile not found");
+  //       }
+  //       setUserProfile(userProfile);
+  //     }
+  //   };
+  //   fetchProfile();
+  // }, [userId]);
 
   const changeDisplayName = async (displayName: string) => {
     try {

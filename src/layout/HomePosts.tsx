@@ -127,9 +127,15 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                         )}
 
                         <span className="pl-2">{post.displayName}</span>
-                        <span className="pl-1 text-slate-400 text-sm">
-                          @{post.username}
-                        </span>
+                        {post.username?.length > 10 ? (
+                          <span className="pl-1 text-slate-400 text-sm">
+                            @{post.username?.substring(0, 10)}...
+                          </span>
+                        ) : (
+                          <span className="pl-1 text-slate-400 text-sm">
+                            @ {post.username}
+                          </span>
+                        )}
                       </div>
                     </Link>
 
@@ -137,7 +143,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                       <FontAwesomeIcon
                         icon={faEllipsisV}
                         className="text-gray-700 cursor-pointer hover:text-gray-950 dark:hover:text-gray-500 "
-                        onClick={() => toggleDeleteModal(post.id)}
+                        onClick={() => toggleDeleteModal(post.id!)}
                       />
                     )}
                   </div>
@@ -178,9 +184,9 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
 
                     <FontAwesomeIcon
                       className="cursor-pointer"
-                      onClick={() => toggleBookmark(post.id)}
+                      onClick={() => toggleBookmark(post.id!)}
                       icon={
-                        bookmarked.includes(post.id)
+                        bookmarked.includes(post.id!)
                           ? regularBookmark
                           : solidBookmark
                       }

@@ -24,10 +24,12 @@ import {
 import { Link } from "react-router-dom";
 import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
-import CommentList from "./Commentlist";
 import { auth } from "@/firebase/firebaseConfig";
+import { DocumentResponse } from "@/types";
 
-interface IPostComponentProps {}
+interface IPostComponentProps {
+  data: DocumentResponse;
+}
 
 const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
   const user = auth.currentUser;
@@ -36,15 +38,15 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
     posts,
     bookmarked,
     toggleBookmark,
-    openDeleteModal,
+    // openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    displayComments,
-    selectedPost,
+    // displayComments,
+    // selectedPost,
     likesInfo,
-    toggleCommentSection,
+    // toggleCommentSection,
     toggleLike,
   } = usePosts();
 
@@ -127,13 +129,13 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                   </div>
 
                   <div className="flex justify-between items-center w-[30px]">
-                    {/* <Link to={`/post/${post.id}`}> */}
-                    <FontAwesomeIcon
-                      className="cursor-pointer transition-all dark:hover:text-slate-400"
-                      onClick={() => toggleCommentSection(post.id!)}
-                      icon={faComment}
-                    />
-                    {/* </Link> */}
+                    <Link to={`/post/${post.id}`}>
+                      <FontAwesomeIcon
+                        className="cursor-pointer transition-all dark:hover:text-slate-400"
+                        // onClick={() => toggleCommentSection(post.id!)}
+                        icon={faComment}
+                      />
+                    </Link>
                     {Comment.length > 0 && <span>{Comment.length}</span>}
                   </div>
                 </div>
@@ -152,9 +154,6 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                 </span> */}
                 {/* <span>by : {post.username}</span> */}
               </CardFooter>
-              {selectedPost === post.id && displayComments && (
-                <CommentList postId={post.id} />
-              )}
             </CardHeader>
           </Card>
         ))

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   Chat,
-  ChannelList,
+  // ChannelList,
   Channel as StreamChannel,
   Window,
   Thread,
@@ -26,6 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 const apikey = import.meta.env.VITE_STREAM_KEY;
 
@@ -38,15 +40,15 @@ interface IMessengerProps {}
 
 const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const { username } = useUsername();
-  const { displayName, initials } = useUserProfile();
+  const { displayName, initials, userProfile } = useUserProfile();
 
   const [client, setClient] = useState<StreamChat | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<any>([]);
+  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
 
-  console.log("user");
+  // console.log("user");
 
   useEffect(() => {
     const init = async () => {
@@ -65,38 +67,37 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
             },
             chatClient.devToken(user.uid)
           );
-          console.log("user", user);
-
-          // const channelInstance = chatClient.channel(
-          //   "messaging",
-          //   "general-group",
-          //   {
-          //     image:
-          //       "https://www.bing.com/images/search?view=detailV2&ccid=33CwBYkm&id=E12494EFF47CDB15E6689F4D927983A08C9B2278&thid=OIP.33CwBYkmnMfpA9Djup22JwHaHa&mediaurl=https%3a%2f%2foneteamsolutions.in%2fblogoneteam%2fwp-content%2fuploads%2f2020%2f05%2fREACT-JS-KOCHI.png&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.df70b00589269cc7e903d0e3ba9db627%3frik%3deCKbjKCDeZJNnw%26pid%3dImgRaw%26r%3d0&exph=1024&expw=1024&q=react+image&simid=608045002147104382&FORM=IRPRST&ck=525B5794F6B546F859A5D685661F17A1&selectedIndex=1&itb=1",
-          //     name: "general group",
-          //     members: [user.uid],
-          //   }
-          // );
-
-          // await channelInstance.watch();
         }
 
-        console.log("user", user);
-
-        // setFirebaseUser(streamUser);
         setClient(chatClient);
       });
     };
     init();
 
-    if (client) return () => client.disconnectUser();
+    return () => {
+      if (client) return () => client.disconnectUser();
+    };
   }, [client]);
 
   const handleSearchUser = async () => {
-    await searchUsers(searchTerm);
-    console.log("done");
+    // const results = (await searchUsers(searchTerm)) || [];
+    const usersRef = collection(db, "users");
+    const q = query(
+      usersRef,
+      where("displayName", ">=", searchTerm),
+      where("displayName", "<=", searchTerm + "\uf8ff")
+    );
+    const snapshot = await getDocs(q);
+    const results: User[] = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    // console.log(doc.data());
 
-    setSearchResults(searchResults);
+    // console.log(results);
+
+    setSearchResults(results);
+    console.log(searchResults);
   };
 
   const startChat = async (id: string) => {
@@ -112,7 +113,11 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   if (!client || !firebaseUser) return <LoadingIndicator />;
 
   const Container = styled.div`
-    display: flex;
+    display: block;
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
   `;
 
   const SearchContainer = styled.div`
@@ -122,31 +127,46 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
     padding: 10px;
   `;
 
+  const SubContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+  `;
+
   return (
     <Chat client={client}>
       <Container>
-        <SearchContainer>
-          <Input
-            className="bg-slate-100"
-            type="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="search user"
-          />
-          <Button className="bg-transparent" onClick={handleSearchUser}>
-            <FontAwesomeIcon icon={faSearch} />
-          </Button>
-
+        <SubContainer>
+          <SearchContainer>
+            <Input
+              className="bg-slate-100"
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="search user"
+            />
+            <Button onClick={handleSearchUser}>
+              <FontAwesomeIcon icon={faSearch} />
+            </Button>
+          </SearchContainer>
           <ul>
-            {searchResults.map((user: any) => (
+            {searchResults.map((user) => (
               <li key={user.id} onClick={() => startChat(user.id)}>
-                {username},{user.name}
+                {userProfile?.photoURL ? (
+                  <img src={userProfile.photoURL} alt={displayName} />
+                ) : (
+                  <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
+                    {initials}
+                  </div>
+                )}
+                <span>
+                  {username},{displayName}
+                </span>
               </li>
             ))}
           </ul>
-        </SearchContainer>
+        </SubContainer>
         {/* <ChannelList filters={filters} sort={sort} /> */}
-        <div>
+        <div className="hidden md:block">
           {selectedChannel ? (
             <StreamChannel channel={selectedChannel}>
               <Window>

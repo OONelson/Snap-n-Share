@@ -6,8 +6,8 @@ import MessageIcon from "@/components/assets/chat-hover-chat.svg";
 import SettingIcon from "@/components/assets/settings.svg";
 import AddIcon from "@/components/assets/add.svg";
 import { Link, useLocation } from "react-router-dom";
-import { usePosts } from "@/hooks/usePost";
-import { useUserProfile } from "@/contexts/UserProfileContext";
+// import { usePosts } from "@/hooks/usePost";
+// import { useUserProfile } from "@/contexts/UserProfileContext";
 
 interface ISideBarProps {}
 
@@ -34,7 +34,7 @@ const navItems = [
   },
   {
     name: "Profile",
-    link: "/profile",
+    link: "/profile/:userId",
     icon: ProfileIcon,
   },
 ];
@@ -42,8 +42,8 @@ const navItems = [
 const SideBar: React.FunctionComponent<ISideBarProps> = () => {
   const location = useLocation();
 
-  const { initials } = usePosts();
-  const { userProfile } = useUserProfile();
+  // const { initials } = usePosts();
+  // const { userProfile } = useUserProfile();
   return (
     <>
       <nav className=" sm:items-start sm:justify-between sm:flex-col sm:w-max sm:h-screen bg-white  border-x-2   flex items-center justify-center flex-row w-full mb-2 sm:mb-0 h-12 border fixed bottom-0 sm:fixed z-10 sm:top-0 sm:left-0 md:h-screen dark:bg-darkBg">
