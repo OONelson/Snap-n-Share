@@ -23,11 +23,11 @@ import { useUsername } from "@/contexts/UsernameContext";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { searchUsers } from "@/repository/user.service";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+// import { Button } from "@/components/ui/button";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faSearch } from "@fortawesome/free-solid-svg-icons";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+// import { db } from "@/firebase/firebaseConfig";
 
 const apikey = import.meta.env.VITE_STREAM_KEY;
 
@@ -40,7 +40,7 @@ interface IMessengerProps {}
 
 const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const { username } = useUsername();
-  const { displayName, initials, userProfile } = useUserProfile();
+  const { displayName, initials } = useUserProfile();
 
   const [client, setClient] = useState<StreamChat | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
@@ -79,57 +79,95 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
     };
   }, [client]);
 
-  const handleSearchUser = async () => {
-    // const results = (await searchUsers(searchTerm)) || [];
-    const usersRef = collection(db, "users");
-    const q = query(
-      usersRef,
-      where("displayName", ">=", searchTerm),
-      where("displayName", "<=", searchTerm + "\uf8ff")
-    );
-    const snapshot = await getDocs(q);
-    const results: User[] = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    // console.log(doc.data());
-
-    // console.log(results);
-
-    setSearchResults(results);
-    console.log(searchResults);
+  const fetchSearchedUsers = async (searchTerm: string) => {
+    try {
+      const results: User[] = (await searchUsers(searchTerm)) || [];
+      setSearchResults(results);
+      console.log(searchResults);
+    } catch (error) {
+      console.error("error searching users", error);
+    }
   };
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setSearchResults([]);
+    }
+
+    fetchSearchedUsers(searchTerm);
+  }, [searchTerm]);
 
   const startChat = async (id: string) => {
     if (client) {
+      const members = [client.userID!, id];
+      const uniqueMembers = Array.from(new Set(members));
+
       const channel = client?.channel("messaging", {
-        members: [client.userID!, id],
+        members: uniqueMembers,
       });
       await channel.watch();
       setSelectedChannel(channel);
+      console.log("started a chat with chanel", channel);
     }
   };
 
-  if (!client || !firebaseUser) return <LoadingIndicator />;
+  if (!client || !firebaseUser)
+    return (
+      <main className="h-screen flex justify-center items-center">
+        <LoadingIndicator />
+      </main>
+    );
 
   const Container = styled.div`
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 
-    @media (max-width: 768px) {
-      display: flex;
+    @media (min-width: 768px) {
+      flex-direction: row;
     }
   `;
 
   const SearchContainer = styled.div`
     display: flex;
     background: none;
-    width: 300px;
+    width: 100%;
     padding: 10px;
+
+    @media (min-width: 768px) {
+      width: 300px;
+    }
   `;
 
   const SubContainer = styled.div`
     display: flex;
     flex-direction: column;
+  `;
+  const UserList = styled.ul`
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+  `;
+  const ChatContainer = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+      display: none; // Hide chat on mobile
+    }
   `;
 
   return (
@@ -137,36 +175,31 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
       <Container>
         <SubContainer>
           <SearchContainer>
-            <Input
-              className="bg-slate-100"
-              type="search"
+            <input
+              type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="search user"
+              className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4 bg-slate-100 "
             />
-            <Button onClick={handleSearchUser}>
-              <FontAwesomeIcon icon={faSearch} />
-            </Button>
           </SearchContainer>
-          <ul>
+          <UserList>
             {searchResults.map((user) => (
-              <li key={user.id} onClick={() => startChat(user.id)}>
-                {userProfile?.photoURL ? (
-                  <img src={userProfile.photoURL} alt={displayName} />
+              <li key={user.uid} onClick={() => startChat(user.uid)}>
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt={user.displayName} />
                 ) : (
                   <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                     {initials}
                   </div>
                 )}
-                <span>
-                  {username},{displayName}
-                </span>
+                <span>{user.displayName}</span>
               </li>
             ))}
-          </ul>
+          </UserList>
         </SubContainer>
         {/* <ChannelList filters={filters} sort={sort} /> */}
-        <div className="hidden md:block">
+        <ChatContainer>
           {selectedChannel ? (
             <StreamChannel channel={selectedChannel}>
               <Window>
@@ -180,7 +213,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
           ) : (
             <div>select a user to start chat</div>
           )}
-        </div>
+        </ChatContainer>
       </Container>
     </Chat>
   );
