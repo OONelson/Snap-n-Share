@@ -22,7 +22,6 @@ import "stream-chat-react/dist/css/v2/index.css";
 import { useUsername } from "@/contexts/UsernameContext";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { searchUsers } from "@/repository/user.service";
-import { Input } from "@/components/ui/input";
 // import { Button } from "@/components/ui/button";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -48,8 +47,6 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
 
-  // console.log("user");
-
   useEffect(() => {
     const init = async () => {
       const chatClient = StreamChat.getInstance(apikey);
@@ -57,12 +54,12 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
       onAuthStateChanged(auth, async (user) => {
         if (user) {
           setFirebaseUser(user);
-          console.log("user", user);
+          // console.log("user", user);
 
           await chatClient.connectUser(
             {
               id: user.uid,
-              name: displayName || username || "no name",
+              name: user.displayName || displayName,
               image: user.photoURL || initials || undefined,
             },
             chatClient.devToken(user.uid)
@@ -83,7 +80,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
     try {
       const results: User[] = (await searchUsers(searchTerm)) || [];
       setSearchResults(results);
-      console.log(searchResults);
+      // console.log(searchResults);
     } catch (error) {
       console.error("error searching users", error);
     }
@@ -97,16 +94,27 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   }, [searchTerm]);
 
   const startChat = async (id: string) => {
-    if (client) {
+    if (!client?.userID) return;
+
+    try {
       const members = [client.userID!, id];
       const uniqueMembers = Array.from(new Set(members));
+      console.log(client.userID);
+      console.log(uniqueMembers);
 
-      const channel = client?.channel("messaging", {
+      if (uniqueMembers.length !== 2) {
+        console.error("a private chat ");
+        return;
+      }
+
+      const channel = client.channel("messaging", {
         members: uniqueMembers,
       });
       await channel.watch();
       setSelectedChannel(channel);
       console.log("started a chat with chanel", channel);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -141,6 +149,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const SubContainer = styled.div`
     display: flex;
     flex-direction: column;
+    border-right: 0.5px solid grey;
   `;
   const UserList = styled.ul`
     list-style: none;
@@ -163,10 +172,12 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const ChatContainer = styled.div`
     flex: 1;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 
     @media (max-width: 768px) {
-      display: none; // Hide chat on mobile
+      display: none;
     }
   `;
 
@@ -180,19 +191,21 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="search user"
-              className="w-1/2 p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4 bg-slate-100 "
+              className=" p-2 border rounded-lg bg-darkBg dark:text-slate-100 mb-4 bg-slate-100 "
             />
           </SearchContainer>
           <UserList>
             {searchResults.map((user) => (
               <li key={user.uid} onClick={() => startChat(user.uid)}>
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt={user.displayName} />
-                ) : (
-                  <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
-                    {initials}
-                  </div>
-                )}
+                <div className="pr-2">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.displayName} />
+                  ) : (
+                    <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
+                      {initials}
+                    </div>
+                  )}
+                </div>
                 <span>{user.displayName}</span>
               </li>
             ))}
@@ -211,7 +224,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
               <TypingIndicator />
             </StreamChannel>
           ) : (
-            <div>select a user to start chat</div>
+            <div className="">select a user to start chat</div>
           )}
         </ChatContainer>
       </Container>
