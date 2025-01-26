@@ -11,11 +11,9 @@ import { usePosts } from "@/hooks/usePost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,
-  faHeart as regularHeart,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import {
-  faHeart as solidHeart,
   faBookmark as regularBookmark,
   faEllipsisV,
   faTrash,
@@ -25,29 +23,31 @@ import { Link } from "react-router-dom";
 import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
 import { auth } from "@/firebase/firebaseConfig";
-import { DocumentResponse } from "@/types";
+import Likes from "./Likes";
 
 interface IPostComponentProps {
-  data: DocumentResponse;
+  currentUserId: string;
 }
 
-const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
+const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
+  currentUserId,
+}) => {
   const user = auth.currentUser;
   const { userProfile, displayName, initials } = useUserProfile();
   const {
     posts,
     bookmarked,
     toggleBookmark,
-    // openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
     // displayComments,
     // selectedPost,
-    likesInfo,
+    // likes,
+    // isLiked,
     // toggleCommentSection,
-    toggleLike,
+    // handleToggleLike,
   } = usePosts();
 
   return (
@@ -118,40 +118,37 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = () => {
                 />
               </CardContent>
               <CardFooter className="flex justify-between items-center">
-                <div className="flex justify-between items-center w-[70px]">
-                  <div className="flex justify-between items-center w-[30px]">
-                    <FontAwesomeIcon
-                      className="cursor-pointer transition-all dark:hover:text-slate-400 "
-                      onClick={() => toggleLike(!likesInfo.isLike)}
-                      icon={likesInfo.isLike ? solidHeart : regularHeart}
-                    />
-                    <span>{likesInfo.likes} </span>
+                <section className="flex justify-between items-center">
+                  <div className="flex justify-between items-center w-[70px]">
+                    <div className="flex justify-between items-center w-[30px]">
+                      <Likes post={post} currentUserId={currentUserId} />
+                    </div>
+
+                    <div className="flex justify-between items-center w-[30px]">
+                      <Link to={`/post/${post.id}`}>
+                        <FontAwesomeIcon
+                          className="cursor-pointer transition-all dark:hover:text-slate-400"
+                          // onClick={() => toggleCommentSection(post.id!)}
+                          icon={faComment}
+                        />
+                      </Link>
+                      {Comment.length > 0 && <span>{Comment.length}</span>}
+                    </div>
                   </div>
 
-                  <div className="flex justify-between items-center w-[30px]">
-                    <Link to={`/post/${post.id}`}>
-                      <FontAwesomeIcon
-                        className="cursor-pointer transition-all dark:hover:text-slate-400"
-                        // onClick={() => toggleCommentSection(post.id!)}
-                        icon={faComment}
-                      />
-                    </Link>
-                    {Comment.length > 0 && <span>{Comment.length}</span>}
-                  </div>
-                </div>
-
-                <FontAwesomeIcon
-                  className="cursor-pointer transition-all dark:hover:text-slate-400"
-                  onClick={() => toggleBookmark(post.id!)}
-                  icon={
-                    bookmarked.includes(post.id!)
-                      ? regularBookmark
-                      : solidBookmark
-                  }
-                />
-                {/* <span>
+                  <FontAwesomeIcon
+                    className="cursor-pointer transition-all dark:hover:text-slate-400"
+                    onClick={() => toggleBookmark(post.id!)}
+                    icon={
+                      bookmarked.includes(post.id!)
+                        ? regularBookmark
+                        : solidBookmark
+                    }
+                  />
+                </section>
+                <span>
                   {new Date(post.date.seconds * 1000).toLocaleDateString()}
-                </span> */}
+                </span>
                 {/* <span>by : {post.username}</span> */}
               </CardFooter>
             </CardHeader>

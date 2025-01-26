@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  DocumentResponse,
-  Comment,
-  Post,
-  CommentResponse,
-} from "../types/index";
+import { DocumentResponse, Post, CommentResponse } from "../types/index";
 import {
   getPost,
   getPostByUserId,
@@ -13,7 +8,6 @@ import {
   updateLikesOnPost,
   // deleteSinglePost,
 } from "@/repository/post.service";
-import { useUserAuth } from "@/contexts/UserAuthContext";
 import {
   doc,
   setDoc,
@@ -24,6 +18,9 @@ import {
   getDocs,
   query,
   orderBy,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -40,7 +37,7 @@ export const usePosts = () => {
     caption: "",
     photos: "",
     likes: 0,
-    userlikes: [],
+    likedBy: [],
     userId: "",
     createdAt: new Date().toISOString(),
   });
@@ -63,13 +60,6 @@ export const usePosts = () => {
 
   const [displayComments, setDisplayComments] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [likesInfo, setLikesInfo] = useState<{
-    likes: number;
-    isLike: boolean;
-  }>({
-    likes: post.likes ?? 0,
-    isLike: post.userlikes?.includes(user!.uid) ? true : false,
-  });
 
   const navigate = useNavigate();
 
@@ -82,31 +72,27 @@ export const usePosts = () => {
     setOpenDeleteModal(false);
   };
 
-  // const toggleCommentSection = (postId: string) => {
-  //   // console.log("done", postId);
+  const toggleCommentSection = (postId: string) => {
+    // console.log("done", postId);
 
-  //   setSelectedPost((prev) => (prev === postId ? null : postId));
-  //   setDisplayComments(true);
+    setSelectedPost((prev) => (prev === postId ? null : postId));
+    setDisplayComments(true);
 
-  //   navigate(`/post/${postId}`);
-  //   // console.error(Error);
-  // };
-
-  const toggleLike = async (isVal: boolean) => {
-    setLikesInfo({
-      likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
-      isLike: !likesInfo.isLike,
-    });
-    isVal
-      ? post.userlikes?.push(user!.uid)
-      : post.userlikes?.splice(post.userlikes.indexOf(user!.uid), 1);
-
-    await updateLikesOnPost(
-      post.id!,
-      post.userlikes!,
-      isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
-    );
+    navigate(`/post/${postId}`);
+    // console.error(Error);
   };
+
+  // export const updateLikesOnPost = (
+  //   postId: string,
+  //   userlikes: string[],
+  //   likes: number
+  // ) => {
+  //   const docRef = doc(db, COLLECTION_NAME, postId);
+  //   return updateDoc(docRef, {
+  //     likes,
+  //     userlikes,
+  //   });
+  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -152,7 +138,7 @@ export const usePosts = () => {
             caption: post.caption,
             photos: photoURL,
             likes: 0,
-            userlikes: [],
+            likedBy: [],
             userId: userId,
             createdAt: new Date().toISOString(),
           };
@@ -168,7 +154,7 @@ export const usePosts = () => {
             caption: "",
             photos: "",
             likes: 0,
-            userlikes: [],
+            likedBy: [],
             userId: "",
             createdAt: new Date().toISOString(),
           });
@@ -193,7 +179,7 @@ export const usePosts = () => {
             id: doc.id,
             userbookmarks: [],
             userlikes: [],
-          } as DocumentResponse;
+          } as unknown as DocumentResponse;
           tempArr.push(responseObj);
         });
         setUserPosts(tempArr);
@@ -355,7 +341,7 @@ export const usePosts = () => {
           const commentsData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...(doc.data() as Omit<Comment, "id">),
-          })) as unknown as Comment[];
+          })) as unknown as CommentResponse[];
           setComments(commentsData);
         }
       } catch (error) {
@@ -375,7 +361,7 @@ export const usePosts = () => {
       return;
     }
     if (user && commentText) {
-      const newCommentByUser: Comment = {
+      const newCommentByUser: CommentResponse = {
         // id: comment.id,
         author: post.displayName,
         authorUserId: user?.uid,
@@ -401,7 +387,7 @@ export const usePosts = () => {
       const commentsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Comment, "id">),
-      })) as unknown as Comment[];
+      })) as unknown as CommentResponse[];
       setComments(commentsData);
     }
   };
@@ -435,10 +421,8 @@ export const usePosts = () => {
     setDisplayComments,
     selectedPost,
     setSelectedPost,
-    likesInfo,
-    setLikesInfo,
-    // toggleCommentSection,
-    toggleLike,
+
+    toggleCommentSection,
     singlePost,
   };
 };

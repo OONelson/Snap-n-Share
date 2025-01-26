@@ -96,11 +96,11 @@ export const deleteSinglePost = (id: string) => {
 };
 
 export const updateLikesOnPost = (
-  id: string,
+  postId: string,
   userlikes: string[],
   likes: number
 ) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
+  const docRef = doc(db, COLLECTION_NAME, postId);
   return updateDoc(docRef, {
     likes,
     userlikes,

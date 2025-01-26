@@ -24,7 +24,7 @@ export interface Post {
   caption: string;
   photos: string;
   likes: number;
-  userlikes: string[];
+  likedBy: string[];
   userbookmarks?: string[];
   username?: string;
   displayName?: string;
@@ -58,11 +58,12 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
+  date: any;
   id?: string;
   caption?: string;
   photos: string;
   likes?: number;
-  userlikes?: string[];
+  likedBy: string[];
   userbookmarks?: string[];
   username?: string;
   displayName?: string;
@@ -77,7 +78,7 @@ export interface Bookmark {
 
 export interface CommentResponse {
   id?: string;
-  author: string;
+  author?: string;
   text: string;
   authorUserId: string;
   likes: number;

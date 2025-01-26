@@ -25,11 +25,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { auth } from "@/firebase/firebaseConfig";
+import { Post } from "@/types";
 // import SmallSpinner from "./SmallSpinner";
 
-interface ISinglePostProps {}
+interface ISinglePostProps {
+  post: Post;
+}
 
-const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
+const SinglePost: React.FunctionComponent<ISinglePostProps> = ({ post }) => {
   const { userProfile, displayName, initials } = useUserProfile();
   const {
     bookmarked,
@@ -38,11 +41,11 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    // toggleLike,
-    // selectedPost,
-    // displayComments,
-    // likesInfo,
-    // toggleCommentSection,
+    handleToggleLike,
+    displayComments,
+    toggleCommentSection,
+    isLiked,
+    likes,
     // loading,
     singlePost,
   } = usePosts();
@@ -111,22 +114,25 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
             <div className="flex justify-between items-center w-[30px]">
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400 "
-                // onClick={() => toggleLike(!likesInfo.isLike)}
-                icon={
-                  // likesInfo.isLike ?
-                  // solidHeart:
-                  regularHeart
-                }
+                onClick={handleToggleLike}
+                icon={isLiked ? solidHeart : regularHeart}
               />
-              <span>0{/* {likesInfo.likes} */}</span>
+              {likes > 0 && (
+                <span>
+                  {likes}
+                  {likes === 1 ? "like" : "likes"}
+                </span>
+              )}
             </div>
 
             <div className="flex justify-between items-center w-[30px]">
+              {/* <Link to={`/post/${post.id}`}> */}
               <FontAwesomeIcon
                 className="cursor-pointer transition-all dark:hover:text-slate-400"
-                // onClick={() => toggleCommentSection(singlePost.id!)}
+                onClick={() => toggleCommentSection(post.id!)}
                 icon={faComment}
               />
+              {/* </Link> */}
               {Comment.length > 0 && <span>{Comment.length}</span>}
             </div>
           </div>
@@ -145,7 +151,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = () => {
                 </span> */}
           {/* <span>by : {post.username}</span> */}
         </CardFooter>
-        <CommentList postId={singlePost.id} />
+        {displayComments && <CommentList postId={singlePost.id} />}
       </CardHeader>
     </Card>
   );
