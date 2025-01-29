@@ -24,6 +24,7 @@ import SmallSpinner from "./SmallSpinner";
 import { Button } from "../ui/button";
 import { auth } from "@/firebase/firebaseConfig";
 import Likes from "./Likes";
+import { Post } from "@/types";
 
 interface IPostComponentProps {
   currentUserId: string;
@@ -149,7 +150,6 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 <span>
                   {new Date(post.date.seconds * 1000).toLocaleDateString()}
                 </span>
-                {/* <span>by : {post.username}</span> */}
               </CardFooter>
             </CardHeader>
           </Card>

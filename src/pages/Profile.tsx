@@ -390,31 +390,44 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                               />
                             </CardContent>
                             <CardFooter className="flex justify-between items-center">
-                              <div>
-                                <FontAwesomeIcon
-                                  className="cursor-pointer"
-                                  // onClick={() =>
-                                  //   toggleLike(!likesInfo.isLike)
-                                  // }
-                                  // icon={
-                                  //   likesInfo.isLike
-                                  //     ? solidHeart
-                                  //     : regularHeart
-                                  // }
-                                  icon={regularHeart}
-                                />
-                                <span>{/* {likesInfo.likes} */}0</span>
-                              </div>
+                              <section className="flex justify-between items-center">
+                                <div className="flex justify-between items-center w-[70px]">
+                                  <div className="flex justify-between items-center w-[30px]">
+                                    <Likes
+                                      post={post}
+                                      currentUserId={currentUserId}
+                                    />
+                                  </div>
 
-                              <FontAwesomeIcon
-                                className="cursor-pointer"
-                                onClick={() => toggleBookmark(post.id)}
-                                icon={
-                                  bookmarked.includes(post.id)
-                                    ? regularBookmark
-                                    : solidBookmark
-                                }
-                              />
+                                  <div className="flex justify-between items-center w-[30px]">
+                                    <Link to={`/post/${post.id}`}>
+                                      <FontAwesomeIcon
+                                        className="cursor-pointer transition-all dark:hover:text-slate-400"
+                                        // onClick={() => toggleCommentSection(post.id!)}
+                                        icon={faComment}
+                                      />
+                                    </Link>
+                                    {Comment.length > 0 && (
+                                      <span>{Comment.length}</span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <FontAwesomeIcon
+                                  className="cursor-pointer transition-all dark:hover:text-slate-400"
+                                  onClick={() => toggleBookmark(post.id!)}
+                                  icon={
+                                    bookmarked.includes(post.id!)
+                                      ? regularBookmark
+                                      : solidBookmark
+                                  }
+                                />
+                              </section>
+                              <span>
+                                {new Date(
+                                  post.date.seconds * 1000
+                                ).toLocaleDateString()}
+                              </span>
                             </CardFooter>
                           </CardHeader>
                         </Card>

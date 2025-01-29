@@ -20,7 +20,7 @@ export interface UserName {
 }
 
 export interface Post {
-  id: string;
+  id?: string;
   caption: string;
   photos: string;
   likes: number;
