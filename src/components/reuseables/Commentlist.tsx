@@ -24,7 +24,7 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
   const { userProfile, displayName, initials } = useUserProfile();
 
   return (
-    <article className="transition-all">
+    <article className="transition-all px-4">
       {comments.length > 0 ? (
         <ul>
           {comments.map((comment) => (
@@ -61,7 +61,7 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
       ) : (
         <p>No comments yet</p>
       )}
-      <section className="flex justify-between items-center">
+      <section className="flex justify-between items-center ">
         <Input
           type="text"
           value={commentText}

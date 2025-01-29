@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { DocumentResponse, Post, CommentResponse } from "../types/index";
 import {
-  getPost,
   getPostByUserId,
   // getPosts,
   searchPosts,
-  updateLikesOnPost,
   // deleteSinglePost,
 } from "@/repository/post.service";
 import {
@@ -18,17 +16,16 @@ import {
   getDocs,
   query,
   orderBy,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
 } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 
 export const usePosts = () => {
   const { postId } = useParams<{ postId: string }>();
 
+  const { userProfile, displayName } = useUserProfile();
   // const { user } = useUserAuth();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
@@ -73,26 +70,14 @@ export const usePosts = () => {
   };
 
   const toggleCommentSection = (postId: string) => {
-    // console.log("done", postId);
+    console.log("done", postId);
 
     setSelectedPost((prev) => (prev === postId ? null : postId));
     setDisplayComments(true);
 
-    navigate(`/post/${postId}`);
-    // console.error(Error);
+    // navigate(`/post/${postId}`);
+    console.error(Error);
   };
-
-  // export const updateLikesOnPost = (
-  //   postId: string,
-  //   userlikes: string[],
-  //   likes: number
-  // ) => {
-  //   const docRef = doc(db, COLLECTION_NAME, postId);
-  //   return updateDoc(docRef, {
-  //     likes,
-  //     userlikes,
-  //   });
-  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -354,41 +339,47 @@ export const usePosts = () => {
   }, [postId]);
 
   const addComment = async () => {
-    if (!postId) {
-      console.error("Post ID is not provided. Cannot add comment.");
-      console.log("not done");
+    // if (!postId) {
+    //   console.error("Post ID is not provided. Cannot add comment.");
+    //   console.log("not done");
 
-      return;
-    }
-    if (user && commentText) {
-      const newCommentByUser: CommentResponse = {
-        // id: comment.id,
-        author: post.displayName,
-        authorUserId: user?.uid,
-        text: commentText,
-        likes: 0,
-        createdAt: new Date().toISOString(),
-      };
-      await addDoc(
-        collection(db, `posts/${postId}/comments`),
-        newCommentByUser
-      );
-      console.log("done", newCommentByUser);
+    //   return;
+    // }
+    try {
+      if (user && commentText) {
+        const newCommentByUser: CommentResponse = {
+          // id: id,
+          author: userProfile?.displayName || userProfile?.username,
+          authorUserId: user?.uid,
+          text: commentText,
+          likes: 0,
+          createdAt: new Date().toISOString(),
+        };
+        console.log("done", newCommentByUser);
 
-      // Re-fetch comments after adding
-
-      setCommentText("");
-      const querySnapshot = await getDocs(
-        query(
+        await addDoc(
           collection(db, `posts/${postId}/comments`),
-          orderBy("createdAt", "asc")
-        )
-      );
-      const commentsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Comment, "id">),
-      })) as unknown as CommentResponse[];
-      setComments(commentsData);
+          newCommentByUser
+        );
+        console.log("done", newCommentByUser);
+
+        // Re-fetch comments after adding
+
+        setCommentText("");
+        const querySnapshot = await getDocs(
+          query(
+            collection(db, `posts/${postId}/comments`),
+            orderBy("createdAt", "asc")
+          )
+        );
+        const commentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Comment, "id">),
+        })) as unknown as CommentResponse[];
+        setComments(commentsData);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

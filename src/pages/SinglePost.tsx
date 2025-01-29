@@ -151,7 +151,7 @@ const SinglePost: React.FunctionComponent<ISinglePostProps> = ({ post }) => {
                 </span> */}
           {/* <span>by : {post.username}</span> */}
         </CardFooter>
-        {displayComments && <CommentList postId={singlePost.id} />}
+        {/* {displayComments && <CommentList postId={singlePost.id} />} */}
       </CardHeader>
     </Card>
   );
