@@ -78,10 +78,21 @@ export interface Bookmark {
 
 export interface CommentResponse {
   id?: string;
+  postId: string;
   author?: string;
   text: string;
   authorUserId: string;
   likes: number;
-  userlikes: string[];
+  likedBy: string[];
+  createdAt: string | Date;
+}
+
+export interface Comment {
+  postId: string;
+  author?: string;
+  text: string;
+  authorUserId: string;
+  likes: number;
+  likedBy: string[];
   createdAt: string | Date;
 }

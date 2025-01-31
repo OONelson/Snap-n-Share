@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { DocumentResponse, Post, CommentResponse } from "../types/index";
+import {
+  DocumentResponse,
+  Post,
+  CommentResponse,
+  Comment,
+} from "../types/index";
 import {
   getPostByUserId,
   // getPosts,
@@ -16,6 +21,7 @@ import {
   getDocs,
   query,
   orderBy,
+  where,
 } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -23,7 +29,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 
 export const usePosts = () => {
-  const { postId } = useParams<{ postId: string }>();
+  // const { postId } = useParams<{ postId: string }>();
 
   const { userProfile, displayName } = useUserProfile();
   // const { user } = useUserAuth();
@@ -217,7 +223,7 @@ export const usePosts = () => {
     }
   };
 
-  const getSinglePost = async () => {
+  const getSinglePost = async (postId: string) => {
     setLoading(true);
     try {
       if (!postId) return;
@@ -316,39 +322,41 @@ export const usePosts = () => {
     return () => clearTimeout(debounce);
   }, [searchTerm]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        if (postId) {
-          const commentsRef = collection(db, `posts/${postId}/comments`);
-          const commentsQuery = query(commentsRef, orderBy("createdAt", "asc"));
-          const querySnapshot = await getDocs(commentsQuery);
-          const commentsData = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...(doc.data() as Omit<Comment, "id">),
-          })) as unknown as CommentResponse[];
-          setComments(commentsData);
-        }
-      } catch (error) {
-        console.error("error adding comm");
+  const fetchComments = async (postId: string | undefined) => {
+    try {
+      if (postId) {
+        const querySnapshot = await getDocs(
+          query(
+            collection(db, "comments"),
+            where("postId", "==", postId),
+            orderBy("createdAt", "asc")
+          )
+        );
+        const commentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as CommentResponse[];
+        setComments(commentsData);
       }
-    };
+    } catch (error) {
+      console.error("error adding comm", error);
+    }
+  };
+  useEffect(() => {
+    fetchComments(post.id);
+  }, [post.id]);
 
-    getSinglePost();
-    fetchComments();
-  }, [postId]);
+  const addComment = async (postId: string | undefined) => {
+    if (!postId) {
+      console.error("Post ID is not provided. Cannot add comment.");
+      console.log("not done");
 
-  const addComment = async () => {
-    // if (!postId) {
-    //   console.error("Post ID is not provided. Cannot add comment.");
-    //   console.log("not done");
-
-    //   return;
-    // }
+      return;
+    }
     try {
       if (user && commentText) {
         const newCommentByUser: CommentResponse = {
-          // id: id,
+          postId: postId,
           author: userProfile?.displayName || userProfile?.username,
           authorUserId: user?.uid,
           text: commentText,
@@ -357,25 +365,24 @@ export const usePosts = () => {
         };
         console.log("done", newCommentByUser);
 
-        await addDoc(
-          collection(db, `posts/${postId}/comments`),
-          newCommentByUser
-        );
+        await addDoc(collection(db, "comments"), newCommentByUser);
         console.log("done", newCommentByUser);
 
         // Re-fetch comments after adding
 
         setCommentText("");
+
         const querySnapshot = await getDocs(
           query(
-            collection(db, `posts/${postId}/comments`),
+            collection(db, "comments"),
+            where("postId", "==", postId),
             orderBy("createdAt", "asc")
           )
         );
         const commentsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<Comment, "id">),
-        })) as unknown as CommentResponse[];
+          ...doc.data(),
+        })) as CommentResponse[];
         setComments(commentsData);
       }
     } catch (error) {
@@ -412,7 +419,6 @@ export const usePosts = () => {
     setDisplayComments,
     selectedPost,
     setSelectedPost,
-
     toggleCommentSection,
     singlePost,
   };
