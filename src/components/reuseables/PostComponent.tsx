@@ -114,7 +114,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                 </CardDescription>
               </CardHeader>
 
-              <CardContent>
+              <CardContent className="flex justify-center items-center">
                 <img
                   src={post.photos ? post.photos : ""}
                   alt={post.caption}

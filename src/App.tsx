@@ -5,21 +5,24 @@ import { UserAuthProvider } from "./contexts/UserAuthContext";
 import { UserProfileProvider } from "./contexts/UserProfileContext";
 import { UsernameProvider } from "./contexts/UsernameContext";
 import ThemeProvider from "./contexts/ThemeContext";
+import { ChakraProvider } from "@chakra-ui/react";
 
 import "stream-chat-react/dist/css/v2/index.css";
 interface IAppProps {}
 const App: React.FunctionComponent<IAppProps> = () => {
   return (
     <>
-      <UserProfileProvider>
-        <UserAuthProvider>
-          <UsernameProvider>
-            <ThemeProvider>
-              <RouterProvider router={router} />
-            </ThemeProvider>
-          </UsernameProvider>
-        </UserAuthProvider>
-      </UserProfileProvider>
+      <ChakraProvider>
+        <UserProfileProvider>
+          <UserAuthProvider>
+            <UsernameProvider>
+              <ThemeProvider>
+                <RouterProvider router={router} />
+              </ThemeProvider>
+            </UsernameProvider>
+          </UserAuthProvider>
+        </UserProfileProvider>
+      </ChakraProvider>
     </>
   );
 };

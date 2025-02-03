@@ -37,7 +37,7 @@ const WhoToFollow: React.FunctionComponent<IWhoToFollowProps> = () => {
               />
               <div className="flex flex-col justify-center items-start pr-5 pl-2 -space-y-2">
                 <h2 className="font-bold text-xl">{person.displayName}</h2>
-                <span className="text-slate-300">{person.username}</span>
+                <span className="text-slate-400">@{person.username}</span>
               </div>
               <Button className="h-8">Follow</Button>
             </article>

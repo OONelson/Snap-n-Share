@@ -74,9 +74,6 @@ export const searchUsers = async (searchTerm: string) => {
   );
   const snapshot = await getDocs(q);
   const results = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  // console.log(doc.data());
-
-  // console.log(results);
 
   return results;
 };

@@ -13,6 +13,7 @@ import SearchPage from "./pages/SearchPage";
 import Messenger from "./pages/Messenger";
 import SinglePost from "./pages/SinglePost";
 import Notifications from "./pages/Notifications";
+import ChangeEmailPage from "./pages/ChangeEmailPage";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,11 @@ export const router = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/settings/account/change-email",
+        element: <ChangeEmailPage />,
         errorElement: <Error />,
       },
       {

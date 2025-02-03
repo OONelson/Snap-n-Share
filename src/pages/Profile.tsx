@@ -48,29 +48,6 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
-  // const [likesInfo, setLikesInfo] = useState<{
-  //   likes: number;
-  //   isLike: boolean;
-  // }>({
-  //   likes: data.likes,
-  //   isLike: data.userlikes.includes(user!.uid) ? true : false,
-  // });
-
-  // const toggleLike = async (isVal: boolean) => {
-  //   setLikesInfo({
-  //     likes: isVal ? likesInfo.likes + 1 : likesInfo.likes - 1,
-  //     isLike: !likesInfo.isLike,
-  //   });
-  //   isVal
-  //     ? data.userlikes?.push(user!.uid)
-  //     : data.userlikes?.splice(data.userlikes.indexOf(user!.uid), 1);
-
-  //   await updateLikesOnPost(
-  //     data.id,
-  //     data.userlikes,
-  //     isVal ? likesInfo.likes + 1 : likesInfo.likes - 1
-  //   );
-  // };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,10 +69,7 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     handleOpenEdit,
     handleCloseEdit,
     initials,
-    // DeleteModal,
   } = useUserProfile();
-
-  const { fetchUserProfile } = useUser();
 
   const {
     userPosts,

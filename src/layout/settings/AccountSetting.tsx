@@ -4,8 +4,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { auth } from "@/firebase/firebaseConfig";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import CopyToClipboard from "@/components/reuseables/CopyToClipboard";
 
 interface IAccountSettingsProps {}
 
@@ -18,7 +17,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
     handleUpdateProfile,
   } = useUserProfile();
 
-  const user = auth.currentUser;
+  const email = userProfile?.email;
   return (
     <main className="bg-white md:w-full px-5 dark:bg-darkBg dark:text-slate-300 flex flex-col justify-center items-center md:block">
       <h1 className="font-semibold text-xl py-3">Account Settings</h1>
@@ -45,13 +44,12 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
           <span className="text-md">@{userProfile?.username}</span>
           <div className="flex items-center ">
             <span className="text-slate-500 font-mono text-md text-wrap flex-wrap pr-2">
-              {user?.email}
+              {email}
             </span>
-            <FontAwesomeIcon
-              icon={faCopy}
-              className="cursor-pointer hover:text-slate-500"
-            />
+            <CopyToClipboard textToCopy={email} />
           </div>
+
+          <span className="font-light underline">change email?</span>
         </div>
       </section>
 
@@ -75,7 +73,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
           />
         </div>
 
-        <div>
+        {/* <div>
           <Label className="text-slate-700 dark:text-slate-400" htmlFor="email">
             Email
           </Label>
@@ -88,7 +86,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
               setDisplayName(e.target.value)
             }
           />
-        </div>
+        </div> */}
 
         <div>
           <Label
