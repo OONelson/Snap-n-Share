@@ -5,6 +5,7 @@ import { auth } from "@/firebase/firebaseConfig";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import CopyToClipboard from "@/components/reuseables/CopyToClipboard";
+import { Link } from "react-router-dom";
 
 interface IAccountSettingsProps {}
 
@@ -48,8 +49,9 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
             </span>
             <CopyToClipboard textToCopy={email} />
           </div>
-
-          <span className="font-light underline">change email?</span>
+          <Link to="/settings/account/change-email">
+            <span className="font-light underline">change email?</span>
+          </Link>
         </div>
       </section>
 
