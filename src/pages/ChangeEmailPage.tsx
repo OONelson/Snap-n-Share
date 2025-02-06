@@ -1,37 +1,20 @@
-import { auth, db } from "@/firebase/firebaseConfig";
-import { v4 as uuidv4 } from "uuid";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import {
-  Flex,
-  Box,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
-} from "@chakra-ui/react";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { auth, db } from "@/firebase/firebaseConfig";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
+import { useUserProfile } from "@/contexts/UserProfileContext";
+import SmallSpinner from "@/components/reuseables/SmallSpinner";
 
-interface IChangeEmailPageProps {
-  confirmationLength: number;
-  onCodeChange: (confirmation: string) => void;
-}
+interface IChangeEmailPageProps {}
 
-const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = ({
-  confirmationLength,
-  onCodeChange,
-}) => {
+const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = () => {
   const [newEmail, setNewEmail] = useState<string>("");
-  const [isChanging, setIsChangingEmail] = useState<boolean>(false);
-  const [confirmation, setConfirmation] = useState("");
-  const [isConfirmationSent, setIsConfirmationSent] = useState<boolean>(false);
-  const [error, setError] = useState("");
+  const [isChangingEmail, setIsChangingEmail] = useState<boolean>(false);
 
   const user = auth.currentUser;
-
+  const { userProfile } = useUserProfile();
   useEffect(() => {
     if (user) {
       const userRef = doc(db, "users", user.uid);
@@ -55,8 +38,36 @@ const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = ({
     }
   }, [user]);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChangingEmail(true);
+
     setNewEmail(e.target.value);
+    console.log("initial");
+
+    if (!emailRegex.test(newEmail)) {
+      console.log("invalid email format");
+      return;
+    }
+
+    setNewEmail(e.target.value);
+    console.log("initial");
+    try {
+      if (user) {
+        await updateDoc(doc(db, "users", user.uid), {
+          email: newEmail,
+        });
+      }
+      setIsChangingEmail(false);
+
+      console.log("final");
+    } catch (error: any) {
+      setIsChangingEmail(false);
+
+      console.log("Error updating email:", error);
+      setIsChangingEmail(false);
+    }
   };
 
   //   const handleConfirmationChange = async (
@@ -66,86 +77,63 @@ const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = ({
   //     setConfirmation(e.target.value);
   //   };
 
-  const handleChange = (index: number, value: string) => {
-    const newCode =
-      confirmation.substring(0, index) +
-      value +
-      confirmation.substring(index + 1);
-    setConfirmation(newCode);
-    onCodeChange(newCode);
-  };
+  // const handleChange = (index: number, value: string) => {
+  //   const newCode =
+  //     confirmation.substring(0, index) +
+  //     value +
+  //     confirmation.substring(index + 1);
+  //   setConfirmation(newCode);
+  //   onCodeChange(newCode);
+  // };
 
-  const handleSendEmailConfirmation = async () => {
-    const functions = getFunctions();
-    const sendEmail = httpsCallable(functions, "sendEmailVerification");
-    try {
-      const generatedCode = uuidv4();
+  // const handleSendEmailConfirmation = async () => {
+  //   const functions = getFunctions();
+  //   const sendEmail = httpsCallable(functions, "sendEmailVerification");
+  //   try {
+  //     const generatedCode = uuidv4();
 
-      setIsConfirmationSent(true);
-      if (user) {
-        await updateDoc(doc(db, "users", user.uid), {
-          emailConfirmationCode: generatedCode,
-        });
-      }
+  //     setIsConfirmationSent(true);
+  //     if (user) {
+  //       await updateDoc(doc(db, "users", user.uid), {
+  //         emailConfirmationCode: generatedCode,
+  //       });
+  //     }
 
-      await sendEmail({
-        email: auth.currentUser?.email || "",
-        code: generatedCode,
-      });
-    } catch (error) {
-      console.error("Error sending confirmation email:", error);
-      console.log("Error sending confirmation email:", error);
+  //     await sendEmail({
+  //       email: auth.currentUser?.email || "",
+  //       code: generatedCode,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error sending confirmation email:", error);
+  //     console.log("Error sending confirmation email:", error);
 
-      setError("Failed to send confirmation email. Please try again.");
-    }
-  };
+  //     setError("Failed to send confirmation email. Please try again.");
+  //   }
+  // };
 
   return (
-    <main>
-      {isConfirmationSent ? (
-        // <form onSubmit={handleConfirmationChange}>
-        <Flex>
-          {Array.from({ length: confirmationLength }).map((_, index) => (
-            <Box
-              key={index}
-              mx={2}
-              w="2rem"
-              h="2rem"
-              borderWidth="1px"
-              borderRadius="md"
-            >
-              <InputGroup size="sm">
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<Text fontSize="sm">{index + 1}</Text>}
-                />
-                <Input
-                  type="text"
-                  maxLength={1}
-                  value={confirmation[index] || ""}
-                  onChange={(e) => handleChange(index, e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Backspace" && index > 0) {
-                      handleChange(index - 1, "");
-                    }
-                    if (e.key.length === 1 && e.key >= "0" && e.key <= "9") {
-                      handleChange(index + 1, "");
-                    }
-                  }}
-                />
-              </InputGroup>
-            </Box>
-          ))}
-        </Flex>
+    <main className="w-[300px] space-y-2  px-2">
+      <span className="font-light underline">{userProfile?.email}</span>
+      <Input
+        className="w-[250px]"
+        placeholder="new email"
+        value={newEmail}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setNewEmail(e.target.value)
+        }
+      />
+
+      {isChangingEmail ? (
+        <Button className="h-8" disabled onClick={handleEmailChange}>
+          Update
+        </Button>
       ) : (
-        // </form>
-        <div className="w-[300px] flex justify-center items-center">
-          <span className="underline font-light">{user?.email}</span>
-          <Button onClick={handleSendEmailConfirmation} className="h-9 ">
-            send code
-          </Button>
-        </div>
+        <Button className="h-8" onClick={handleEmailChange}>
+          Update
+        </Button>
       )}
+
+      {isChangingEmail && <SmallSpinner />}
     </main>
   );
 };

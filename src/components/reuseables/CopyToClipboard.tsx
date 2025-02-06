@@ -1,5 +1,5 @@
 import React from "react";
-import { border, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
