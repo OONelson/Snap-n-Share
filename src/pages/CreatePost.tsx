@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePosts } from "@/hooks/usePost";
 import SideBar from "@/layout/SideBar";
 
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,14 @@ interface ICreatePostProps {}
 const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
   const navigate = useNavigate();
 
-  const { handleSubmit, handleFileChange, post, setPost } = usePosts();
+  const {
+    handleSubmit,
+    handleFileChange,
+    handleImageClick,
+    fileInputRef,
+    post,
+    setPost,
+  } = usePosts();
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -30,6 +37,14 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
       const file = e.target.files[0];
       setPreviewImage(URL.createObjectURL(file));
       handleFileChange(e);
+    }
+  };
+
+  const handleResetPreview = () => {
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.files = null;
     }
   };
 
@@ -60,7 +75,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
           <CardContent className="space-y-2">
             <Label>Snap caption</Label>
             <Textarea
-              className="my-5"
+              className="my-5 mb-5"
               id="caption"
               placeholder="what's in your snap"
               value={post.caption}
@@ -68,33 +83,48 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
                 setPost({ ...post, caption: e.target.value })
               }
             />
-
+            <div
+              onClick={handleImageClick}
+              style={{
+                width: "300px",
+                height: "150px",
+                backgroundColor: "#f0f0f0",
+                display: "flex",
+                marginTop: "3rem",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                border: "2px dashed #ccc",
+              }}
+            >
+              {previewImage ? (
+                <div className="relative">
+                  <FontAwesomeIcon
+                    onClick={handleResetPreview}
+                    icon={faTimes}
+                    className="absolute top-0 right-0 bg-black text-white h-5 w-5 p-1 rounded-full"
+                  />
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    style={{
+                      width: "300px",
+                      maxHeight: "150px",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ) : (
+                <span className="text-slate-700">Click to upload photo</span>
+              )}
+            </div>
             <input
               type="file"
+              ref={fileInputRef}
               accept="image/*"
               onChange={handleImagePreview}
-              className="mb-4 block"
+              className="mb-4 hidden"
             />
-
-            {previewImage && (
-              <div className="image-preview">
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{
-                    width: "100%",
-                    maxHeight: "300px",
-                    objectFit: "cover",
-                  }}
-                />
-                {/* <div className="cursor-pointer flex justify-center ">
-                  <FontAwesomeIcon
-                    icon={faTimes}
-                    onClick={() => handleRemoveClick(file.uuid)}
-                  />
-                </div> */}
-              </div>
-            )}
           </CardContent>
           <CardFooter className="flex justify-center items-center">
             <Button className="px-8" type="submit">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DocumentResponse,
   Post,
@@ -32,7 +32,6 @@ export const usePosts = () => {
   // const { postId } = useParams<{ postId: string }>();
 
   const { userProfile, displayName } = useUserProfile();
-  // const { user } = useUserAuth();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
@@ -83,6 +82,13 @@ export const usePosts = () => {
 
     // navigate(`/post/${postId}`);
     console.error(Error);
+  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -404,6 +410,8 @@ export const usePosts = () => {
     filteredPosts,
     openDeleteModal,
     handleFileChange,
+    handleImageClick,
+    fileInputRef,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,

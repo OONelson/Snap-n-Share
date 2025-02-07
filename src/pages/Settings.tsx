@@ -86,7 +86,7 @@ const Settings: React.FunctionComponent<ISettingsProps> = () => {
   };
 
   return (
-    <main className="md:flex w-screen md:w-fit overflow-hidden dark:bg-darkBg h-screen">
+    <main className="md:flex  md:w-fit overflow-hidden dark:bg-darkBg h-screen">
       <nav className="md:w-[400px] sm:w-[250px] w-screen p-4 bg-stone-50 border-r-2 h-screen dark:bg-darkBg ">
         <header className="w-24 flex justify-between items-center">
           <FontAwesomeIcon

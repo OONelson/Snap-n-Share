@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import CopyToClipboard from "@/components/reuseables/CopyToClipboard";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 interface IAccountSettingsProps {}
 
@@ -16,23 +17,66 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
     setDisplayName,
     initials,
     handleUpdateProfile,
+    handleFileChange,
+    handleImageClick,
+    fileInputRef,
   } = useUserProfile();
 
   const email = userProfile?.email;
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPreviewImage(URL.createObjectURL(file));
+      handleFileChange(e);
+    }
+  };
+
+  // const handleResetPreview = () => {
+  //   setPreviewImage(null);
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.value = "";
+  //     fileInputRef.current.files = null;
+  //   }
+  // };
+
   return (
     <main className="bg-white md:w-full px-5 dark:bg-darkBg dark:text-slate-300 flex flex-col justify-center items-center md:block">
       <h1 className="font-semibold text-xl py-3">Account Settings</h1>
-      <section className="bg-stone-50 md:w-[50vw] w-[85vw] p-5 rounded-xl dark:bg-darkBg border flex flex-col justify-center items-center md:block px-3">
+      <section className="bg-stone-50 md:w-max w-[85vw] p-5 rounded-xl dark:bg-darkBg border flex flex-col justify-center items-center md:block px-3">
         <article className=" flex justify-start items-center">
-          <picture>
-            {userProfile?.photoURL ? (
-              <img src={userProfile.photoURL} alt="userpic" />
+          <picture onClick={handleImageClick}>
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt="Preview"
+                style={{
+                  width: "300px",
+                  maxHeight: "150px",
+                  objectFit: "cover",
+                }}
+              />
             ) : (
-              <div className="flex justify-center items-center w-20 h-20 rounded-full bg-black text-white col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl mr-2">
-                {initials}
+              <div>
+                {userProfile?.photoURL ? (
+                  <img src={userProfile.photoURL} alt="userpic" />
+                ) : (
+                  <div className="flex justify-center items-center w-20 h-20 rounded-full bg-black text-white col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl mr-2">
+                    {initials}
+                  </div>
+                )}
               </div>
             )}
           </picture>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={handleImagePreview}
+            className="mb-4 hidden"
+          />
           <Button className="h-8 px-2 bg-white text-black border-slate-300 hover:bg-stone-200 border">
             Change Photo
           </Button>

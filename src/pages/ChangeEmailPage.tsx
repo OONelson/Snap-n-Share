@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
+import { useToast } from "@chakra-ui/react";
 
 interface IChangeEmailPageProps {}
 
@@ -15,6 +16,23 @@ const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = () => {
 
   const user = auth.currentUser;
   const { userProfile } = useUserProfile();
+
+  const toast = useToast({
+    position: "bottom",
+    title: "Success!",
+    description: "Email has been updated.",
+    status: "success",
+    duration: 2000,
+    isClosable: true,
+    colorScheme: "blackAlpha.900",
+
+    containerStyle: {
+      width: "200px",
+      maxWidth: "100%",
+      background: "blackAlpha.900",
+    },
+  });
+
   useEffect(() => {
     if (user) {
       const userRef = doc(db, "users", user.uid);
@@ -61,55 +79,31 @@ const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = () => {
       }
       setIsChangingEmail(false);
 
+      toast({
+        containerStyle: {
+          width: "200px",
+          maxWidth: "100%",
+          backgroundColor: "blackAlpha.900",
+        },
+      });
+      setIsChangingEmail(false);
+
       console.log("final");
     } catch (error: any) {
       setIsChangingEmail(false);
-
+      toast({
+        title: "Error",
+        description: "Failed to update email.",
+        status: "error",
+        duration: 2000,
+        colorScheme: "red",
+        isClosable: true,
+        position: "bottom",
+      });
       console.log("Error updating email:", error);
       setIsChangingEmail(false);
     }
   };
-
-  //   const handleConfirmationChange = async (
-  //     e: React.ChangeEvent<HTMLInputElement>
-  //   ) => {
-  //     e.preventDefault();
-  //     setConfirmation(e.target.value);
-  //   };
-
-  // const handleChange = (index: number, value: string) => {
-  //   const newCode =
-  //     confirmation.substring(0, index) +
-  //     value +
-  //     confirmation.substring(index + 1);
-  //   setConfirmation(newCode);
-  //   onCodeChange(newCode);
-  // };
-
-  // const handleSendEmailConfirmation = async () => {
-  //   const functions = getFunctions();
-  //   const sendEmail = httpsCallable(functions, "sendEmailVerification");
-  //   try {
-  //     const generatedCode = uuidv4();
-
-  //     setIsConfirmationSent(true);
-  //     if (user) {
-  //       await updateDoc(doc(db, "users", user.uid), {
-  //         emailConfirmationCode: generatedCode,
-  //       });
-  //     }
-
-  //     await sendEmail({
-  //       email: auth.currentUser?.email || "",
-  //       code: generatedCode,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error sending confirmation email:", error);
-  //     console.log("Error sending confirmation email:", error);
-
-  //     setError("Failed to send confirmation email. Please try again.");
-  //   }
-  // };
 
   return (
     <main className="w-[300px] space-y-2  px-2">

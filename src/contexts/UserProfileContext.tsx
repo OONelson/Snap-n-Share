@@ -1,9 +1,15 @@
-import { auth, db } from "@/firebase/firebaseConfig";
+import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { UserProfileInfo } from "@/types";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import React, { MouseEventHandler, SetStateAction, useEffect } from "react";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, {
+  MouseEventHandler,
+  SetStateAction,
+  useEffect,
+  useRef,
+} from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
-import { useParams } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface UserProfileData {
   userProfile: UserProfileInfo | null;
@@ -25,6 +31,9 @@ interface UserProfileData {
   fetchBio: (bio: string) => Promise<string>;
   displayName: string;
   setDisplayName: React.Dispatch<SetStateAction<string>>;
+  handleFileChange: () => void;
+  handleImageClick: () => void;
+  // fileInputRef: <HTMLInputElement>(null);
 }
 
 const UserProfileContext = createContext<UserProfileData | undefined>(
@@ -47,17 +56,18 @@ const getInitials = (name?: string): string => {
 export const UserProfileProvider: React.FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { userId } = useParams<{ userId: string }>();
+  const user = auth.currentUser;
 
   const [userProfile, setUserProfile] = useState<UserProfileInfo | null>(null);
   const [edit, setEdit] = useState<boolean>(false);
-
+  const [file, setFile] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""
   );
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
+  // const navigate = useNavigate();
 
   const handleOpenEdit = () => {
     setEdit(true);
@@ -98,21 +108,69 @@ export const UserProfileProvider: React.FunctionComponent<{
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     if (userId) {
-  //       const userDoc = doc(db, "users", userId);
-  //       const userSnap = await getDoc(userDoc);
-  //       if (userSnap.exists()) {
-  //         setUserProfile(userSnap.data() as UserProfileInfo);
-  //       } else {
-  //         console.error("Profile not found");
-  //       }
-  //       setUserProfile(userProfile);
-  //     }
-  //   };
-  //   fetchProfile();
-  // }, [userId]);
+  // UPDATE PROFILE PIC
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    // e.preventDefault();
+
+    if (!user) {
+      // navigate("/login");
+      return;
+    }
+
+    if (!file) {
+      alert("Please select a file and provide a caption.");
+      return;
+    }
+
+    try {
+      // Upload image to Firebase Storage
+      const storageRef = ref(storage, `users/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Error during file upload:", error);
+        },
+        async () => {
+          const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("File available at:", photoURL);
+
+          // console.log(newPost);
+
+          await updateDoc(doc(db, "users"), {
+            photoURL: file,
+          });
+
+          // Reset form state
+
+          alert("new picture uplaoded");
+          // navigate("/");
+        }
+      );
+    } catch (error) {
+      console.log("error uploading pic:", error);
+    }
+  };
 
   const changeDisplayName = async (displayName: string) => {
     try {
@@ -153,6 +211,7 @@ export const UserProfileProvider: React.FunctionComponent<{
   const handleUpdateProfile = async () => {
     await changeDisplayName(displayName);
     await updateBio(bio);
+    await handleSubmit();
     alert("profile updated");
     console.log("updated");
     console.log(displayName);
@@ -234,6 +293,9 @@ export const UserProfileProvider: React.FunctionComponent<{
         edit,
         handleOpenEdit,
         handleCloseEdit,
+        handleImageClick,
+        fileInputRef,
+        handleFileChange,
         bio,
         setBio,
         initials,
