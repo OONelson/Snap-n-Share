@@ -86,7 +86,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
             <div
               onClick={handleImageClick}
               style={{
-                width: "300px",
+                width: "100%",
                 height: "150px",
                 backgroundColor: "#f0f0f0",
                 display: "flex",
@@ -98,7 +98,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
               }}
             >
               {previewImage ? (
-                <div className="relative">
+                <div className="relative ">
                   <FontAwesomeIcon
                     onClick={handleResetPreview}
                     icon={faTimes}
@@ -108,7 +108,7 @@ const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
                     src={previewImage}
                     alt="Preview"
                     style={{
-                      width: "300px",
+                      width: " 100%",
                       maxHeight: "150px",
                       objectFit: "cover",
                     }}

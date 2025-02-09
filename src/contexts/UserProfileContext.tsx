@@ -124,10 +124,7 @@ export const UserProfileProvider: React.FunctionComponent<{
   };
 
   const handleSubmit = async () => {
-    // e.preventDefault();
-
     if (!user) {
-      // navigate("/login");
       return;
     }
 
@@ -138,7 +135,7 @@ export const UserProfileProvider: React.FunctionComponent<{
 
     try {
       // Upload image to Firebase Storage
-      const storageRef = ref(storage, `users/${file.name}`);
+      const storageRef = ref(storage, `profileImages/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -155,10 +152,11 @@ export const UserProfileProvider: React.FunctionComponent<{
           const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", photoURL);
 
+          // setFile(photoURL)
           // console.log(newPost);
 
-          await updateDoc(doc(db, "users"), {
-            photoURL: file,
+          await updateDoc(doc(db, "users", user.uid), {
+            photoURL: photoURL,
           });
 
           // Reset form state
@@ -169,6 +167,24 @@ export const UserProfileProvider: React.FunctionComponent<{
       );
     } catch (error) {
       console.log("error uploading pic:", error);
+    }
+  };
+
+  const fectchUserProfileImg = async () => {
+    try {
+      const photoURLRef = doc(db, "users", userProfile?.uid);
+
+      const docSnap = await getDoc(photoURLRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data().photoURL;
+      } else {
+        console.log("no such doc");
+        return "";
+      }
+    } catch (error) {
+      console.log(error);
+      return "";
     }
   };
 
@@ -249,6 +265,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     loadDisplayName();
     fetchDisplayName();
     fetchBio();
+    fectchUserProfileImg();
   }, []);
 
   // FETCH BIO

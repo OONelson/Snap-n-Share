@@ -78,7 +78,11 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
               <Link to="/profile">
                 <div className="flex mr-2 border-2 rounded-full">
                   {userProfile?.photoURL ? (
-                    <img src={userProfile.photoURL} alt={displayName} />
+                    <img
+                      src={userProfile.photoURL}
+                      alt={displayName}
+                      className="rounded-full h-[50px] w-[50px]"
+                    />
                   ) : (
                     <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
                       {initials}
@@ -119,7 +123,11 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                     <Link to={`/profile/${user?.uid}`}>
                       <div className="flex items-center justify-between w-full">
                         {userProfile?.photoURL ? (
-                          <img src={userProfile.photoURL} alt={displayName} />
+                          <img
+                            src={userProfile.photoURL}
+                            alt={displayName}
+                            className="rounded-full h-[50px] w-[50px]"
+                          />
                         ) : (
                           <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                             {initials}

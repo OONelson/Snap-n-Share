@@ -43,7 +43,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    displayComments,
+    // displayComments,
     selectedPost,
     // likes,
     // isLiked,
@@ -67,7 +67,11 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                   <Link to={`/profile/${user?.uid}`}>
                     <div className="flex items-center justify-between w-full">
                       {userProfile?.photoURL ? (
-                        <img src={userProfile.photoURL} alt={displayName} />
+                        <img
+                          src={userProfile.photoURL}
+                          alt={displayName}
+                          className="rounded-full h-[50px] w-[50px]"
+                        />
                       ) : (
                         <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                           {initials}

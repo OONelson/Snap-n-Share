@@ -53,7 +53,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
                 src={previewImage}
                 alt="Preview"
                 style={{
-                  width: "300px",
+                  width: "150px",
                   maxHeight: "150px",
                   objectFit: "cover",
                 }}
@@ -61,7 +61,11 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
             ) : (
               <div>
                 {userProfile?.photoURL ? (
-                  <img src={userProfile.photoURL} alt="userpic" />
+                  <img
+                    src={userProfile.photoURL}
+                    alt="userpic"
+                    className="rounded-full h-[150px] w-[150px]"
+                  />
                 ) : (
                   <div className="flex justify-center items-center w-20 h-20 rounded-full bg-black text-white col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl mr-2">
                     {initials}
@@ -77,9 +81,6 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
             onChange={handleImagePreview}
             className="mb-4 hidden"
           />
-          <Button className="h-8 px-2 bg-white text-black border-slate-300 hover:bg-stone-200 border">
-            Change Photo
-          </Button>
         </article>
 
         <div className="flex flex-col -space-y-1 pt-5">

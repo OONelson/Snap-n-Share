@@ -14,13 +14,12 @@ import { useUserAuth } from "@/contexts/UserAuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPen,
-  faHeart as solidHeart,
   faBookmark as regularBookmark,
   faEllipsisV,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  faHeart as regularHeart,
+  faComment,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 
@@ -34,17 +33,15 @@ import { usePosts } from "@/hooks/usePost";
 import LogoutModal from "@/components/reuseables/LogoutModal";
 import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
-// import { DocumentResponse } from "@/types";
-// import { updateLikesOnPost } from "@/repository/post.service";
-// import PostComponent from "@/components/reuseables/PostComponent";
-import { useUser } from "@/hooks/useUser";
+import CommentList from "@/components/reuseables/Commentlist";
+import Likes from "@/components/reuseables/Likes";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
-  // data: DocumentResponse;
+  currentUserId: string;
 }
 
-const Profile: React.FunctionComponent<IProfileProps> = () => {
+const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -82,6 +79,8 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
+    selectedPost,
+    toggleCommentSection,
   } = usePosts();
 
   const navigate = useNavigate();
@@ -122,28 +121,39 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
           userPosts.map((post) => (
             <Card
               key={post.id}
-              className="flex justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
+              className="flex flex-col justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
             >
-              <CardHeader>
+              <CardHeader className="flex justify-between w-full">
                 <div className="flex justify-between items-center w-full md:w-full ">
                   <Link to="/profile">
                     <div className="flex items-center justify-between w-full">
                       {userProfile?.photoURL ? (
-                        <img src={userProfile.photoURL} alt={displayName} />
+                        <img
+                          src={userProfile.photoURL}
+                          alt={displayName}
+                          className="rounded-full h-[50px] w-[50px]"
+                        />
                       ) : (
-                        <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
                           {initials}
                         </div>
                       )}
-
-                      <span className="pl-2">{userProfile?.username}</span>
+                      {userProfile.username?.length > 10 ? (
+                        <span className="pl-1 text-slate-400 text-sm">
+                          @{userProfile?.username?.substring(0, 10)}...
+                        </span>
+                      ) : (
+                        <span className="pl-1 text-slate-400 text-sm">
+                          @ {userProfile?.username}
+                        </span>
+                      )}
                     </div>
                   </Link>
                   {post.userId === user?.uid && (
                     <FontAwesomeIcon
                       icon={faEllipsisV}
                       className="text-gray-700 cursor-pointer hover:text-gray-950"
-                      onClick={toggleDeleteModal}
+                      onClick={() => toggleDeleteModal}
                     />
                   )}
                 </div>
@@ -164,36 +174,47 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
                 <CardDescription className="ml-3">
                   <p>{post.caption}</p>
                 </CardDescription>
+              </CardHeader>
 
-                <CardContent>
-                  <img
-                    src={post.photos ? post.photos : ""}
-                    alt={post.caption}
-                    className="w-[400px] h-[300px] "
-                  />
-                </CardContent>
-                <CardFooter className="flex justify-between items-center">
-                  <div>
-                    <FontAwesomeIcon
-                      className="cursor-pointer"
-                      // onClick={() => toggleLike(!likesInfo.isLike)}
-                      // icon={likesInfo.isLike ? solidHeart : regularHeart}
-                      icon={regularHeart}
-                    />
-                    <span>{/* {likesInfo.likes} */}0</span>
+              <CardContent>
+                <img
+                  src={post.photos ? post.photos : ""}
+                  alt={post.caption}
+                  className="w-[400px] h-[300px] "
+                />
+              </CardContent>
+              <CardFooter className="flex justify-between items-center w-full">
+                <section className="flex justify-between items-center">
+                  <div className="flex justify-between items-center w-[70px]">
+                    <div className="flex justify-between items-center w-[30px]">
+                      <Likes post={post} currentUserId={currentUserId} />
+                    </div>
+
+                    <div className="flex justify-between items-center w-[30px]">
+                      <FontAwesomeIcon
+                        className="cursor-pointer transition-all dark:hover:text-slate-400"
+                        onClick={() => toggleCommentSection(post.id!)}
+                        icon={faComment}
+                      />
+                      {Comment.length > 0 && <span>{Comment.length}</span>}
+                    </div>
                   </div>
 
                   <FontAwesomeIcon
-                    className="cursor-pointer"
-                    onClick={() => toggleBookmark(post.id)}
+                    className="cursor-pointer transition-all dark:hover:text-slate-400"
+                    onClick={() => toggleBookmark(post.id!)}
                     icon={
-                      bookmarked.includes(post.id)
+                      bookmarked.includes(post.id!)
                         ? regularBookmark
                         : solidBookmark
                     }
                   />
-                </CardFooter>
-              </CardHeader>
+                </section>
+                <span>
+                  {new Date(post.date.seconds * 1000).toLocaleDateString()}
+                </span>
+              </CardFooter>
+              {selectedPost === post.id && <CommentList postId={post.id} />}
             </Card>
           ))
         )}
@@ -225,21 +246,19 @@ const Profile: React.FunctionComponent<IProfileProps> = () => {
           <CardContent className="p-0 pt-10">
             <section className="grid grid-cols-3 auto-rows-min  gap-2 place-content-center w-full md:pl-3">
               <CardTitle className="col-start-2 col-span-3 row-start-1 row-end-2 ">
-                <span>{userProfile?.username}</span>
+                <span>@{userProfile?.username}</span>
               </CardTitle>
               {/* <div> */}
-              {!userProfile?.photoURL ? (
-                <div className="flex justify-center items-center w-20 h-20 rounded-full bg-slate-200 col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl dark:bg-darkBg dark:border-2">
+              {userProfile?.photoURL ? (
+                <img
+                  src={userProfile.photoURL}
+                  alt={displayName}
+                  className="rounded-full h-[100px] w-[100px]"
+                />
+              ) : (
+                <div className="flex justify-center items-center w-20 h-20 rounded-full bg-black text-white  font-bold">
                   {initials}
                 </div>
-              ) : (
-                <picture className="pr-2 col-start-1 col-end-2 sm:w-96 row-start-2 row-end-3 w-auto">
-                  <img
-                    src={initials}
-                    alt="initials"
-                    className="sm:h-20 sm:w-20 h-20 w-20 rounded-full"
-                  />
-                </picture>
               )}
               {/* </div> */}
               <p className="text-lg font-normal col-start-2 col-end-3 row-start-2 row-end-3 mt-6">
