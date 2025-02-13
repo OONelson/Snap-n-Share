@@ -43,12 +43,8 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
     closeDeleteModal,
     deletePost,
     selectedPostToDelete,
-    // displayComments,
     selectedPost,
-    // likes,
-    // isLiked,
     toggleCommentSection,
-    // handleToggleLike,
   } = usePosts();
 
   return (
@@ -64,7 +60,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
             >
               <CardHeader>
                 <div className="flex justify-between items-center w-full md:w-full ">
-                  <Link to={`/profile/${user?.uid}`}>
+                  <Link to={`/profile/${userProfile?.uid}`}>
                     <div className="flex items-center justify-between w-full">
                       {userProfile?.photoURL ? (
                         <img

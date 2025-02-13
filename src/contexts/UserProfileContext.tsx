@@ -9,6 +9,7 @@ import React, {
   useRef,
 } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
+import { useParams } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 interface UserProfileData {
@@ -68,6 +69,7 @@ export const UserProfileProvider: React.FunctionComponent<{
 
   const initials = getInitials(userProfile?.username);
   // const navigate = useNavigate();
+  const { userId } = useParams();
 
   const handleOpenEdit = () => {
     setEdit(true);
@@ -80,33 +82,53 @@ export const UserProfileProvider: React.FunctionComponent<{
   // FETCH USER PROFILE
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        const userDoc = doc(db, "users", authUser.uid);
-        const userSnap = await getDoc(userDoc);
+      try {
+        if (authUser) {
+          const userDoc = doc(db, "users", authUser.uid);
+          const userSnap = await getDoc(userDoc);
 
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-
-          setUserProfile({
-            user: {
-              uid: authUser.uid,
-              displayName: userData.displayName || "unknown",
-              email: userData.email || "no email",
-            },
-            ...userData,
-          } as UserProfileInfo);
-        } else {
-          console.log("not found");
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            setUserProfile({
+              user: {
+                uid: authUser.uid,
+                displayName: userData.displayName || "unknown",
+                email: userData.email || "no email",
+              },
+              ...userData,
+            } as UserProfileInfo);
+          } else {
+            console.log("Authenticated user document not found.");
+          }
         }
-      } else {
+
+        if (userId) {
+          const otherUserDoc = doc(db, "users", userId);
+          const otherUserSnap = await getDoc(otherUserDoc);
+
+          if (otherUserSnap.exists()) {
+            setUserProfile({
+              user: {
+                uid: otherUserSnap.id,
+                displayName: otherUserSnap.data().displayName || "unknown",
+                email: otherUserSnap.data().email || "no email",
+              },
+            });
+          } else {
+            console.log("User document not found.");
+            setUserProfile(null);
+          }
+        } else if (!authUser) {
+          setUserProfile(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
         setUserProfile(null);
       }
     });
 
-    setUserProfile(userProfile);
-
     return () => unsubscribe();
-  }, []);
+  }, [userId]);
 
   // UPDATE PROFILE PIC
   const fileInputRef = useRef<HTMLInputElement>(null);

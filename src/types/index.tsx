@@ -39,7 +39,7 @@ export interface Post {
 // }
 
 export interface UserProfileInfo {
-  user: User;
+  user: Partial<User>;
   email?: string;
   uid?: string;
   bio?: string;

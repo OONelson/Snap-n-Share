@@ -66,13 +66,15 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
     handleOpenEdit,
     handleCloseEdit,
     initials,
+    handleFileChange,
+    handleImageClick,
+    fileInputRef,
   } = useUserProfile();
 
   const {
     userPosts,
     posts,
-    // loading,
-    // error,
+    loading,
     bookmarked,
     toggleBookmark,
     openDeleteModal,
@@ -86,7 +88,15 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<Tab>("Tab1");
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPreviewImage(URL.createObjectURL(file));
+      handleFileChange(e);
+    }
+  };
   const handleChangeTab = (tab: Tab) => {
     setActiveTab(tab);
   };
@@ -138,6 +148,10 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                           {initials}
                         </div>
                       )}
+
+                      <span className="ml-2 font-medium">
+                        {userProfile?.displayName}
+                      </span>
                       {userProfile.username?.length > 10 ? (
                         <span className="pl-1 text-slate-400 text-sm">
                           @{userProfile?.username?.substring(0, 10)}...
@@ -261,29 +275,31 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                 </div>
               )}
               {/* </div> */}
-              <p className="text-lg font-normal col-start-2 col-end-3 row-start-2 row-end-3 mt-6">
-                {/* {user.email} */}
-                <span className="font-bold pr-2">{userPosts.length}</span>
-                Posts
-              </p>
-              <div className="col-start-3 col-end-4 row-start-2 row-end-3 mt-6">
-                <Button
-                  onClick={handleOpenEdit}
-                  className=" h-8 w-24 md:block hidden"
-                >
-                  Edit profile
-                </Button>
-                <FontAwesomeIcon
-                  onClick={handleOpenEdit}
-                  className="h-5 w-5 block md:hidden"
-                  icon={faPen}
-                />
+              <div className="flex justify-between col-start-2 col-end-3 row-start-1 row-end-2  pt-5">
+                <p className="text-lg font-normal col-start-2  mt-6">
+                  {/* {user.email} */}
+                  <span className="font-bold pr-2">{userPosts.length}</span>
+                  Posts
+                </p>
+                <div className=" mt-6">
+                  <Button
+                    onClick={handleOpenEdit}
+                    className=" h-8 w-24 md:block hidden"
+                  >
+                    Edit profile
+                  </Button>
+                  <FontAwesomeIcon
+                    onClick={handleOpenEdit}
+                    className="h-5 w-5 block md:hidden"
+                    icon={faPen}
+                  />
+                </div>
               </div>
-              <h2 className="col-start-1 col-end-2 row-start-3 row-end-3 font-semibold text-3xl">
+              <h2 className="col-start-1 col-end-3 row-start-3 row-end-3 font-semibold text-3xl">
                 {/* {displayName} */}
                 {userProfile?.displayName}
               </h2>
-              <p className="-mt-2 col-start-1 col-end-2 row-start-4 row-end-4 text-slate-600 font-medium">
+              <p className="-mt-2 col-start-1 col-end-3 row-start-4 row-end-4 text-slate-600 font-medium">
                 {/* {bio} */}
                 {userProfile?.bio}
               </p>
@@ -396,7 +412,6 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                                     <Link to={`/post/${post.id}`}>
                                       <FontAwesomeIcon
                                         className="cursor-pointer transition-all dark:hover:text-slate-400"
-                                        // onClick={() => toggleCommentSection(post.id!)}
                                         icon={faComment}
                                       />
                                     </Link>
@@ -446,25 +461,48 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end mb-5">
-                {!userProfile?.photoURL ? (
-                  <div className="flex justify-center items-center w-20 h-20 rounded-full bg-slate-200 col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl">
-                    {initials}
-                  </div>
-                ) : (
-                  <picture className="pr-2 col-start-1 col-end-2 sm:w-96 row-start-2 row-end-3 w-auto">
+              <article className=" flex  items-end">
+                <picture onClick={handleImageClick}>
+                  {previewImage ? (
                     <img
-                      src={initials}
-                      alt="initials"
-                      className="sm:h-20 sm:w-20 h-20 w-20 rounded-full"
+                      src={previewImage}
+                      alt="Preview"
+                      style={{
+                        width: "150px",
+                        maxHeight: "150px",
+                        objectFit: "cover",
+                      }}
                     />
-                  </picture>
-                )}
+                  ) : (
+                    <div>
+                      {userProfile?.photoURL ? (
+                        <img
+                          src={userProfile.photoURL}
+                          alt="userpic"
+                          className="rounded-full h-[150px] w-[150px]"
+                        />
+                      ) : (
+                        <div className="flex justify-center items-center w-20 h-20 rounded-full bg-black text-white col-start-1 col-end-2 row-start-2 row-end-3 font-bold text-3xl mr-2">
+                          {initials}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </picture>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleImagePreview}
+                  className="mb-4 hidden"
+                />
                 <FontAwesomeIcon
                   className="h-5 w-5 block md:hidden"
                   icon={faPen}
+                  onClick={handleImageClick}
                 />
-              </div>
+              </article>
+              {/* </div> */}
               <Label htmlFor="displayname">Name</Label>
               <Input
                 id="displayname"
