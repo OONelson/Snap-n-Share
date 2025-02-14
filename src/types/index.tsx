@@ -58,7 +58,6 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
-  date: any;
   id?: string;
   caption?: string;
   photos: string;

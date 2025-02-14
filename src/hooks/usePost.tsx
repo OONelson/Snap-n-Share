@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   DocumentResponse,
   Post,
@@ -334,7 +334,7 @@ export const usePosts = () => {
         const querySnapshot = await getDocs(
           query(
             collection(db, "comments"),
-            where("postId", "==", postId),
+            where("postId", "==", post.id),
             orderBy("createdAt", "asc")
           )
         );
@@ -352,7 +352,7 @@ export const usePosts = () => {
     fetchComments(post.id);
   }, [post.id]);
 
-  const addComment = async (postId: string | undefined) => {
+  const addComment = async (postId: string) => {
     if (!postId) {
       console.error("Post ID is not provided. Cannot add comment.");
       console.log("not done");
@@ -361,10 +361,10 @@ export const usePosts = () => {
     }
     try {
       if (user && commentText) {
-        const newCommentByUser: CommentResponse = {
-          postId: postId,
+        const newCommentByUser = {
+          postId: post.id,
           author: userProfile?.displayName || userProfile?.username,
-          authorUserId: user?.uid,
+          authorUserId: userProfile?.uid,
           text: commentText,
           likes: 0,
           createdAt: new Date().toISOString(),
@@ -381,7 +381,7 @@ export const usePosts = () => {
         const querySnapshot = await getDocs(
           query(
             collection(db, "comments"),
-            where("postId", "==", postId),
+            where("postId", "==", post.id),
             orderBy("createdAt", "asc")
           )
         );

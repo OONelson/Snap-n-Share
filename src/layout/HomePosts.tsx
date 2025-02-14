@@ -11,11 +11,10 @@ import { usePosts } from "@/hooks/usePost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
-  faHeart as regularHeart,
+  faComment,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import {
-  faHeart as solidHeart,
   faBookmark as regularBookmark,
   faEllipsisV,
   faTrash,
@@ -26,12 +25,18 @@ import { Link } from "react-router-dom";
 import { auth } from "@/firebase/firebaseConfig";
 import { useEffect, useState } from "react";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
+import Likes from "@/components/reuseables/Likes";
+import TimeReuse from "@/components/reuseables/TimeReuse";
 
 interface IHomePostsProps {
   data: DocumentResponse;
+  currentUserId: string;
 }
 
-const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
+const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
+  data,
+  currentUserId,
+}) => {
   const {
     loading,
     bookmarked,
@@ -41,6 +46,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
     closeDeleteModal,
     deletePost,
     selectedPost,
+    toggleCommentSection,
   } = usePosts();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -190,7 +196,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                           <Link to={`/post/${post.id}`}>
                             <FontAwesomeIcon
                               className="cursor-pointer transition-all dark:hover:text-slate-400"
-                              // onClick={() => toggleCommentSection(post.id!)}
+                              onClick={() => toggleCommentSection(post.id!)}
                               icon={faComment}
                             />
                           </Link>
@@ -208,9 +214,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({ data }) => {
                         }
                       />
                     </section>
-                    <span>
-                      {new Date(post.date.seconds * 1000).toLocaleDateString()}
-                    </span>
+                    <TimeReuse />
                   </CardFooter>
                 </CardHeader>
               </Card>

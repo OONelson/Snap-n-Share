@@ -25,6 +25,7 @@ import { Button } from "../ui/button";
 import { auth } from "@/firebase/firebaseConfig";
 import Likes from "./Likes";
 import CommentList from "./Commentlist";
+import TimeReuse from "./TimeReuse";
 
 interface IPostComponentProps {
   currentUserId: string;
@@ -49,14 +50,14 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
 
   return (
     <>
-      <article className="flex flex-col justify-center items-center lg:w-[58vw] w-full">
+      <article className="flex flex-col justify-center items-center lg:w-[58vw] w-full ">
         {posts.length === 0 ? (
           <SmallSpinner />
         ) : (
           posts.map((post) => (
             <Card
               key={post.id}
-              className="flex justify-start items-between flex-col mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
+              className="flex justify-start items-between flex-col mb-4 last:mb-12 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
             >
               <CardHeader>
                 <div className="flex justify-between items-center w-full md:w-full ">
@@ -74,7 +75,9 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                         </div>
                       )}
 
-                      <span className="pl-2">{post.displayName}</span>
+                      <span className="pl-2 font-medium">
+                        {post.displayName}
+                      </span>
                       {post.username?.length > 10 ? (
                         <span className="pl-1 text-slate-400 text-sm">
                           @{post.username?.substring(0, 10)}...
@@ -148,9 +151,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                     }
                   />
                 </section>
-                <span>
-                  {new Date(post.date.seconds * 1000).toLocaleDateString()}
-                </span>
+                <TimeReuse />
               </CardFooter>
               {selectedPost === post.id && <CommentList postId={post.id} />}
             </Card>
