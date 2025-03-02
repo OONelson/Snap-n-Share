@@ -151,7 +151,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                     }
                   />
                 </section>
-                <TimeReuse />
+                {/* <TimeReuse /> */}
               </CardFooter>
               {selectedPost === post.id && <CommentList postId={post.id} />}
             </Card>

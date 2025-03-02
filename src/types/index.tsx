@@ -20,16 +20,14 @@ export interface UserName {
 }
 
 export interface Post {
-  id?: string;
   caption: string;
   photos: string;
   likes: number;
   likedBy: string[];
   userbookmarks?: string[];
-  username?: string;
-  displayName?: string;
+  displayName: string;
   userId?: string;
-  createdAt: string | Date;
+  Date: string | Date;
 }
 
 // export interface ProfileInfo {
@@ -58,7 +56,7 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
-  id?: string;
+  id: string;
   caption?: string;
   photos: string;
   likes?: number;
@@ -67,7 +65,7 @@ export interface DocumentResponse {
   username?: string;
   displayName?: string;
   userId?: string;
-  createdAt?: string | Date;
+  Date?: string | Date;
 }
 
 export interface Bookmark {

@@ -25,7 +25,7 @@ import {
 } from "firebase/firestore";
 import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 
 export const usePosts = () => {
@@ -41,7 +41,8 @@ export const usePosts = () => {
     likes: 0,
     likedBy: [],
     userId: "",
-    createdAt: new Date().toISOString(),
+    displayName: "",
+    Date: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
@@ -136,8 +137,9 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             likedBy: [],
+            displayName: displayName,
             userId: userId,
-            createdAt: new Date().toISOString(),
+            Date: new Date().toISOString(),
           };
 
           console.log(newPost);
@@ -147,13 +149,14 @@ export const usePosts = () => {
           // Reset form state
           setFile(null);
           setPost({
-            id: "",
+            id: post.id,
             caption: "",
             photos: "",
             likes: 0,
             likedBy: [],
+            displayName: "",
             userId: "",
-            createdAt: new Date().toISOString(),
+            Date: new Date().toISOString(),
           });
           alert("Post created successfully!");
           navigate("/");
@@ -168,64 +171,67 @@ export const usePosts = () => {
     try {
       const querySnapshot = await getPostByUserId(uid);
       const tempArr: DocumentResponse[] = [];
-      if (querySnapshot.size > 0) {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as Post;
-          const responseObj: DocumentResponse = {
-            ...data,
-            id: doc.id,
-            userbookmarks: [],
-            userlikes: [],
-          } as unknown as DocumentResponse;
-          tempArr.push(responseObj);
-        });
-        setUserPosts(tempArr);
-        // console.log(userPosts);
-      } else {
-        console.log("No posts found for this user.");
-      }
+      // if (querySnapshot.size > 0) {
+      querySnapshot.forEach((doc) => {
+        const data = doc.data() as DocumentResponse;
+        const responseObj: DocumentResponse = {
+          ...data,
+          id: doc.id,
+          userbookmarks: data.userbookmarks || [],
+          likedBy: data.likedBy || [],
+        };
+        tempArr.push(responseObj);
+      });
+      setUserPosts(tempArr);
+      console.log("userposts", userPosts);
+      // } else {
+      // console.log("No posts found for this user.");
+      // }
     } catch (error: any) {
-      console.error("Error fetching posts:", error);
-      setError(error.message);
+      console.log("Error fetching posts:", error);
+      setError(error);
     } finally {
       setLoading(false);
     }
   };
 
   const getAllPosts = async () => {
-    // const response: DocumentResponse[] = (await getPosts()) || [];
+    try {
+      const q = query(collection(db, "posts"), orderBy("date", "desc"));
 
-    const q = query(collection(db, "posts"), orderBy("date", "desc"));
+      const querySnapshot = await getDocs(q);
+      const tempArr: DocumentResponse[] = [];
+      if (querySnapshot.size > 0) {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as DocumentResponse;
+          const responseObj = {
+            ...data,
+            id: doc.id,
+          };
+          tempArr.push(responseObj);
+        });
 
-    const querySnapshot = await getDocs(q);
-    const tempArr: DocumentResponse[] = [];
-    if (querySnapshot.size > 0) {
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as DocumentResponse;
-        const responseObj: DocumentResponse = {
-          ...data,
-          id: doc.id,
-        };
-        tempArr.push(responseObj);
-      });
+        const enrichedPosts = await Promise.all(
+          tempArr.map(async (post) => {
+            const userDoc = await getDoc(doc(db, "users", post.userId));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              return {
+                ...post,
+                username: userData?.username,
+                displayName: userData?.displayName,
+              };
+            }
+            return post;
+          })
+        );
 
-      const enrichedPosts = await Promise.all(
-        tempArr.map(async (post) => {
-          const userDoc = await getDoc(doc(db, "users", post.userId));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            return {
-              ...post,
-              username: userData?.username,
-              displayName: userData?.displayName,
-            };
-          }
-          return post;
-        })
-      );
-
-      // console.log(enrichedPosts);
-      setPosts(enrichedPosts);
+        console.log(enrichedPosts);
+        setPosts(enrichedPosts);
+      }
+    } catch (error: any) {
+      console.log("error fecthing posts", error);
+      setError(error);
     }
   };
 

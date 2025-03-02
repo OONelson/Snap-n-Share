@@ -9,6 +9,7 @@ import { useUserAuth } from "@/contexts/UserAuthContext";
 
 interface LikeButtonProps {
   post: DocumentResponse;
+  currentUserId: string;
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({ post }) => {
