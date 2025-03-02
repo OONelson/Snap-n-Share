@@ -20,6 +20,7 @@ export interface UserName {
 }
 
 export interface Post {
+  id?: string;
   caption: string;
   photos: string;
   likes: number;
@@ -27,7 +28,7 @@ export interface Post {
   userbookmarks?: string[];
   displayName: string;
   userId?: string;
-  Date: string | Date;
+  createdAt: string | Date;
 }
 
 // export interface ProfileInfo {
@@ -65,7 +66,7 @@ export interface DocumentResponse {
   username?: string;
   displayName?: string;
   userId?: string;
-  Date?: string | Date;
+  createdAt: string | Date;
 }
 
 export interface Bookmark {

@@ -42,7 +42,7 @@ export const usePosts = () => {
     likedBy: [],
     userId: "",
     displayName: "",
-    Date: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
@@ -131,35 +131,57 @@ export const usePosts = () => {
           const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", photoURL);
 
-          const newPost: Post = {
-            id: post.id,
+          // const newPost: Post = {
+          //   caption: post.caption,
+          //   photos: photoURL,
+          //   likes: 0,
+          //   likedBy: [],
+          //   displayName: displayName,
+          //   userId: userId,
+          //   createdAt: new Date().toISOString(),
+          // };
+
+          // console.log(newPost);
+
+          const docRef = await addDoc(collection(db, "posts"), {
             caption: post.caption,
             photos: photoURL,
             likes: 0,
             likedBy: [],
             displayName: displayName,
             userId: userId,
-            Date: new Date().toISOString(),
-          };
-
-          console.log(newPost);
-
-          await addDoc(collection(db, "posts"), newPost);
+            createdAt: new Date().toISOString(),
+          });
+          console.log(docRef);
 
           // Reset form state
           setFile(null);
-          setPost({
-            id: post.id,
-            caption: "",
-            photos: "",
-            likes: 0,
-            likedBy: [],
-            displayName: "",
-            userId: "",
-            Date: new Date().toISOString(),
-          });
+          // setPost({
+          //   caption: "",
+          //   photos: "",
+          //   likes: 0,
+          //   likedBy: [],
+          //   displayName: "",
+          //   userId: "",
+          //   createdAt: new Date().toISOString(),
+          // });
+
+          const newPost: Post = {
+            id: docRef.id,
+            caption: post.caption,
+            photos: photoURL,
+            likes: post.likes,
+            likedBy: post.likedBy,
+            displayName: displayName,
+            userId: userId,
+            createdAt: new Date().toISOString(),
+          };
+
           alert("Post created successfully!");
           navigate("/");
+          console.log("newpost", newPost);
+
+          return newPost;
         }
       );
     } catch (error) {
@@ -167,9 +189,9 @@ export const usePosts = () => {
     }
   };
 
-  const getUserPosts = async (uid: string) => {
+  const getUserPosts = async (id: string) => {
     try {
-      const querySnapshot = await getPostByUserId(uid);
+      const querySnapshot = await getPostByUserId(id);
       const tempArr: DocumentResponse[] = [];
       // if (querySnapshot.size > 0) {
       querySnapshot.forEach((doc) => {
@@ -177,8 +199,6 @@ export const usePosts = () => {
         const responseObj: DocumentResponse = {
           ...data,
           id: doc.id,
-          userbookmarks: data.userbookmarks || [],
-          likedBy: data.likedBy || [],
         };
         tempArr.push(responseObj);
       });
@@ -218,16 +238,24 @@ export const usePosts = () => {
               const userData = userDoc.data();
               return {
                 ...post,
+                id: post.id,
                 username: userData?.username,
                 displayName: userData?.displayName,
               };
+            } else {
+              return {
+                ...post,
+                id: post.id,
+                username: "unknown User",
+                displayName: "unknown User",
+              };
             }
-            return post;
           })
         );
 
         console.log(enrichedPosts);
         setPosts(enrichedPosts);
+        return post;
       }
     } catch (error: any) {
       console.log("error fecthing posts", error);
