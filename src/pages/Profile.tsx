@@ -35,6 +35,8 @@ import Dropdown from "@/components/reuseables/Dropdown";
 import { Link, useNavigate } from "react-router-dom";
 import CommentList from "@/components/reuseables/Commentlist";
 import Likes from "@/components/reuseables/Likes";
+import TimeReuse from "@/components/reuseables/TimeReuse";
+import { DocumentResponse } from "@/types";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
@@ -69,10 +71,10 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
     handleFileChange,
     handleImageClick,
     fileInputRef,
+    userPosts,
   } = useUserProfile();
 
   const {
-    userPosts,
     posts,
     loading,
     bookmarked,
@@ -128,7 +130,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
         {userPosts.length === 0 ? (
           <p>No post available</p>
         ) : (
-          userPosts.map((post) => (
+          userPosts.map((post: DocumentResponse) => (
             <Card
               key={post.id}
               className="flex flex-col justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"
@@ -224,9 +226,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                     }
                   />
                 </section>
-                <span>
-                  {new Date(post.date.seconds * 1000).toLocaleDateString()}
-                </span>
+                <TimeReuse createdAt={post.createdAt} />
               </CardFooter>
               {selectedPost === post.id && <CommentList postId={post.id} />}
             </Card>
@@ -370,7 +370,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                                 <FontAwesomeIcon
                                   icon={faEllipsisV}
                                   className="text-gray-700 cursor-pointer hover:text-gray-950"
-                                  onClick={toggleDeleteModal}
+                                  onClick={() => toggleDeleteModal}
                                 />
                               )}
                             </div>
@@ -431,11 +431,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                                   }
                                 />
                               </section>
-                              <span>
-                                {new Date(
-                                  post.date.seconds * 1000
-                                ).toLocaleDateString()}
-                              </span>
+                              <TimeReuse createdAt={post.createdAt} />
                             </CardFooter>
                           </CardHeader>
                         </Card>

@@ -46,6 +46,8 @@ export interface UserProfileInfo {
   username?: string;
   displayName?: string;
   photoURL?: string;
+  // followers?: number;
+  // following?: number;
 }
 
 export interface ProfileResponse {
@@ -58,7 +60,7 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
-  id: string;
+  id?: string;
   caption?: string;
   photos: string;
   likes?: number;

@@ -6,7 +6,6 @@ import {
   Comment,
 } from "../types/index";
 import {
-  getPostByUserId,
   // getPosts,
   searchPosts,
   // deleteSinglePost,
@@ -31,7 +30,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 export const usePosts = () => {
   // const { postId } = useParams<{ postId: string }>();
 
-  const { userProfile, displayName } = useUserProfile();
+  const { userProfile } = useUserProfile();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
@@ -46,7 +45,7 @@ export const usePosts = () => {
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
   const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
-  const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
 
@@ -191,35 +190,9 @@ export const usePosts = () => {
     }
   };
 
-  const getUserPosts = async (id: string) => {
-    try {
-      const querySnapshot = await getPostByUserId(id);
-      const tempArr: DocumentResponse[] = [];
-      // if (querySnapshot.size > 0) {
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as DocumentResponse;
-        const responseObj: DocumentResponse = {
-          ...data,
-          id: doc.id,
-        };
-        tempArr.push(responseObj);
-      });
-      setUserPosts(tempArr);
-      console.log("userposts", userPosts);
-      // } else {
-      // console.log("No posts found for this user.");
-      // }
-    } catch (error: any) {
-      console.log("Error fetching posts:", error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getAllPosts = async () => {
     try {
-      const q = query(collection(db, "posts"));
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
       const querySnapshot = await getDocs(q);
       const tempArr: DocumentResponse[] = [];
@@ -291,7 +264,7 @@ export const usePosts = () => {
     }
   };
 
-  const deletePost = async () => {
+  const deletePost = async (id: string) => {
     !selectedPostToDelete && alert("please select a post to be deleted");
 
     try {
@@ -335,7 +308,6 @@ export const usePosts = () => {
 
   useEffect(() => {
     if (user) {
-      getUserPosts(user.uid);
       getAllPosts();
       loadBookmarks();
     }
@@ -433,7 +405,7 @@ export const usePosts = () => {
   };
 
   return {
-    userPosts,
+    // userPosts,
     posts,
     loading,
     error,

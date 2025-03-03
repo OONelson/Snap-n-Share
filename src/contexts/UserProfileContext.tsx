@@ -1,5 +1,7 @@
 import { auth, db, storage } from "@/firebase/firebaseConfig";
-import { UserProfileInfo } from "@/types";
+import { getUserProfile } from "@/repository/user.service";
+import { getPostByUserId } from "@/repository/post.service";
+import { DocumentResponse, UserProfileInfo } from "@/types";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, {
@@ -10,7 +12,6 @@ import React, {
 } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
 import { useParams } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
 
 interface UserProfileData {
   userProfile: UserProfileInfo | null;
@@ -65,6 +66,7 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""
   );
+  const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
@@ -128,6 +130,25 @@ export const UserProfileProvider: React.FunctionComponent<{
     });
 
     return () => unsubscribe();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchUserProfileData = async (userId: string) => {
+      const profile = await getUserProfile(userId);
+      setUserProfile(profile);
+
+      const posts = await getPostByUserId(userId);
+      setUserPosts(posts);
+      console.log(posts);
+
+      //  const followersList = await getUserFollowers(userId);
+      //  setFollowers(followersList);
+
+      //  const followingsList = await getUserFollowings(userId);
+      //  setFollowings(followingsList);
+    };
+
+    fetchUserProfileData();
   }, [userId]);
 
   // UPDATE PROFILE PIC
@@ -237,7 +258,6 @@ export const UserProfileProvider: React.FunctionComponent<{
         await updateDoc(userDocRef, {
           bio,
         });
-        // await setDoc(doc(db, "bios", userProfile?.uid), { bio });
 
         console.log("bio saved ", bio);
       }
@@ -340,6 +360,7 @@ export const UserProfileProvider: React.FunctionComponent<{
         initials,
         displayName,
         setDisplayName,
+        userPosts,
       }}
     >
       {children}

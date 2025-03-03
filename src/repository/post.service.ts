@@ -5,7 +5,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   orderBy,
   query,
@@ -58,13 +57,25 @@ export const getPosts = async () => {
   }
 };
 
-export const getPostByUserId = async (id: string) => {
-  const q = query(
-    collection(db, COLLECTION_NAME),
-    orderBy("date", "desc"),
-    where("userId", "==", id)
-  );
-  return await getDocs(q);
+export const getPostByUserId = async (userId: string) => {
+  try {
+    const postsQuery = query(
+      collection(db, "posts"),
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc")
+    );
+    const postsSnapshot = await getDocs(postsQuery);
+
+    const userPosts = postsSnapshot.docs.map((postDoc) => ({
+      ...postDoc.data(),
+      id: postDoc.id,
+    }));
+
+    return userPosts;
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    return [];
+  }
 };
 
 export const searchPosts = async (searchTerm: string) => {

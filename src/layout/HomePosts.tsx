@@ -38,7 +38,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
   currentUserId,
 }) => {
   const {
-    loading,
+    // loading,
     bookmarked,
     toggleBookmark,
     openDeleteModal,
@@ -113,8 +113,8 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
             </Link>
           </div>
         </header>
-        {loading && <SmallSpinner />}
-        {searchTerm && filteredPosts.length === 0 && !loading && (
+        {/* {loading && <SmallSpinner />} */}
+        {searchTerm && filteredPosts.length === 0 && (
           <h2 className="text-slate-200">no posts found</h2>
         )}
         <article className="mb-5">
