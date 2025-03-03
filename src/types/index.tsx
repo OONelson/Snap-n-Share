@@ -26,7 +26,8 @@ export interface Post {
   likes: number;
   likedBy: string[];
   userbookmarks?: string[];
-  displayName: string;
+  displayName?: string;
+  username?: string;
   userId?: string;
   createdAt: string | Date;
 }

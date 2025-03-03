@@ -148,7 +148,8 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             likedBy: [],
-            displayName: displayName,
+            username: userProfile?.username,
+            displayName: userProfile?.displayName,
             userId: userId,
             createdAt: new Date().toISOString(),
           });
@@ -172,7 +173,8 @@ export const usePosts = () => {
             photos: photoURL,
             likes: post.likes,
             likedBy: post.likedBy,
-            displayName: displayName,
+            username: userProfile?.username,
+            displayName: userProfile?.displayName,
             userId: userId,
             createdAt: new Date().toISOString(),
           };
@@ -217,7 +219,7 @@ export const usePosts = () => {
 
   const getAllPosts = async () => {
     try {
-      const q = query(collection(db, "posts"), orderBy("date", "desc"));
+      const q = query(collection(db, "posts"));
 
       const querySnapshot = await getDocs(q);
       const tempArr: DocumentResponse[] = [];
@@ -333,7 +335,7 @@ export const usePosts = () => {
 
   useEffect(() => {
     if (user) {
-      getUserPosts(user?.uid);
+      getUserPosts(user.uid);
       getAllPosts();
       loadBookmarks();
     }
