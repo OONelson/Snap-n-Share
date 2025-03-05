@@ -1,17 +1,16 @@
 import { auth, db, storage } from "@/firebase/firebaseConfig";
-import { getUserProfile } from "@/repository/user.service";
-import { getPostByUserId } from "@/repository/post.service";
-import { DocumentResponse, UserProfileInfo } from "@/types";
+import { UserProfileInfo } from "@/types";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, {
+  ChangeEvent,
   MouseEventHandler,
+  RefObject,
   SetStateAction,
   useEffect,
   useRef,
 } from "react";
 import { createContext, useState, useContext, ReactNode } from "react";
-import { useParams } from "react-router-dom";
 
 interface UserProfileData {
   userProfile: UserProfileInfo | null;
@@ -33,9 +32,9 @@ interface UserProfileData {
   fetchBio: (bio: string) => Promise<string>;
   displayName: string;
   setDisplayName: React.Dispatch<SetStateAction<string>>;
-  handleFileChange: () => void;
+  handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleImageClick: () => void;
-  // fileInputRef: <HTMLInputElement>(null);
+  fileInputRef: RefObject<HTMLInputElement>;
 }
 
 const UserProfileContext = createContext<UserProfileData | undefined>(
@@ -66,19 +65,24 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [displayName, setDisplayName] = useState(
     userProfile?.displayName || ""
   );
-  const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
+
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
   // const navigate = useNavigate();
-  const { userId } = useParams();
 
-  const handleOpenEdit = () => {
-    setEdit(true);
+  const handleOpenEdit: () => MouseEventHandler<HTMLButtonElement> = () => {
+    return (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setEdit(true);
+    };
   };
 
-  const handleCloseEdit = () => {
-    setEdit(false);
+  const handleCloseEdit: () => MouseEventHandler<HTMLButtonElement> = () => {
+    return (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      setEdit(false);
+    };
   };
 
   // FETCH USER PROFILE
@@ -103,26 +107,6 @@ export const UserProfileProvider: React.FunctionComponent<{
             console.log("Authenticated user document not found.");
           }
         }
-
-        if (userId) {
-          const otherUserDoc = doc(db, "users", userId);
-          const otherUserSnap = await getDoc(otherUserDoc);
-
-          if (otherUserSnap.exists()) {
-            setUserProfile({
-              user: {
-                uid: otherUserSnap.id,
-                displayName: otherUserSnap.data().displayName || "unknown",
-                email: otherUserSnap.data().email || "no email",
-              },
-            });
-          } else {
-            console.log("User document not found.");
-            setUserProfile(null);
-          }
-        } else if (!authUser) {
-          setUserProfile(null);
-        }
       } catch (error) {
         console.error("Error fetching user data:", error);
         setUserProfile(null);
@@ -130,26 +114,7 @@ export const UserProfileProvider: React.FunctionComponent<{
     });
 
     return () => unsubscribe();
-  }, [userId]);
-
-  // useEffect(() => {
-  //   const fetchUserProfileData = async (userId: string) => {
-  //     const profile = await getUserProfile(userId);
-  //     setUserProfile(profile);
-
-  //     const posts = await getPostByUserId(userId);
-  //     setUserPosts(posts);
-  //     console.log(posts);
-
-  //     //  const followersList = await getUserFollowers(userId);
-  //     //  setFollowers(followersList);
-
-  //     //  const followingsList = await getUserFollowings(userId);
-  //     //  setFollowings(followingsList);
-  //   };
-
-  //   fetchUserProfileData();
-  // }, [userId]);
+  }, []);
 
   // UPDATE PROFILE PIC
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -360,7 +325,6 @@ export const UserProfileProvider: React.FunctionComponent<{
         initials,
         displayName,
         setDisplayName,
-        userPosts,
       }}
     >
       {children}

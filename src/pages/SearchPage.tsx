@@ -61,9 +61,13 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
           <Link to="/profile">
             <div className="flex mr-2">
               {userProfile?.photoURL ? (
-                <img src={userProfile.photoURL} alt={displayName} />
+                <img
+                  src={userProfile.photoURL}
+                  alt={displayName}
+                  className="rounded-full h-[50px] w-[50px]"
+                />
               ) : (
-                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold">
+                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                   {initials}
                 </div>
               )}
@@ -89,7 +93,11 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
                 <li key={user.uid} className="flex items-center pt-2">
                   <div className="pr-2">
                     {user.photoURL ? (
-                      <img src={user.photoURL} alt={user.displayName} />
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName}
+                        className="rounded-full h-[50px] w-[50px]"
+                      />
                     ) : (
                       <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                         {initials}

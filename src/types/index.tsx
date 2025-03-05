@@ -28,7 +28,7 @@ export interface Post {
   userbookmarks?: string[];
   displayName?: string;
   username?: string;
-  userId?: string;
+  userId: string;
   createdAt: string | Date;
 }
 
@@ -68,7 +68,7 @@ export interface DocumentResponse {
   userbookmarks?: string[];
   username?: string;
   displayName?: string;
-  userId?: string;
+  userId: string;
   createdAt: string | Date;
 }
 

@@ -36,14 +36,19 @@ import { Link, useNavigate } from "react-router-dom";
 import CommentList from "@/components/reuseables/Commentlist";
 import Likes from "@/components/reuseables/Likes";
 import TimeReuse from "@/components/reuseables/TimeReuse";
+import { useUser } from "@/hooks/useUser";
 // import { DocumentResponse } from "@/types";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
   currentUserId: string;
+  userId: string;
 }
 
-const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
+const Profile: React.FunctionComponent<IProfileProps> = ({
+  currentUserId,
+  userId,
+}) => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -71,12 +76,10 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
     handleFileChange,
     handleImageClick,
     fileInputRef,
-    userPosts,
   } = useUserProfile();
-
+  const { loading, error, userPosts } = useUser({ userId });
   const {
     posts,
-    loading,
     bookmarked,
     toggleBookmark,
     openDeleteModal,
@@ -122,7 +125,15 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
     }
   };
 
-  const bookmarkedPosts = posts.filter((post) => bookmarked.includes(post.id));
+  const bookmarkedPosts = posts.filter((post) => bookmarked.includes(post.id!));
+
+  if (loading) {
+    return <SmallSpinner />;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   const renderPost = () => {
     return (
@@ -154,7 +165,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                       <span className="ml-2 font-medium">
                         {userProfile?.displayName}
                       </span>
-                      {userProfile.username?.length > 10 ? (
+                      {userProfile.username.length > 10 ? (
                         <span className="pl-1 text-slate-400 text-sm">
                           @{userProfile?.username?.substring(0, 10)}...
                         </span>
@@ -245,7 +256,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
       {userProfile ? (
         <Card className=" w-full px-2 border-none h-full ">
           <div className=" flex justify-end items-center pt-2 md:pb-10">
-            <Dropdown onSelect={handleSelect} />
+            <Dropdown onSelect={handleSelect} name={""} />
             {/* LOGOUT MODAL */}
 
             {openLogout && (
@@ -352,12 +363,14 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                                     <img
                                       src={userProfile.photoURL}
                                       alt={displayName}
+                                      className="rounded-full h-[50px] w-[50px]"
                                     />
                                   ) : (
                                     <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                                       {initials}
                                     </div>
                                   )}
+
                                   <span className="pl-2">
                                     {post.displayName}
                                   </span>
