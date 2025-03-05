@@ -132,24 +132,24 @@ export const UserProfileProvider: React.FunctionComponent<{
     return () => unsubscribe();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchUserProfileData = async (userId: string) => {
-      const profile = await getUserProfile(userId);
-      setUserProfile(profile);
+  // useEffect(() => {
+  //   const fetchUserProfileData = async (userId: string) => {
+  //     const profile = await getUserProfile(userId);
+  //     setUserProfile(profile);
 
-      const posts = await getPostByUserId(userId);
-      setUserPosts(posts);
-      console.log(posts);
+  //     const posts = await getPostByUserId(userId);
+  //     setUserPosts(posts);
+  //     console.log(posts);
 
-      //  const followersList = await getUserFollowers(userId);
-      //  setFollowers(followersList);
+  //     //  const followersList = await getUserFollowers(userId);
+  //     //  setFollowers(followersList);
 
-      //  const followingsList = await getUserFollowings(userId);
-      //  setFollowings(followingsList);
-    };
+  //     //  const followingsList = await getUserFollowings(userId);
+  //     //  setFollowings(followingsList);
+  //   };
 
-    fetchUserProfileData();
-  }, [userId]);
+  //   fetchUserProfileData();
+  // }, [userId]);
 
   // UPDATE PROFILE PIC
   const fileInputRef = useRef<HTMLInputElement>(null);

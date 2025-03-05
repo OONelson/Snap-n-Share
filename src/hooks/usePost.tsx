@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  DocumentResponse,
-  Post,
-  CommentResponse,
-  Comment,
-} from "../types/index";
+import { DocumentResponse, Post, CommentResponse } from "../types/index";
 import {
   // getPosts,
   searchPosts,
@@ -44,7 +39,7 @@ export const usePosts = () => {
     createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
-  const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
+  // const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
@@ -238,33 +233,33 @@ export const usePosts = () => {
     }
   };
 
-  const getSinglePost = async (postId: string) => {
-    setLoading(true);
-    try {
-      if (!postId) return;
-      const postDoc = await getDoc(doc(db, "posts", postId));
-      if (postDoc.exists()) {
-        const singlePostDoc: DocumentResponse = {
-          id: postDoc.id,
-          ...postDoc.data(),
-        } as DocumentResponse;
+  // const getSinglePost = async (postId: string) => {
+  //   setLoading(true);
+  //   try {
+  //     if (!postId) return;
+  //     const postDoc = await getDoc(doc(db, "posts", postId));
+  //     if (postDoc.exists()) {
+  //       const singlePostDoc: DocumentResponse = {
+  //         id: postDoc.id,
+  //         ...postDoc.data(),
+  //       } as DocumentResponse;
 
-        console.log(postDoc.id, postDoc.data());
+  //       console.log(postDoc.id, postDoc.data());
 
-        setSinglePost(singlePostDoc);
+  //       setSinglePost(singlePostDoc);
 
-        console.log("found");
-      } else {
-        console.log("post not found");
-      }
-    } catch (error) {
-      console.error("error fecthing post", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //       console.log("found");
+  //     } else {
+  //       console.log("post not found");
+  //     }
+  //   } catch (error) {
+  //     console.error("error fecthing post", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const deletePost = async (id: string) => {
+  const deletePost = async () => {
     !selectedPostToDelete && alert("please select a post to be deleted");
 
     try {
@@ -436,6 +431,6 @@ export const usePosts = () => {
     selectedPost,
     setSelectedPost,
     toggleCommentSection,
-    singlePost,
+    // singlePost,
   };
 };

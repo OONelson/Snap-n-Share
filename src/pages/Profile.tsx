@@ -36,7 +36,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CommentList from "@/components/reuseables/Commentlist";
 import Likes from "@/components/reuseables/Likes";
 import TimeReuse from "@/components/reuseables/TimeReuse";
-import { DocumentResponse } from "@/types";
+// import { DocumentResponse } from "@/types";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
