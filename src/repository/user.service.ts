@@ -17,10 +17,12 @@ export const getUserProfile = async (userId: string) => {
     const userDocSnap = await getDoc(userDocRef);
 
     if (userDocSnap.exists()) {
+      console.log(userDocRef);
       return {
         id: userDocSnap.id,
         ...userDocSnap.data(),
       };
+      
     } else {
       console.log("user not found");
       return null;

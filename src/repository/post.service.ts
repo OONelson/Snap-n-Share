@@ -71,6 +71,8 @@ export const getPostByUserId = async (userId: string) => {
       id: postDoc.id,
     }));
 
+    console.log("userposts", userPosts);
+
     return userPosts;
   } catch (error) {
     console.error("Error fetching user posts:", error);

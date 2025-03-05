@@ -130,7 +130,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
         {userPosts.length === 0 ? (
           <p>No post available</p>
         ) : (
-          userPosts.map((post: DocumentResponse) => (
+          userPosts.map((post) => (
             <Card
               key={post.id}
               className="flex flex-col justify-start items-center mb-4 w-[90vw] lg:w-[30vw] sm:w-[45vw]"

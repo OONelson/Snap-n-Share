@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { auth } from "@/firebase/firebaseConfig";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import CopyToClipboard from "@/components/reuseables/CopyToClipboard";
