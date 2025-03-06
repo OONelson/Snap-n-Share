@@ -57,38 +57,48 @@ export const getPosts = async () => {
   }
 };
 
-export const getPostByUserId = async (userId: string) => {
-  try {
-    // if (!userId) {
-    //   console.log("userId is undefined");
-    //   return [];
-    // }
+// export const getPostByUserId = async (userId: string | undefined) => {
+//   try {
+//     // if (!userId) {
+//     //   console.log("userId is undefined");
+//     //   return [];
+//     // }
 
-    const postsQuery = query(
-      collection(db, COLLECTION_NAME),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc")
-    );
+//     const postsQuery = query(
+//       collection(db, COLLECTION_NAME),
+//       where("userId", "==", userId),
+//       orderBy("createdAt", "desc")
+//     );
 
-    const postsSnapshot = await getDocs(postsQuery);
-    const posts: DocumentResponse[] = [];
-    console.log(" try firt");
+//     const postsSnapshot = await getDocs(postsQuery);
+//     const posts: DocumentResponse[] = [];
+//     console.log(" try firt");
 
-    postsSnapshot.forEach((doc) => {
-      const postData = doc.data() as DocumentResponse;
-      posts.push({
-        id: doc.id,
-        ...postData,
-      });
-    });
+//     postsSnapshot.forEach((doc) => {
+//       const postData = doc.data() as DocumentResponse;
+//       posts.push({
+//         id: doc.id,
+//         ...postData,
+//       });
+//     });
 
-    console.log("userposts", posts);
+//     console.log("userposts", posts);
 
-    return posts;
-  } catch (error) {
-    console.error("Error fetching user posts:", error);
-    return [];
-  }
+//     return posts;
+//   } catch (error) {
+//     console.error("Error fetching user posts:", error);
+//     return [];
+//   }
+// };
+
+export const getPostByUserId = async (uid: string) => {
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    orderBy("date", "desc"),
+    where("userId", "==", uid)
+  );
+
+  return await getDocs(q);
 };
 
 export const searchPosts = async (searchTerm: string) => {
