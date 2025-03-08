@@ -149,7 +149,7 @@ const ChatLayout: React.FunctionComponent<IChatLayoutProps> = () => {
             {openEmoji && (
               <div className="transition-all fixed bottom-20 right-0">
                 <EmojiPicker
-                  openEmoji={openEmoji}
+                  // openEmoji={openEmoji}
                   onEmojiClick={handleClickEmoji}
                 />
               </div>

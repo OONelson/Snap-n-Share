@@ -15,7 +15,7 @@ interface ISearchPageProps {}
 const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
   const { userProfile, displayName, initials } = useUserProfile();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+  // const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
 
@@ -95,7 +95,7 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
                     {user.photoURL ? (
                       <img
                         src={user.photoURL}
-                        alt={user.displayName}
+                        // alt={user.displayName}
                         className="rounded-full h-[50px] w-[50px]"
                       />
                     ) : (

@@ -118,11 +118,11 @@ const ChangeEmailPage: React.FunctionComponent<IChangeEmailPageProps> = () => {
       />
 
       {isChangingEmail ? (
-        <Button className="h-8" disabled onClick={handleEmailChange}>
+        <Button className="h-8" disabled onClick={() => handleEmailChange}>
           Update
         </Button>
       ) : (
-        <Button className="h-8" onClick={handleEmailChange}>
+        <Button className="h-8" onClick={() => handleEmailChange}>
           Update
         </Button>
       )}

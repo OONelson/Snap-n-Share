@@ -11,7 +11,6 @@ import CreateUsername from "./pages/CreateUsername";
 import Settings from "./pages/Settings";
 import SearchPage from "./pages/SearchPage";
 import Messenger from "./pages/Messenger";
-import SinglePost from "./pages/SinglePost";
 import Notifications from "./pages/Notifications";
 import ChangeEmailPage from "./pages/ChangeEmailPage";
 
@@ -24,11 +23,7 @@ export const router = createBrowserRouter([
         element: <Home />,
         errorElement: <Error />,
       },
-      {
-        path: "/post/:postId",
-        element: <SinglePost />,
-        errorElement: <Error />,
-      },
+
       {
         path: "/newpost",
         element: (
@@ -36,7 +31,7 @@ export const router = createBrowserRouter([
             caption={""}
             photos={[]}
             likes={0}
-            userlikes={0}
+            likedBy={[]}
             userId={null}
             date={Date.now()}
           />
@@ -45,7 +40,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile/:userId",
-        element: <Profile />,
+        element: <Profile currentUserId={""} userId={""} />,
         errorElement: <Error />,
       },
       {

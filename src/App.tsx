@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { UserAuthProvider } from "./contexts/UserAuthContext";
 import { UserProfileProvider } from "./contexts/UserProfileContext";
@@ -12,7 +12,6 @@ interface IAppProps {}
 const App: React.FunctionComponent<IAppProps> = () => {
   return (
     <>
-      {/* <BrowserRouter> */}
       <ChakraProvider>
         <UserProfileProvider>
           <UserAuthProvider>
@@ -24,7 +23,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
           </UserAuthProvider>
         </UserProfileProvider>
       </ChakraProvider>
-      {/* </BrowserRouter> */}
     </>
   );
 };

@@ -16,7 +16,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface ICreatePostProps {}
+interface ICreatePostProps {
+  caption: string;
+  photos: string[];
+  likes: number;
+  likedBy: string[];
+  userId: null;
+  date: number;
+}
 
 const CreatePost: React.FunctionComponent<ICreatePostProps> = () => {
   const navigate = useNavigate();

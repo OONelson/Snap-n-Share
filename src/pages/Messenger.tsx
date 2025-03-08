@@ -19,7 +19,7 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import styled from "styled-components";
 
 import "stream-chat-react/dist/css/v2/index.css";
-import { useUsername } from "@/contexts/UsernameContext";
+// import { useUsername } from "@/contexts/UsernameContext";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { searchUsers } from "@/repository/user.service";
 // import { Button } from "@/components/ui/button";
@@ -32,20 +32,20 @@ const apikey = import.meta.env.VITE_STREAM_KEY;
 
 const auth = getAuth();
 
-const filters = { type: "messaging" };
-const sort = { last_message_at: -1 };
+// const filters = { type: "messaging" };
+// const sort = { last_message_at: -1 };
 
 interface IMessengerProps {}
 
 const Messenger: React.FunctionComponent<IMessengerProps> = () => {
-  const { username } = useUsername();
+  // const { username } = useUsername();
   const { displayName, initials } = useUserProfile();
 
   const [client, setClient] = useState<StreamChat | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState<any>(null);
+  const [selectedChannel, setSelectedChannel] = useState<unknown>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -78,7 +78,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
 
   const fetchSearchedUsers = async (searchTerm: string) => {
     try {
-      const results: User[] = (await searchUsers(searchTerm)) || [];
+      const results = (await searchUsers(searchTerm)) || [];
       setSearchResults(results);
       // console.log(searchResults);
     } catch (error) {
@@ -199,7 +199,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
               <li key={user.uid} onClick={() => startChat(user.uid)}>
                 <div className="pr-2">
                   {user.photoURL ? (
-                    <img src={user.photoURL} alt={user.displayName} />
+                    <img src={user.photoURL} alt="user" />
                   ) : (
                     <div className="flex justify-center items-center w-10 h-10 rounded-full bg-black text-white  font-bold dark:border-2">
                       {initials}

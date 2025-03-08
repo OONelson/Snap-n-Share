@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
 interface CopyToClipboardProps {
-  textToCopy: string | undefined;
+  textToCopy: string;
 }
 
 const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ textToCopy }) => {

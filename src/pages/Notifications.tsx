@@ -1,8 +1,7 @@
 import SideBar from "@/layout/SideBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 interface INotificationsProps {}
 
@@ -74,9 +73,9 @@ const Notifications: React.FunctionComponent<INotificationsProps> = () => {
               />
 
               <div>
-                <Link>
-                  <h3 className="cursor-pointer">{notification.name}</h3>
-                </Link>
+                {/* <Link to={`${}`}> */}
+                <h3 className="cursor-pointer">{notification.name}</h3>
+                {/* </Link> */}
                 <p className="font-semibold">{notification.content}</p>
               </div>
             </article>

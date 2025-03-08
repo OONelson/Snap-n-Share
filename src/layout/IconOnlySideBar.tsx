@@ -6,7 +6,7 @@ import MessageIcon from "@/components/assets/chat-hover-chat.svg";
 import SettingIcon from "@/components/assets/settings.svg";
 import AddIcon from "@/components/assets/add.svg";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 
 interface IIconOnlySideBarProps {}
 
