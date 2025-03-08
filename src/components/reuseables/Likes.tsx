@@ -20,18 +20,19 @@ const LikeButton: React.FC<LikeButtonProps> = ({ post }) => {
 
   useEffect(() => {
     if (!post) return;
+    if (post.id) {
+      const postRef = doc(db, "posts", post.id);
 
-    const postRef = doc(db, "posts", post.id);
+      const unsubscribe = onSnapshot(postRef, (doc) => {
+        const updatedPost = doc.data() as DocumentResponse;
+        if (updatedPost && user) {
+          setLikes(updatedPost.likes || 0);
+          setIsLiked(updatedPost.likedBy?.includes(user.uid) || false);
+        }
+      });
 
-    const unsubscribe = onSnapshot(postRef, (doc) => {
-      const updatedPost = doc.data() as DocumentResponse;
-      if (updatedPost) {
-        setLikes(updatedPost.likes || 0);
-        setIsLiked(updatedPost.likedBy?.includes(user.uid) || false);
-      }
-    });
-
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, [post, user?.uid]);
 
   const toggleLike = async () => {
@@ -40,28 +41,30 @@ const LikeButton: React.FC<LikeButtonProps> = ({ post }) => {
     if (!post) return;
     console.log(post, "second");
 
-    const postRef = doc(db, "posts", post.id);
-    const updatedLikes = isLiked ? likes - 1 : likes + 1;
+    if (post.id) {
+      const postRef = doc(db, "posts", post.id);
+      const updatedLikes = isLiked ? likes - 1 : likes + 1;
 
-    const currentlyLikedBy = post.likedBy || [];
+      const currentlyLikedBy = post.likedBy || [];
 
-    const updatedLikedBy = isLiked
-      ? currentlyLikedBy.filter((id) => id !== user?.uid)
-      : [...currentlyLikedBy, user?.uid];
-    try {
-      // Update Firestore
-      console.log("third");
+      const updatedLikedBy = isLiked
+        ? currentlyLikedBy.filter((id) => id !== user?.uid)
+        : [...currentlyLikedBy, user?.uid];
+      try {
+        // Update Firestore
+        console.log("third");
 
-      await updateDoc(postRef, {
-        likes: updatedLikes,
-        likedBy: updatedLikedBy,
-      });
+        await updateDoc(postRef, {
+          likes: updatedLikes,
+          likedBy: updatedLikedBy,
+        });
 
-      // Update UI instantly
-      setLikes(updatedLikes);
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.error("Error updating like:", error);
+        // Update UI instantly
+        setLikes(updatedLikes);
+        setIsLiked(!isLiked);
+      } catch (error) {
+        console.error("Error updating like:", error);
+      }
     }
   };
 
@@ -72,12 +75,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ post }) => {
         onClick={toggleLike}
         icon={isLiked ? solidHeart : regularHeart}
       />
-      {likes > 0 && (
-        <span>
-          {likes}
-          {/* {likes === 1 ? "like" : "likes"} */}
-        </span>
-      )}
+      {likes > 0 && <span>{likes}</span>}
     </>
   );
 };

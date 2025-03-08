@@ -1,11 +1,10 @@
 import { useUserAuth } from "@/contexts/UserAuthContext";
 import { db } from "@/firebase/firebaseConfig";
-import { getPostByUserId } from "@/repository/post.service";
 import { DocumentResponse, Post } from "@/types";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-export const useUser = () => {
+export const useUser = (p0: { userId: string }) => {
   const { user } = useUserAuth();
 
   const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
@@ -60,34 +59,6 @@ export const useUser = () => {
       }
     };
 
-    // const getUserPosts = async (uid: string) => {
-    //   try {
-    //     const querySnapshot = await getPostByUserId(uid);
-    //     const tempArr: DocumentResponse[] = [];
-    //     if (querySnapshot.size > 0) {
-    //       querySnapshot.forEach((doc) => {
-    //         const data = doc.data() as Post;
-    //         const responseObj: DocumentResponse = {
-    //           id: doc.id,
-    //           ...data,
-    //           userbookmarks: [],
-    //           userlikes: [],
-    //         };
-    //         tempArr.push(responseObj);
-    //       });
-    //       setUserPosts(tempArr);
-    //       // console.log(userPosts);
-    //     } else {
-    //       console.log("No posts found for this user.");
-    //     }
-    //   } catch (error: any) {
-    //     console.error("Error fetching posts:", error);
-    //     setError(error.message);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
     //  const followersList = await getUserFollowers(userId);
     //  setFollowers(followersList);
 
@@ -95,15 +66,9 @@ export const useUser = () => {
     //  setFollowings(followingsList);
     // };
 
-    // fetchUserProfileData(userId);\
     if (user) {
       fetchUserPosts(user?.uid);
     }
-    // else {
-    // console.log("userId is undefined, not fetching posts");
-    // setUserPosts([]);
-    // setLoading(false);
-    // }
   }, [user]);
 
   return {

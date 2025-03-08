@@ -24,9 +24,9 @@ import PostComponent from "@/components/reuseables/PostComponent";
 import { Link } from "react-router-dom";
 import { auth } from "@/firebase/firebaseConfig";
 import { useEffect, useState } from "react";
-import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import Likes from "@/components/reuseables/Likes";
 import TimeReuse from "@/components/reuseables/TimeReuse";
+import { DocumentResponse } from "@/types";
 
 interface IHomePostsProps {
   data: DocumentResponse;
@@ -38,10 +38,8 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
   currentUserId,
 }) => {
   const {
-    // loading,
     bookmarked,
     toggleBookmark,
-    openDeleteModal,
     toggleDeleteModal,
     closeDeleteModal,
     deletePost,
@@ -141,7 +139,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
                         )}
 
                         <span className="pl-2">{post.displayName}</span>
-                        {post.username?.length > 10 ? (
+                        {post.username.length > 10 ? (
                           <span className="pl-1 text-slate-400 text-sm">
                             @{post.username?.substring(0, 10)}...
                           </span>
@@ -214,7 +212,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
                         }
                       />
                     </section>
-                    <TimeReuse />
+                    <TimeReuse createdAt={post.createdAt} />
                   </CardFooter>
                 </CardHeader>
               </Card>

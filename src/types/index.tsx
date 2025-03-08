@@ -41,7 +41,7 @@ export interface Post {
 export interface UserProfileInfo {
   user: Partial<User>;
   email?: string;
-  uid?: string;
+  uid: string;
   bio?: string;
   username?: string;
   displayName?: string;

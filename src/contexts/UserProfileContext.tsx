@@ -178,9 +178,9 @@ export const UserProfileProvider: React.FunctionComponent<{
     }
   };
 
-  const fectchUserProfileImg = async () => {
+  const fectchUserProfileImg = async (userId: string) => {
     try {
-      const photoURLRef = doc(db, "users", userProfile?.uid);
+      const photoURLRef = doc(db, "users", userId);
 
       const docSnap = await getDoc(photoURLRef);
 
@@ -242,9 +242,9 @@ export const UserProfileProvider: React.FunctionComponent<{
     setEdit(false);
   };
 
-  const fetchDisplayName = async () => {
+  const fetchDisplayName = async (userId: string) => {
     try {
-      const displayNameRef = doc(db, "users", userProfile?.uid);
+      const displayNameRef = doc(db, "users", userId);
 
       const docSnap = await getDoc(displayNameRef);
 
@@ -269,17 +269,19 @@ export const UserProfileProvider: React.FunctionComponent<{
         setDisplayName(changeDisplayName || "");
       }
     };
-    loadDisplayName();
-    fetchDisplayName();
-    fetchBio();
-    fectchUserProfileImg();
-  }, []);
+    if (user) {
+      loadDisplayName();
+      fetchDisplayName(user.uid);
+      fetchBio(user.uid);
+      fectchUserProfileImg(user.uid);
+    }
+  }, [user]);
 
   // FETCH BIO
 
-  const fetchBio = async (): Promise<string> => {
+  const fetchBio = async (userId: string) => {
     try {
-      const bioRef = doc(db, "users", userProfile?.uid);
+      const bioRef = doc(db, "users", userId);
 
       const docSnap = await getDoc(bioRef);
 

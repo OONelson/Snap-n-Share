@@ -20,9 +20,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import SmallSpinner from "@/components/reuseables/SmallSpinner";
 import { FirebaseError } from "firebase/app";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
-
 const initialValue: UserSignUp = {
   email: "",
   password: "",

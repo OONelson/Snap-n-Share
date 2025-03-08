@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DocumentResponse, Post, CommentResponse } from "../types/index";
-import {
-  getPostByUserId,
-  // getPosts,
-  searchPosts,
-  // deleteSinglePost,
-} from "@/repository/post.service";
+import { searchPosts } from "@/repository/post.service";
 import {
   doc,
   setDoc,
@@ -126,18 +121,6 @@ export const usePosts = () => {
           const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", photoURL);
 
-          // const newPost: Post = {
-          //   caption: post.caption,
-          //   photos: photoURL,
-          //   likes: 0,
-          //   likedBy: [],
-          //   displayName: displayName,
-          //   userId: userId,
-          //   createdAt: new Date().toISOString(),
-          // };
-
-          // console.log(newPost);
-
           const docRef = await addDoc(collection(db, "posts"), {
             caption: post.caption,
             photos: photoURL,
@@ -152,15 +135,6 @@ export const usePosts = () => {
 
           // Reset form state
           setFile(null);
-          // setPost({
-          //   caption: "",
-          //   photos: "",
-          //   likes: 0,
-          //   likedBy: [],
-          //   displayName: "",
-          //   userId: "",
-          //   createdAt: new Date().toISOString(),
-          // });
 
           const newPost: Post = {
             id: docRef.id,
@@ -224,7 +198,6 @@ export const usePosts = () => {
           })
         );
 
-        // console.log(enrichedPosts);
         setPosts(enrichedPosts);
         return post;
       }
@@ -233,67 +206,6 @@ export const usePosts = () => {
       setError(error);
     }
   };
-
-  // const getSinglePost = async (postId: string) => {
-  //   setLoading(true);
-  //   try {
-  //     if (!postId) return;
-  //     const postDoc = await getDoc(doc(db, "posts", postId));
-  //     if (postDoc.exists()) {
-  //       const singlePostDoc: DocumentResponse = {
-  //         id: postDoc.id,
-  //         ...postDoc.data(),
-  //       } as DocumentResponse;
-
-  //       console.log(postDoc.id, postDoc.data());
-
-  //       setSinglePost(singlePostDoc);
-
-  //       console.log("found");
-  //     } else {
-  //       console.log("post not found");
-  //     }
-  //   } catch (error) {
-  //     console.error("error fecthing post", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchUserPosts = async (userId: string) => {
-  //     setLoading(true);
-  //     setError(null);
-  //     console.log("first try");
-
-  //     try {
-  //       const posts = await getPostByUserId(userId);
-
-  //       console.log(posts);
-  //       setUserPosts(posts);
-  //     } catch (err: any) {
-  //       setError(err.message || "failed to load posts");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   //  const followersList = await getUserFollowers(userId);
-  //   //  setFollowers(followersList);
-
-  //   //  const followingsList = await getUserFollowings(userId);
-  //   //  setFollowings(followingsList);
-  //   // };
-
-  //   // fetchUserProfileData(userId);\
-  //   if (userId) {
-  //     fetchUserPosts(userId);
-  //   } else {
-  //     console.log("userId is undefined, not fetching posts");
-  //     setUserPosts([]);
-  //     setLoading(false);
-  //   }
-  // }, [userId]);
 
   const deletePost = async () => {
     !selectedPostToDelete && alert("please select a post to be deleted");
@@ -467,6 +379,5 @@ export const usePosts = () => {
     selectedPost,
     setSelectedPost,
     toggleCommentSection,
-    // singlePost,
   };
 };

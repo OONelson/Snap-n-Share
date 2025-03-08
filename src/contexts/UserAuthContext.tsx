@@ -43,9 +43,9 @@ const googleSignIn = () => {
   return signInWithPopup(auth, googleAuthProvider);
 };
 
-const updateProfileInfo = (userProfileInfo: UserProfileInfo) => {
+const updateProfileInfo = (userProfileInfo: Partial<UserProfileInfo>) => {
   console.log("The user profileInfo is : ", userProfileInfo);
-  return updateProfile(userProfileInfo.user!, {
+  return updateProfile(userProfileInfo.user as User, {
     displayName: userProfileInfo.displayName,
     photoURL: userProfileInfo.photoURL,
   });

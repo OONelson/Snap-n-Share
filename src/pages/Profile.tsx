@@ -115,7 +115,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({
     setOpenLogout(false);
   };
 
-  const handleSelect = (option: option) => {
+  const handleSelect = (option: { name: string }) => {
     console.log(`Selected option: ${option.name}`);
     if (option.name === "Settings") {
       navigate("/settings");

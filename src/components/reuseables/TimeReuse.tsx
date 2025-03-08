@@ -1,4 +1,3 @@
-import { usePosts } from "@/hooks/usePost";
 import { Timestamp } from "firebase/firestore";
 import * as React from "react";
 
@@ -6,8 +5,6 @@ interface ITimeReuseProps {
   createdAt: Timestamp | Date | string;
 }
 const TimeReuse: React.FunctionComponent<ITimeReuseProps> = ({ createdAt }) => {
-  const { post } = usePosts();
-
   const formatTimeAgo = (createdAt: Date) => {
     const now = new Date();
     const diffInMilliseconds = now.getTime() - createdAt.getTime();

@@ -26,13 +26,16 @@ import { auth } from "@/firebase/firebaseConfig";
 import Likes from "./Likes";
 import CommentList from "./Commentlist";
 import TimeReuse from "./TimeReuse";
+import { DocumentResponse } from "@/types";
 
 interface IPostComponentProps {
   currentUserId: string;
+  data: DocumentResponse;
 }
 
 const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   currentUserId,
+  data,
 }) => {
   const user = auth.currentUser;
   const { userProfile, displayName, initials } = useUserProfile();
@@ -78,7 +81,7 @@ const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
                       <span className="pl-2 font-medium">
                         {post.displayName}
                       </span>
-                      {post.username?.length > 10 ? (
+                      {post.username.length > 10 ? (
                         <span className="pl-1 text-slate-400 text-sm">
                           @{post.username?.substring(0, 10)}...
                         </span>
