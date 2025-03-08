@@ -140,7 +140,7 @@ export const usePosts = () => {
             photos: photoURL,
             likes: post.likes,
             likedBy: post.likedBy,
-            username: userProfile?.username,
+            username: userProfile!.username,
             displayName: userProfile?.displayName,
             userId: userId,
             createdAt: new Date().toISOString(),
@@ -205,7 +205,7 @@ export const usePosts = () => {
     }
   };
 
-  const deletePost = async (id: string | undefined) => {
+  const deletePost = async () => {
     !selectedPostToDelete && alert("please select a post to be deleted");
 
     try {
@@ -243,7 +243,7 @@ export const usePosts = () => {
 
     setBookmarked(newBookmarks);
 
-    const userDocRef = doc(db, "users", user.uid);
+    const userDocRef = doc(db, "users", user!.uid);
     await setDoc(userDocRef, { bookmarks: newBookmarks }, { merge: true });
   };
 
