@@ -218,7 +218,7 @@ const HomePosts: React.FunctionComponent<IHomePostsProps> = ({
               </Card>
             ))}
         </article>
-        <PostComponent data={data} />
+        <PostComponent data={data} currentUserId={""} />
       </section>
     </main>
   );

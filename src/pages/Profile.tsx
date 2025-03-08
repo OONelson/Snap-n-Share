@@ -42,13 +42,9 @@ import { useUser } from "@/hooks/useUser";
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
   currentUserId: string;
-  userId: string;
 }
 
-const Profile: React.FunctionComponent<IProfileProps> = ({
-  currentUserId,
-  userId,
-}) => {
+const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
   const { user } = useUserAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,7 +73,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({
     handleImageClick,
     fileInputRef,
   } = useUserProfile();
-  const { loading, error, userPosts } = useUser({ userId });
+  const { loading, error, userPosts } = useUser();
   const {
     posts,
     bookmarked,
@@ -165,7 +161,7 @@ const Profile: React.FunctionComponent<IProfileProps> = ({
                       <span className="ml-2 font-medium">
                         {userProfile?.displayName}
                       </span>
-                      {userProfile.username.length > 10 ? (
+                      {userProfile!.username.length > 10 ? (
                         <span className="pl-1 text-slate-400 text-sm">
                           @{userProfile?.username?.substring(0, 10)}...
                         </span>

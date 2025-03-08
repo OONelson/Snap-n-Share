@@ -13,6 +13,20 @@ import SearchPage from "./pages/SearchPage";
 import Messenger from "./pages/Messenger";
 import Notifications from "./pages/Notifications";
 import ChangeEmailPage from "./pages/ChangeEmailPage";
+import { DocumentResponse } from "./types";
+
+const exampleData: DocumentResponse = {
+  userbookmarks: [],
+  likedBy: [],
+  id: "",
+  caption: "",
+  photos: "",
+  likes: 0,
+  userId: "",
+  createdAt: new Date(),
+  username: "",
+  displayName: "",
+};
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +34,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Home data={exampleData} />,
         errorElement: <Error />,
       },
 
@@ -40,7 +54,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile/:userId",
-        element: <Profile currentUserId={""} userId={""} />,
+        element: <Profile currentUserId={""} />,
         errorElement: <Error />,
       },
       {

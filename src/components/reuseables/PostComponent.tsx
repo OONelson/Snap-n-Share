@@ -35,7 +35,7 @@ interface IPostComponentProps {
 
 const PostComponent: React.FunctionComponent<IPostComponentProps> = ({
   currentUserId,
-  data,
+  // data,
 }) => {
   const user = auth.currentUser;
   const { userProfile, displayName, initials } = useUserProfile();

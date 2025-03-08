@@ -4,7 +4,7 @@ import { DocumentResponse, Post } from "@/types";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-export const useUser = (p0: { userId: string }) => {
+export const useUser = () => {
   const { user } = useUserAuth();
 
   const [userPosts, setUserPosts] = useState<DocumentResponse[]>([]);
@@ -41,6 +41,7 @@ export const useUser = (p0: { userId: string }) => {
             const responseObj: DocumentResponse = {
               id: doc.id,
               ...data,
+              username: "",
               userbookmarks: [],
               likedBy: [],
             };

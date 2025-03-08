@@ -20,14 +20,14 @@ interface UserProfileData {
   updateUsername: (username: string) => Promise<void>;
   updateProfilePhoto: (file: File) => Promise<void>;
   updateBio: (bio: string) => Promise<void>;
-  handleUpdateProfile: () => void;
+  handleUpdateProfile: () => Promise<void>;
   edit: boolean;
   bio: string;
   setBio: React.Dispatch<SetStateAction<string>>;
   handleOpenEdit: () => MouseEventHandler<HTMLButtonElement>;
   handleCloseEdit: () => MouseEventHandler<HTMLButtonElement>;
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<SetStateAction<boolean>>;
+  // isLoading: boolean;
+  // setIsLoading: React.Dispatch<SetStateAction<boolean>>;
   initials: string;
   fetchBio: (bio: string) => Promise<string>;
   displayName: string;
@@ -310,25 +310,32 @@ export const UserProfileProvider: React.FunctionComponent<{
     loadBio();
     // handleUpdateProfile();
   }, []);
-
+  const userProfileData: UserProfileData = {
+    userProfile: null,
+    email: userProfile?.email || "",
+    bio: userProfile?.bio || "",
+    displayName: userProfile?.displayName || "",
+    changeDisplayName: async () => {},
+    updateUsername: async () => {},
+    updateProfilePhoto: async () => {},
+    edit,
+    handleOpenEdit,
+    // handleUpdateProfile: async () => { },
+    handleUpdateProfile,
+    setDisplayName: () => {},
+    handleCloseEdit,
+    handleImageClick,
+    fileInputRef,
+    handleFileChange,
+    setBio,
+    initials,
+    updateBio,
+    // isLoading,
+    // setIsLoading,
+    fetchBio,
+  };
   return (
-    <UserProfileContext.Provider
-      value={{
-        userProfile,
-        handleUpdateProfile,
-        edit,
-        handleOpenEdit,
-        handleCloseEdit,
-        handleImageClick,
-        fileInputRef,
-        handleFileChange,
-        bio,
-        setBio,
-        initials,
-        displayName,
-        setDisplayName,
-      }}
-    >
+    <UserProfileContext.Provider value={userProfileData}>
       {children}
     </UserProfileContext.Provider>
   );

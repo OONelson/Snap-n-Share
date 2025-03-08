@@ -1,6 +1,6 @@
 import { db } from "@/firebase/firebaseConfig";
 import { validateUsername } from "@/lib/usernameRegex";
-import { UserProfileInfo } from "@/types";
+// import { UserProfileInfo } from "@/types";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import {
   createContext,
@@ -19,7 +19,7 @@ interface UsernameData {
   error: string | null;
   setError: React.Dispatch<SetStateAction<string | null>>;
   handleCheckUsername: () => Promise<void>;
-  userProfile: UserProfileInfo;
+  // userProfile: UserProfileInfo;
 }
 const UsernameContext = createContext<UsernameData | undefined>(undefined);
 

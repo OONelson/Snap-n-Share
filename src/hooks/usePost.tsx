@@ -44,9 +44,7 @@ export const usePosts = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<DocumentResponse[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [selectedPostToDelete, setSelectedPostToDelete] = useState<
-    string | null
-  >(null);
+  const [selectedPostToDelete, setSelectedPostToDelete] = useState<string>("");
   const [comments, setComments] = useState<CommentResponse[]>([]);
 
   const [commentText, setCommentText] = useState<string>("");
@@ -57,11 +55,11 @@ export const usePosts = () => {
   const navigate = useNavigate();
 
   const toggleDeleteModal = (postId: string) => {
-    setSelectedPostToDelete((prev) => (prev === postId ? null : postId));
+    setSelectedPostToDelete(() => postId && postId);
   };
 
   const closeDeleteModal = () => {
-    setSelectedPostToDelete(null);
+    setSelectedPostToDelete("");
     setOpenDeleteModal(false);
   };
 
@@ -207,7 +205,7 @@ export const usePosts = () => {
     }
   };
 
-  const deletePost = async () => {
+  const deletePost = async (id: string | undefined) => {
     !selectedPostToDelete && alert("please select a post to be deleted");
 
     try {
@@ -215,7 +213,7 @@ export const usePosts = () => {
       setPosts((prevPosts) =>
         prevPosts.filter((post) => post.id !== selectedPostToDelete)
       );
-      setSelectedPostToDelete(null);
+      setSelectedPostToDelete("");
       alert("post deleted successfully");
     } catch (error) {
       console.error("error deleting post", error);
@@ -245,7 +243,7 @@ export const usePosts = () => {
 
     setBookmarked(newBookmarks);
 
-    const userDocRef = doc(db, "users", user?.uid);
+    const userDocRef = doc(db, "users", user.uid);
     await setDoc(userDocRef, { bookmarks: newBookmarks }, { merge: true });
   };
 

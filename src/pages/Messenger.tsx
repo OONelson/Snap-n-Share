@@ -45,7 +45,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState<unknown>(null);
+  const [selectedChannel, setSelectedChannel] = useState<any>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -78,7 +78,7 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
 
   const fetchSearchedUsers = async (searchTerm: string) => {
     try {
-      const results = (await searchUsers(searchTerm)) || [];
+      const results: any = (await searchUsers(searchTerm)) || [];
       setSearchResults(results);
       // console.log(searchResults);
     } catch (error) {

@@ -21,7 +21,7 @@ const AccountSettings: React.FunctionComponent<IAccountSettingsProps> = () => {
     fileInputRef,
   } = useUserProfile();
 
-  const email = userProfile?.email;
+  const email = userProfile!.email;
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 

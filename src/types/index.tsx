@@ -40,10 +40,10 @@ export interface Post {
 
 export interface UserProfileInfo {
   user: Partial<User>;
-  email?: string;
+  email: string;
   uid: string;
   bio?: string;
-  username?: string;
+  username: string;
   displayName?: string;
   photoURL?: string;
   // followers?: number;
@@ -60,13 +60,13 @@ export interface ProfileResponse {
 }
 
 export interface DocumentResponse {
-  id?: string;
+  id: string;
   caption?: string;
   photos: string;
   likes?: number;
   likedBy: string[];
   userbookmarks?: string[];
-  username?: string;
+  username: string;
   displayName?: string;
   userId: string;
   createdAt: string | Date;

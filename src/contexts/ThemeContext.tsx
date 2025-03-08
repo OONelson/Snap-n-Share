@@ -4,7 +4,7 @@ const STORAGE_KEY = "theme";
 
 export const themeOptions = ["light", "dark", "system"] as const;
 
-export type Theme = (typeof themeOptions)[number];
+export type Theme = "light" | "dark" | "system";
 
 type InitialState = {
   theme: Theme;
@@ -22,12 +22,20 @@ export const ThemeContext = createContext(initialState);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     try {
-      const savedTheme = localStorage.getItem(STORAGE_KEY) as Theme;
+      const savedTheme = localStorage.getItem(STORAGE_KEY);
 
-      if (savedTheme) return savedTheme;
+      if (
+        savedTheme &&
+        (savedTheme === "light" ||
+          savedTheme === "dark" ||
+          savedTheme === "system")
+      )
+        return savedTheme as Theme;
     } catch (error) {
       console.warn("localstorage error", error);
     }
+
+    return "system";
   });
 
   useEffect(() => {
@@ -38,7 +46,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         ? document.body.classList.add("dark")
         : document.body.classList.remove("dark");
 
-      const handleSystemChange = (e: MediaQueryList) => {
+      const handleSystemChange = (e: MediaQueryListEvent) => {
         e.matches
           ? document.body.classList.add("dark")
           : document.body.classList.remove("dark");
