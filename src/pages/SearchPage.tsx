@@ -5,12 +5,24 @@ import WhoToFollow from "@/layout/WhoToFollow";
 import { searchUsers } from "@/repository/user.service";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { User } from "firebase/auth";
+// import { User } from "firebase/auth";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ISearchPageProps {}
+
+interface User {
+  id: string;
+  emailVerified: boolean;
+  isAnonymous: boolean;
+  metadata: any;
+  providerData: any[];
+  displayName: string | undefined;
+  photoURL: string | undefined;
+  email: string | undefined;
+  phoneNumber: string;
+}
 
 const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
   const { userProfile, displayName, initials } = useUserProfile();
@@ -28,9 +40,22 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const fetchSearchedUsers = async (searchTerm: string) => {
+  const fetchSearchedUsers = async (searchTerm: string): Promise<void> => {
     try {
-      const results: User[] = (await searchUsers(searchTerm)) || [];
+      const searchResultsId: { id: string }[] =
+        (await searchUsers(searchTerm)) || [];
+
+      const results: User[] = searchResultsId.map((result) => ({
+        id: result.id,
+        emailVerified: false,
+        isAnonymous: false,
+        metadata: {},
+        providerData: [],
+        displayName: userProfile!.displayName,
+        photoURL: userProfile?.photoURL,
+        email: userProfile?.email,
+        phoneNumber: "",
+      }));
       setSearchResults(results);
       console.log(searchResults);
     } catch (error) {
@@ -90,7 +115,7 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = () => {
           {searchResults ? (
             <ul>
               {searchResults.map((user) => (
-                <li key={user.uid} className="flex items-center pt-2">
+                <li key={user.id} className="flex items-center pt-2">
                   <div className="pr-2">
                     {user.photoURL ? (
                       <img

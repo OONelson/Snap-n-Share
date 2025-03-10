@@ -47,33 +47,33 @@ const Messenger: React.FunctionComponent<IMessengerProps> = () => {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<any>(null);
 
+  const init = async () => {
+    const chatClient = StreamChat.getInstance(apikey);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setFirebaseUser(user);
+        // console.log("user", user);
+
+        await chatClient.connectUser(
+          {
+            id: user.uid,
+            name: user.displayName || displayName,
+            image: user.photoURL || initials || undefined,
+          },
+          chatClient.devToken(user.uid)
+        );
+      }
+
+      setClient(chatClient);
+    });
+    if (client) return () => client.disconnectUser();
+  };
   useEffect(() => {
-    const init = async () => {
-      const chatClient = StreamChat.getInstance(apikey);
-
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          setFirebaseUser(user);
-          // console.log("user", user);
-
-          await chatClient.connectUser(
-            {
-              id: user.uid,
-              name: user.displayName || displayName,
-              image: user.photoURL || initials || undefined,
-            },
-            chatClient.devToken(user.uid)
-          );
-        }
-
-        setClient(chatClient);
-      });
-    };
     init();
 
-    return () => {
-      if (client) return () => client.disconnectUser();
-    };
+    // return () => {
+    // };
   }, [client]);
 
   const fetchSearchedUsers = async (searchTerm: string) => {
