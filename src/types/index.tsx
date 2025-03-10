@@ -27,7 +27,7 @@ export interface Post {
   likedBy: string[];
   userbookmarks?: string[];
   displayName?: string;
-  username?: string;
+  username: string;
   userId: string;
   createdAt: string | Date;
 }
