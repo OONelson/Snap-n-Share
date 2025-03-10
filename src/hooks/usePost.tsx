@@ -125,7 +125,7 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             likedBy: [],
-            displayName: userProfile!.displayName,
+            // displayName: userProfile!.displayName,
             username: userProfile!.username,
             userId: userId,
             createdAt: new Date().toISOString(),
