@@ -26,7 +26,7 @@ export const getPosts = async () => {
     if (querySnapshot.size > 0) {
       querySnapshot.forEach((doc) => {
         const data = doc.data() as Post;
-        const responseObj: DocumentResponse = {
+        const responseObj = {
           id: doc.id,
           ...data,
         };

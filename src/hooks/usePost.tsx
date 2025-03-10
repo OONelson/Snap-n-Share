@@ -31,8 +31,8 @@ export const usePosts = () => {
     likes: 0,
     likedBy: [],
     userId: "",
-    username: "",
     displayName: "",
+    username: "",
     createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
@@ -125,7 +125,8 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             likedBy: [],
-            displayName: userProfile?.displayName,
+            displayName: userProfile!.displayName,
+            username: userProfile!.username,
             userId: userId,
             createdAt: new Date().toISOString(),
           });
@@ -140,8 +141,8 @@ export const usePosts = () => {
             photos: photoURL,
             likes: post.likes,
             likedBy: post.likedBy,
-            username: userProfile!.username,
             displayName: userProfile?.displayName,
+            username: post.username,
             userId: userId,
             createdAt: new Date().toISOString(),
           };

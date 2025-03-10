@@ -44,7 +44,7 @@ export interface UserProfileInfo {
   uid: string;
   bio?: string;
   username: string;
-  displayName?: string;
+  displayName: string;
   photoURL?: string;
   // followers?: number;
   // following?: number;
