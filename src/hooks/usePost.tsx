@@ -31,7 +31,7 @@ export const usePosts = () => {
     likes: 0,
     likedBy: [],
     userId: "",
-    displayName: "",
+    // displayName: "",
     username: "",
     createdAt: new Date().toISOString(),
   });
