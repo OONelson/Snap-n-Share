@@ -17,11 +17,13 @@ import { auth, db, storage } from "@/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import { useUsername } from "@/contexts/UsernameContext";
 
 export const usePosts = () => {
   // const { postId } = useParams<{ postId: string }>();
 
   const { userProfile } = useUserProfile();
+  const { username } = useUsername();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
   const [post, setPost] = useState<Post>({
@@ -126,7 +128,7 @@ export const usePosts = () => {
             likes: 0,
             likedBy: [],
             // displayName: userProfile!.displayName,
-            username: userProfile?.username,
+            username: username,
             userId: userId,
             createdAt: new Date().toISOString(),
           };
