@@ -126,7 +126,7 @@ export const usePosts = () => {
             likes: 0,
             likedBy: [],
             // displayName: userProfile!.displayName,
-            username: userProfile!.username,
+            username: userProfile?.username,
             userId: userId,
             createdAt: new Date().toISOString(),
           });
