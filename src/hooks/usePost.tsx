@@ -22,7 +22,7 @@ import { useUsername } from "@/contexts/UsernameContext";
 export const usePosts = () => {
   // const { postId } = useParams<{ postId: string }>();
 
-  const { userProfile } = useUserProfile();
+  const { userProfile, displayName } = useUserProfile();
   const { username } = useUsername();
   const user = auth.currentUser;
   const [file, setFile] = useState<File | null>(null);
@@ -33,7 +33,7 @@ export const usePosts = () => {
     likes: 0,
     likedBy: [],
     userId: "",
-    // displayName: "",
+    displayName: "",
     username: "",
     createdAt: new Date().toISOString(),
   });
@@ -127,7 +127,7 @@ export const usePosts = () => {
             photos: photoURL,
             likes: 0,
             likedBy: [],
-            // displayName: userProfile!.displayName,
+            displayName: displayName,
             username: username,
             userId: userId,
             createdAt: new Date().toISOString(),
@@ -145,7 +145,7 @@ export const usePosts = () => {
             photos: photoURL,
             likes: post.likes,
             likedBy: post.likedBy,
-            displayName: userProfile?.displayName,
+            displayName: post.displayName,
             username: post.username,
             userId: userId,
             createdAt: new Date().toISOString(),
