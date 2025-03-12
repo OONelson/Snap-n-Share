@@ -120,7 +120,7 @@ export const usePosts = () => {
           const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", photoURL);
 
-          const docRef = await addDoc(collection(db, "posts"), {
+          const dataToAdd = {
             caption: post.caption,
             photos: photoURL,
             likes: 0,
@@ -129,7 +129,9 @@ export const usePosts = () => {
             username: userProfile?.username,
             userId: userId,
             createdAt: new Date().toISOString(),
-          });
+          };
+
+          const docRef = await addDoc(collection(db, "posts"), dataToAdd);
           console.log(docRef);
 
           // Reset form state
@@ -142,7 +144,7 @@ export const usePosts = () => {
             likes: post.likes,
             likedBy: post.likedBy,
             displayName: userProfile?.displayName,
-            username: userProfile!.username,
+            username: post.username,
             userId: userId,
             createdAt: new Date().toISOString(),
           };
