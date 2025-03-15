@@ -271,12 +271,8 @@ export const usePosts = () => {
     return () => clearTimeout(debounce);
   }, [searchTerm]);
 
-  const addComment = async (
-    e: React.MouseEvent<SVGAElement>,
-    postId: string
-  ) => {
-    e.stopPropagation();
-    if (!postId) {
+  const addComment = async () => {
+    if (!post.id) {
       console.error("Post ID is not provided. Cannot add comment.");
       console.log("not done");
 
@@ -285,7 +281,7 @@ export const usePosts = () => {
     try {
       if (commentText) {
         const newCommentByUser = {
-          postId: postId,
+          postId: post.id,
           author: userProfile?.displayName || userProfile?.username,
           authorUserId: userProfile?.uid,
           text: commentText,
@@ -302,7 +298,7 @@ export const usePosts = () => {
         const querySnapshot = await getDocs(
           query(
             collection(db, "comments"),
-            where("postId", "==", postId),
+            where("postId", "==", post.id),
             orderBy("createdAt", "asc")
           )
         );
@@ -318,27 +314,29 @@ export const usePosts = () => {
     }
   };
 
-  // const fetchComments = async () => {
-  //   try {
-  //     const querySnapshot = await getDocs(
-  //       query(
-  //         collection(db, "comments"),
-  //         where("postId", "==", post.id),
-  //         orderBy("createdAt", "asc")
-  //       )
-  //     );
-  //     const commentsData = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     })) as CommentResponse[];
-  //     setComments(commentsData);
-  //   } catch (error) {
-  //     console.error("error adding comm", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchComments(post.id);
-  // }, [post.id]);
+  useEffect(() => {
+    if (!post.id) return;
+
+    const fetchComments = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          query(
+            collection(db, "comments"),
+            where("postId", "==", post.id),
+            orderBy("createdAt", "asc")
+          )
+        );
+        const commentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as CommentResponse[];
+        setComments(commentsData);
+      } catch (error) {
+        console.error("error adding comm", error);
+      }
+    };
+    fetchComments();
+  }, [post.id]);
 
   return {
     posts,

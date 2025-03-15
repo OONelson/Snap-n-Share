@@ -289,13 +289,13 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
                 <div className=" mt-6">
                   <Button
                     onClick={handleOpenEdit}
-                    className=" h-8 w-24 md:block hidden"
+                    className=" h-8 w-24 md:block hidden cursor-pointer"
                   >
                     Edit profile
                   </Button>
                   <FontAwesomeIcon
                     onClick={handleOpenEdit}
-                    className="h-5 w-5 block md:hidden"
+                    className="h-5 w-5 block md:hidden cursor-pointer"
                     icon={faPen}
                   />
                 </div>
@@ -510,8 +510,8 @@ const Profile: React.FunctionComponent<IProfileProps> = ({ currentUserId }) => {
               <Input
                 id="displayname"
                 type="text"
-                placeholder="Enter a new name"
-                value={displayName}
+                placeholder="Enter a name"
+                value={userProfile?.displayName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setDisplayName(e.target.value)
                 }

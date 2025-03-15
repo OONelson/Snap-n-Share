@@ -69,16 +69,16 @@ export const UserProfileProvider: React.FunctionComponent<{
   const initials = getInitials(userProfile?.username);
 
   const handleOpenEdit: () => MouseEventHandler<HTMLButtonElement> = () => {
+    setEdit(true);
     return (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      setEdit(true);
     };
   };
 
   const handleCloseEdit: () => MouseEventHandler<HTMLButtonElement> = () => {
+    setEdit(false);
     return (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      setEdit(false);
     };
   };
 

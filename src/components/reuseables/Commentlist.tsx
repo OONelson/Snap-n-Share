@@ -78,7 +78,7 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
           className="w-[90%]"
         />
         <button>
-          <FontAwesomeIcon onClick={() => addComment} icon={faPaperPlane} />
+          <FontAwesomeIcon onClick={addComment} icon={faPaperPlane} />
         </button>
       </section>
     </article>
