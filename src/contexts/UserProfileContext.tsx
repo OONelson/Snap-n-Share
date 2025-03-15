@@ -26,8 +26,6 @@ interface UserProfileData {
   setBio: React.Dispatch<SetStateAction<string>>;
   handleOpenEdit: () => MouseEventHandler<HTMLButtonElement>;
   handleCloseEdit: () => MouseEventHandler<HTMLButtonElement>;
-  // isLoading: boolean;
-  // setIsLoading: React.Dispatch<SetStateAction<boolean>>;
   initials: string;
   fetchBio: (bio: string) => Promise<string>;
   displayName: string;
@@ -69,7 +67,6 @@ export const UserProfileProvider: React.FunctionComponent<{
   const [bio, setBio] = useState<string>(userProfile?.bio || "");
 
   const initials = getInitials(userProfile?.username);
-  // const navigate = useNavigate();
 
   const handleOpenEdit: () => MouseEventHandler<HTMLButtonElement> = () => {
     return (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -160,9 +157,6 @@ export const UserProfileProvider: React.FunctionComponent<{
           const photoURL = await getDownloadURL(uploadTask.snapshot.ref);
           console.log("File available at:", photoURL);
 
-          // setFile(photoURL)
-          // console.log(newPost);
-
           await updateDoc(doc(db, "users", user.uid), {
             photoURL: photoURL,
           });
@@ -170,7 +164,6 @@ export const UserProfileProvider: React.FunctionComponent<{
           // Reset form state
 
           alert("new picture uplaoded");
-          // navigate("/");
         }
       );
     } catch (error) {
@@ -236,8 +229,6 @@ export const UserProfileProvider: React.FunctionComponent<{
     await updateBio(bio);
     await handleSubmit();
     alert("profile updated");
-    console.log("updated");
-    console.log(displayName);
 
     setEdit(false);
   };
@@ -308,10 +299,9 @@ export const UserProfileProvider: React.FunctionComponent<{
     };
 
     loadBio();
-    // handleUpdateProfile();
   }, []);
   const userProfileData: UserProfileData = {
-    userProfile: null,
+    userProfile: userProfile,
     email: userProfile?.email || "",
     bio: userProfile?.bio || "",
     displayName: userProfile?.displayName || "",
@@ -320,7 +310,6 @@ export const UserProfileProvider: React.FunctionComponent<{
     updateProfilePhoto: async () => {},
     edit,
     handleOpenEdit,
-    // handleUpdateProfile: async () => { },
     handleUpdateProfile,
     setDisplayName: () => {},
     handleCloseEdit,
@@ -330,8 +319,6 @@ export const UserProfileProvider: React.FunctionComponent<{
     setBio,
     initials,
     updateBio,
-    // isLoading,
-    // setIsLoading,
     fetchBio,
   };
   return (

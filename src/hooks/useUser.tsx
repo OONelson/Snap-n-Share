@@ -22,34 +22,26 @@ export const useUser = () => {
 
       setLoading(true);
       setError(null);
-      console.log("first try");
 
       try {
-        const q = query(
-          collection(db, "posts"),
-          // orderBy("date", "desc"),
-          where("userId", "==", uid)
-        );
+        const q = query(collection(db, "posts"), where("userId", "==", uid));
 
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot.size);
 
         const tempArr: DocumentResponse[] = [];
         if (querySnapshot.size > 0) {
           querySnapshot.forEach((doc) => {
             const data = doc.data() as Post;
             const responseObj: DocumentResponse = {
-              id: doc.id,
+              // id: doc.id,
               ...data,
               username: "",
               userbookmarks: [],
               likedBy: [],
             };
             tempArr.push(responseObj);
-            console.log("second try");
           });
           setUserPosts(tempArr);
-          console.log(userPosts);
         } else {
           console.log("No posts found for this user.");
         }

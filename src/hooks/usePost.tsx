@@ -20,8 +20,6 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useUsername } from "@/contexts/UsernameContext";
 
 export const usePosts = () => {
-  // const { postId } = useParams<{ postId: string }>();
-
   const { userProfile, displayName } = useUserProfile();
   const { username } = useUsername();
   const user = auth.currentUser;
@@ -38,20 +36,15 @@ export const usePosts = () => {
     createdAt: new Date().toISOString(),
   });
   const [posts, setPosts] = useState<DocumentResponse[]>([]);
-  // const [singlePost, setSinglePost] = useState<DocumentResponse | null>(null);
-
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
-
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<DocumentResponse[]>([]);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedPostToDelete, setSelectedPostToDelete] = useState<string>("");
   const [comments, setComments] = useState<CommentResponse[]>([]);
-
   const [commentText, setCommentText] = useState<string>("");
-
   const [displayComments, setDisplayComments] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
 
@@ -67,12 +60,9 @@ export const usePosts = () => {
   };
 
   const toggleCommentSection = (postId: string) => {
-    console.log("done", postId);
-
     setSelectedPost((prev) => (prev === postId ? null : postId));
     setDisplayComments(true);
 
-    // navigate(`/post/${postId}`);
     console.error(Error);
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -233,7 +223,6 @@ export const usePosts = () => {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setBookmarked(data.bookmarks || []);
-        // console.log(data.bookmarks);
       } else {
         console.log("No bookmarks found for this user.");
       }
@@ -282,31 +271,11 @@ export const usePosts = () => {
     return () => clearTimeout(debounce);
   }, [searchTerm]);
 
-  const fetchComments = async (postId: string | undefined) => {
-    try {
-      if (postId) {
-        const querySnapshot = await getDocs(
-          query(
-            collection(db, "comments"),
-            where("postId", "==", post.id),
-            orderBy("createdAt", "asc")
-          )
-        );
-        const commentsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as CommentResponse[];
-        setComments(commentsData);
-      }
-    } catch (error) {
-      console.error("error adding comm", error);
-    }
-  };
-  useEffect(() => {
-    fetchComments(post.id);
-  }, [post.id]);
-
-  const addComment = async (postId: string) => {
+  const addComment = async (
+    e: React.MouseEvent<SVGAElement>,
+    postId: string
+  ) => {
+    e.stopPropagation();
     if (!postId) {
       console.error("Post ID is not provided. Cannot add comment.");
       console.log("not done");
@@ -314,9 +283,9 @@ export const usePosts = () => {
       return;
     }
     try {
-      if (user && commentText) {
+      if (commentText) {
         const newCommentByUser = {
-          postId: post.id,
+          postId: postId,
           author: userProfile?.displayName || userProfile?.username,
           authorUserId: userProfile?.uid,
           text: commentText,
@@ -330,12 +299,10 @@ export const usePosts = () => {
 
         // Re-fetch comments after adding
 
-        setCommentText("");
-
         const querySnapshot = await getDocs(
           query(
             collection(db, "comments"),
-            where("postId", "==", post.id),
+            where("postId", "==", postId),
             orderBy("createdAt", "asc")
           )
         );
@@ -344,14 +311,36 @@ export const usePosts = () => {
           ...doc.data(),
         })) as CommentResponse[];
         setComments(commentsData);
+        setCommentText("");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // const fetchComments = async () => {
+  //   try {
+  //     const querySnapshot = await getDocs(
+  //       query(
+  //         collection(db, "comments"),
+  //         where("postId", "==", post.id),
+  //         orderBy("createdAt", "asc")
+  //       )
+  //     );
+  //     const commentsData = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     })) as CommentResponse[];
+  //     setComments(commentsData);
+  //   } catch (error) {
+  //     console.error("error adding comm", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchComments(post.id);
+  // }, [post.id]);
+
   return {
-    // userPosts,
     posts,
     loading,
     error,

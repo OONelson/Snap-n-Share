@@ -11,7 +11,8 @@ interface ICommentListProps {
 }
 
 const CommentList: React.FunctionComponent<ICommentListProps> = () => {
-  const { comments, addComment, commentText, setCommentText } = usePosts();
+  const { comments, addComment, commentText, setCommentText, post } =
+    usePosts();
   const { userProfile, displayName, initials } = useUserProfile();
 
   const formatTimeAgo = (createdAt: Date) => {
@@ -77,8 +78,8 @@ const CommentList: React.FunctionComponent<ICommentListProps> = () => {
           placeholder="Add a comment"
           className="w-[90%]"
         />
-        <button disabled={!commentText}>
-          <FontAwesomeIcon onClick={() => addComment} icon={faPaperPlane} />
+        <button>
+          <FontAwesomeIcon onClick={addComment(post.id)} icon={faPaperPlane} />
         </button>
       </section>
     </article>

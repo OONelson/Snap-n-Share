@@ -20,7 +20,7 @@ export interface UserName {
 }
 
 export interface Post {
-  id?: string;
+  id: string;
   caption: string;
   photos: string;
   likes: number;
@@ -78,9 +78,9 @@ export interface Bookmark {
 }
 
 export interface CommentResponse {
-  id?: string;
+  id: string;
   postId: string;
-  author?: string;
+  author: string;
   text: string;
   authorUserId: string;
   likes: number;

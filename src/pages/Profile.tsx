@@ -22,7 +22,6 @@ import {
   faComment,
   faBookmark as solidBookmark,
 } from "@fortawesome/free-regular-svg-icons";
-
 import BigModal from "@/components/reuseables/BigModal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -37,7 +36,6 @@ import CommentList from "@/components/reuseables/Commentlist";
 import Likes from "@/components/reuseables/Likes";
 import TimeReuse from "@/components/reuseables/TimeReuse";
 import { useUser } from "@/hooks/useUser";
-// import { DocumentResponse } from "@/types";
 
 type Tab = "Tab1" | "Tab2";
 interface IProfileProps {
